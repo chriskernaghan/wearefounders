@@ -3,10 +3,9 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ToolCard from '../../components/ToolCard.astro';
 import FilterBar from '../../components/FilterBar.astro';
-import { CATEGORIES, STAGES } from '../../data/taxonomy';
+import { STAGES } from '../../data/taxonomy';
 
 const tools = await getCollection('tools');
-// Featured first, then alphabetical
 const sorted = tools.sort((a, b) => {
   if (a.data.featured && !b.data.featured) return -1;
   if (!a.data.featured && b.data.featured) return 1;
@@ -19,14 +18,11 @@ const base = import.meta.env.BASE_URL;
   title="The We Are Founders Tools Directory"
   description="A curated, editorial directory of the tools that actually move the needle for founders. Filtered by category, founder stage, and pricing. Every entry is hand-reviewed."
 >
-  <section class="page-hero container">
-    <div class="page-hero__eyebrow">The Directory</div>
-    <h1>Tools founders<br /><em>actually use.</em></h1>
-    <p class="page-hero__lede">
-      No paid placements. No category bloat. Just the tools we've used,
-      reviewed, or recommended ourselves — sorted by what you're building
-      and where you're at.
-    </p>
+  <section class="container directory-intro">
+    <div class="directory-intro__eyebrow">The Directory</div>
+    <h1 class="directory-intro__heading">
+      Tools founders <em>actually use.</em>
+    </h1>
   </section>
 
   <div class="container">
@@ -38,20 +34,6 @@ const base = import.meta.env.BASE_URL;
 
     <div class="empty-state" id="empty-state" style="display: none;">
       <p>No tools match these filters yet. Try widening your selection.</p>
-    </div>
-
-    <div class="section-heading">
-      <h2>Browse by category</h2>
-    </div>
-    <div class="tools-grid">
-      {CATEGORIES.map((c) => (
-        <a href={`${base}/category/${c.slug}/`} class="tool-card">
-          <div class="tool-card__head">
-            <div class="tool-card__name">{c.label}</div>
-          </div>
-          <p class="tool-card__tagline">{c.desc}</p>
-        </a>
-      ))}
     </div>
 
     <div class="section-heading">

@@ -14,7 +14,7 @@ interface Props {
 const { title, description, canonical, ogImage, noindex = false } = Astro.props;
 const siteTitle = title.includes('We Are Founders') ? title : `${title} | We Are Founders`;
 const canonicalUrl = canonical ?? new URL(Astro.url.pathname, Astro.site).toString();
-const ogImageUrl = ogImage ?? new URL('/directory/og-default.png', Astro.site).toString();
+const ogImageUrl = ogImage ?? new URL('/og-default.png', Astro.site).toString();
 ---
 <!doctype html>
 <html lang="en">
@@ -47,14 +47,12 @@ const ogImageUrl = ogImage ?? new URL('/directory/og-default.png', Astro.site).t
       href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
     />
 
-    <!-- Theme detection — sets data-prefers-color-scheme on <html>
-         to match the WAF Pinolada pattern. Runs before render to
-         prevent flash of unstyled content. -->
+    <!-- Theme detection — defaults to light unless user has explicitly
+         chosen dark previously. Runs before render to prevent FOUC. -->
     <script is:inline>
       (function () {
         const stored = localStorage.getItem('waf-theme');
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        const theme = stored ?? (prefersDark ? 'dark' : 'light');
+        const theme = stored === 'dark' ? 'dark' : 'light';
         document.documentElement.setAttribute('data-prefers-color-scheme', theme);
       })();
     </script>

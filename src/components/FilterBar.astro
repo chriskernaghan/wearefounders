@@ -2,10 +2,7 @@
 import { CATEGORIES, STAGES } from '../data/taxonomy';
 
 interface Props {
-  // When true, hide the category filter row (used on category pages where
-  // the category is already determined by the URL).
   hideCategoryFilter?: boolean;
-  // When true, hide the stage filter row (used on stage pages).
   hideStageFilter?: boolean;
 }
 
@@ -27,16 +24,22 @@ const { hideCategoryFilter = false, hideStageFilter = false } = Astro.props;
   )}
 
   {!hideCategoryFilter && (
-    <div class="filter-bar__row">
+    <div class="filter-bar__row filter-bar__row--scroll">
       <span class="filter-bar__label">Category</span>
-      <div class="filter-bar__pills" data-filter-group="category">
-        <button type="button" class="pill" data-filter-value="all" aria-pressed="true">All</button>
-        {CATEGORIES.map((c) => (
-          <button type="button" class="pill" data-filter-value={c.slug} aria-pressed="false">
-            {c.label}
-          </button>
-        ))}
+      <div class="filter-bar__scroll-wrap">
+        <div class="filter-bar__pills filter-bar__pills--scroll" data-filter-group="category" id="category-pills">
+          <button type="button" class="pill" data-filter-value="all" aria-pressed="true">All</button>
+          {CATEGORIES.map((c) => (
+            <button type="button" class="pill" data-filter-value={c.slug} aria-pressed="false">
+              {c.label}
+            </button>
+          ))}
+        </div>
+        <div class="filter-bar__scroll-fade" aria-hidden="true"></div>
       </div>
+      <button type="button" class="pill pill--accent" id="open-categories-modal" aria-haspopup="dialog">
+        View all
+      </button>
     </div>
   )}
 
@@ -49,6 +52,34 @@ const { hideCategoryFilter = false, hideStageFilter = false } = Astro.props;
     <span class="filter-bar__count" id="filter-count">Loading…</span>
   </div>
 </div>
+
+{!hideCategoryFilter && (
+  <div class="modal" id="categories-modal" role="dialog" aria-modal="true" aria-labelledby="categories-modal-title" hidden>
+    <div class="modal__backdrop" data-modal-close></div>
+    <div class="modal__panel" role="document">
+      <header class="modal__header">
+        <h2 id="categories-modal-title">All categories</h2>
+        <button type="button" class="modal__close" data-modal-close aria-label="Close">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </header>
+      <div class="modal__grid" id="modal-categories-grid">
+        <button type="button" class="modal__category" data-modal-category="all">
+          <strong>All</strong>
+          <span>Show every tool in the directory.</span>
+        </button>
+        {CATEGORIES.map((c) => (
+          <button type="button" class="modal__category" data-modal-category={c.slug}>
+            <strong>{c.label}</strong>
+            <span>{c.desc}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+  </div>
+)}
 
 <script>
   // Multi-axis client-side filter. Reads selected values per group,
@@ -84,18 +115,26 @@ const { hideCategoryFilter = false, hideStageFilter = false } = Astro.props;
       count.textContent = `${visible} ${visible === 1 ? 'tool' : 'tools'}`;
     }
 
-    // Show empty state when no tools match
     const emptyState = document.getElementById('empty-state');
     if (emptyState) {
       emptyState.style.display = visible === 0 ? 'block' : 'none';
     }
   }
 
+  function setCategoryActive(value: string) {
+    document.querySelectorAll<HTMLButtonElement>(
+      '[data-filter-group="category"] button[data-filter-value]'
+    ).forEach((b) => {
+      b.setAttribute('aria-pressed', b.dataset.filterValue === value ? 'true' : 'false');
+    });
+    state.category = value;
+    apply();
+  }
+
   document.querySelectorAll<HTMLElement>('[data-filter-group]').forEach((group) => {
     const groupName = group.dataset.filterGroup as GroupName;
     group.querySelectorAll<HTMLButtonElement>('button[data-filter-value]').forEach((btn) => {
       btn.addEventListener('click', () => {
-        // Single-select within group
         group.querySelectorAll<HTMLButtonElement>('button').forEach((b) => {
           b.setAttribute('aria-pressed', 'false');
         });
@@ -106,6 +145,46 @@ const { hideCategoryFilter = false, hideStageFilter = false } = Astro.props;
     });
   });
 
-  // Initial render
+  // Modal: open, close, select category
+  const modal = document.getElementById('categories-modal');
+  const openBtn = document.getElementById('open-categories-modal');
+  if (modal && openBtn) {
+    const open = () => {
+      modal.hidden = false;
+      document.body.style.overflow = 'hidden';
+      // Sync modal selection with current state
+      modal.querySelectorAll<HTMLButtonElement>('[data-modal-category]').forEach((b) => {
+        b.setAttribute('aria-pressed', b.dataset.modalCategory === state.category ? 'true' : 'false');
+      });
+    };
+    const close = () => {
+      modal.hidden = true;
+      document.body.style.overflow = '';
+    };
+
+    openBtn.addEventListener('click', open);
+
+    modal.querySelectorAll<HTMLElement>('[data-modal-close]').forEach((el) => {
+      el.addEventListener('click', close);
+    });
+
+    modal.querySelectorAll<HTMLButtonElement>('[data-modal-category]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const value = btn.dataset.modalCategory ?? 'all';
+        setCategoryActive(value);
+        // Scroll the matching pill into view in the inline row
+        const inlinePill = document.querySelector<HTMLButtonElement>(
+          `[data-filter-group="category"] button[data-filter-value="${value}"]`
+        );
+        inlinePill?.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+        close();
+      });
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !modal.hidden) close();
+    });
+  }
+
   apply();
 </script>
