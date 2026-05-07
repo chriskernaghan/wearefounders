@@ -45,6 +45,7 @@ const ogImageUrl = ogImage ?? new URL('/og-default.png', Astro.site).toString();
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
     />
+<link rel="stylesheet" href={`${import.meta.env.BASE_URL}styles/global.css`} />
 
     <!-- Theme detection — defaults to light unless user has explicitly
          chosen dark previously. Runs before render to prevent FOUC. -->
@@ -55,7 +56,6 @@ const ogImageUrl = ogImage ?? new URL('/og-default.png', Astro.site).toString();
         document.documentElement.setAttribute('data-prefers-color-scheme', theme);
       })();
     </script>
-<link rel="stylesheet" href={`${import.meta.env.BASE_URL}/styles/global.css`} />
   </head>
   <body>
     <SiteHeader />
