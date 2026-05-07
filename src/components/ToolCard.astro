@@ -1,0 +1,67 @@
+---
+import { CATEGORY_MAP, STAGE_MAP } from '../data/taxonomy';
+
+interface Props {
+  tool: {
+    id: string;
+    data: {
+      name: string;
+      tagline: string;
+      categories: string[];
+      stages: string[];
+      pricing_from: number | null;
+      pricing_currency: string;
+      free_tier: boolean;
+    };
+  };
+}
+
+const { tool } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const slug = tool.id.replace(/\.md$/, '');
+
+const symbol = tool.data.pricing_currency === 'GBP' ? '£' : tool.data.pricing_currency === 'EUR' ? '€' : '$';
+
+// Pricing display string. "From $X" pattern keeps copy future-proof.
+let priceLabel: string;
+if (tool.data.pricing_from === null) {
+  priceLabel = 'Custom';
+} else if (tool.data.pricing_from === 0) {
+  priceLabel = 'Free';
+} else {
+  priceLabel = `From ${symbol}${tool.data.pricing_from}`;
+}
+
+// Build data-attributes used by the client-side filter.
+const categoriesAttr = tool.data.categories.join(',');
+const stagesAttr = tool.data.stages.join(',');
+---
+<a
+  class="tool-card"
+  href={`${base}/${slug}/`}
+  data-tool
+  data-categories={categoriesAttr}
+  data-stages={stagesAttr}
+  data-free-tier={tool.data.free_tier ? 'true' : 'false'}
+>
+  <div class="tool-card__head">
+    <div>
+      <div class="tool-card__name">{tool.data.name}</div>
+    </div>
+    <div class="tool-card__price">
+      {tool.data.free_tier && tool.data.pricing_from !== 0 && (
+        <><strong>Free tier</strong><br /></>
+      )}
+      <strong>{priceLabel}</strong>
+    </div>
+  </div>
+  <p class="tool-card__tagline">{tool.data.tagline}</p>
+  <div class="tool-card__meta">
+    {tool.data.categories.slice(0, 2).map((slug) => (
+      <span class="pill">{CATEGORY_MAP[slug]?.label ?? slug}</span>
+    ))}
+    {tool.data.stages.map((slug) => (
+      <span class="pill">{STAGE_MAP[slug]?.label ?? slug}</span>
+    ))}
+  </div>
+</a>

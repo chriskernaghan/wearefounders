@@ -1,0 +1,317 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { CATEGORY_MAP, STAGE_MAP } from '../../data/taxonomy';
+
+export async function getStaticPaths() {
+  const tools = await getCollection('tools');
+  return tools.map((tool) => ({
+    params: { slug: tool.id.replace(/\.md$/, '') },
+    props: { tool },
+  }));
+}
+
+const { tool } = Astro.props;
+const { Content } = await render(tool);
+const base = import.meta.env.BASE_URL;
+
+const symbol = tool.data.pricing_currency === 'GBP' ? '£' : tool.data.pricing_currency === 'EUR' ? '€' : '$';
+let priceLabel: string;
+if (tool.data.pricing_from === null) priceLabel = 'Custom pricing';
+else if (tool.data.pricing_from === 0) priceLabel = 'Free';
+else priceLabel = `From ${symbol}${tool.data.pricing_from}/mo`;
+
+// Primary CTA target — affiliate URL if present, otherwise direct website
+const primaryCta = tool.data.affiliate_url ?? tool.data.website;
+const isAffiliate = tool.data.affiliate_url !== null;
+const ctaRel = isAffiliate ? 'sponsored noopener' : 'noopener';
+
+// Format date for display
+const updated = new Intl.DateTimeFormat('en-US', {
+  month: 'long', day: 'numeric', year: 'numeric'
+}).format(tool.data.last_updated);
+
+// Structured data for SEO (SoftwareApplication schema)
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: tool.data.name,
+  description: tool.data.tagline,
+  applicationCategory: tool.data.categories.map((s) => CATEGORY_MAP[s]?.label).join(', '),
+  url: tool.data.website,
+  ...(tool.data.pricing_from !== null && tool.data.pricing_from > 0 && {
+    offers: {
+      '@type': 'Offer',
+      price: tool.data.pricing_from,
+      priceCurrency: tool.data.pricing_currency,
+    },
+  }),
+  ...(tool.data.verdict_score && {
+    aggregateRating: {
+      '@type': 'AggregateRating',
+      ratingValue: tool.data.verdict_score,
+      bestRating: 10,
+      ratingCount: 1,
+    },
+  }),
+};
+---
+<BaseLayout
+  title={`${tool.data.name} review and pricing`}
+  description={`${tool.data.our_take} Read our editorial review of ${tool.data.name}, including pricing, pros, cons, and who it's for.`}
+>
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+
+  <article class="tool-detail container">
+    <a href={`${base}/`} class="back-link">← All tools</a>
+
+    <header class="tool-detail__header">
+      <div class="tool-detail__intro">
+        <div class="mono-label">{tool.data.categories.map((s) => CATEGORY_MAP[s]?.label).join(' · ')}</div>
+        <h1>{tool.data.name}</h1>
+        <p class="tool-detail__tagline">{tool.data.tagline}</p>
+        <p class="tool-detail__take">{tool.data.our_take}</p>
+
+        <div class="tool-detail__cta-row">
+          <a
+            href={primaryCta}
+            class="btn btn--primary"
+            target="_blank"
+            rel={ctaRel}
+          >
+            Visit {tool.data.name} →
+          </a>
+          {tool.data.review_url && (
+            <a href={tool.data.review_url} class="btn btn--ghost">
+              Read our full review
+            </a>
+          )}
+        </div>
+      </div>
+
+      <aside class="tool-detail__facts">
+        <dl>
+          <dt>Pricing</dt>
+          <dd>{priceLabel}</dd>
+
+          <dt>Free tier</dt>
+          <dd>{tool.data.free_tier ? 'Yes' : 'No'}</dd>
+
+          {tool.data.free_trial_days !== null && tool.data.free_trial_days !== undefined && (
+            <>
+              <dt>Free trial</dt>
+              <dd>{tool.data.free_trial_days} days</dd>
+            </>
+          )}
+
+          <dt>Best for</dt>
+          <dd>{tool.data.stages.map((s) => STAGE_MAP[s]?.label).join(', ')}</dd>
+
+          {tool.data.founded && (
+            <>
+              <dt>Founded</dt>
+              <dd>{tool.data.founded}</dd>
+            </>
+          )}
+
+          {tool.data.hq && (
+            <>
+              <dt>HQ</dt>
+              <dd>{tool.data.hq}</dd>
+            </>
+          )}
+
+          <dt>Last verified</dt>
+          <dd>{updated}</dd>
+        </dl>
+      </aside>
+    </header>
+
+    <section class="tool-detail__body">
+      <Content />
+    </section>
+
+    <section class="tool-detail__verdict">
+      <div class="verdict-col verdict-col--pros">
+        <h3>What we like</h3>
+        <ul>
+          {tool.data.pros.map((p) => <li>{p}</li>)}
+        </ul>
+      </div>
+      <div class="verdict-col verdict-col--cons">
+        <h3>What to watch</h3>
+        <ul>
+          {tool.data.cons.map((c) => <li>{c}</li>)}
+        </ul>
+      </div>
+    </section>
+
+    <section class="tool-detail__final-cta">
+      <h2>Try {tool.data.name}</h2>
+      <p>{priceLabel}{tool.data.free_tier && ' · Free tier available'}{tool.data.free_trial_days && ` · ${tool.data.free_trial_days}-day trial`}.</p>
+      <a
+        href={primaryCta}
+        class="btn btn--primary"
+        target="_blank"
+        rel={ctaRel}
+      >
+        Visit {tool.data.name} →
+      </a>
+    </section>
+  </article>
+</BaseLayout>
+
+<style>
+  .tool-detail {
+    padding: 2rem 0 4rem;
+    max-width: 1100px;
+  }
+  .back-link {
+    display: inline-block;
+    margin-bottom: 2rem;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+    text-decoration: none;
+  }
+  .back-link:hover { color: var(--text); }
+
+  .tool-detail__header {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) 280px;
+    gap: 3rem;
+    padding-bottom: 3rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 3rem;
+  }
+  @media (max-width: 820px) {
+    .tool-detail__header {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+  }
+
+  .tool-detail__intro h1 {
+    margin: 0.5rem 0 1rem;
+  }
+  .tool-detail__tagline {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-style: italic;
+    color: var(--text-muted);
+    line-height: 1.3;
+    margin-bottom: 2rem;
+    font-weight: 400;
+  }
+  .tool-detail__take {
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    padding-left: 1.25rem;
+    border-left: 3px solid var(--waf-accent);
+    margin-bottom: 2rem;
+    color: var(--text);
+  }
+  .tool-detail__cta-row {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .tool-detail__facts {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.75rem;
+    align-self: start;
+  }
+  .tool-detail__facts dl {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem 1rem;
+    margin: 0;
+  }
+  .tool-detail__facts dt {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    align-self: end;
+  }
+  .tool-detail__facts dd {
+    font-size: 0.9375rem;
+    color: var(--text);
+    margin: 0;
+    text-align: right;
+    align-self: end;
+  }
+
+  .tool-detail__body {
+    max-width: 68ch;
+    margin: 0 auto;
+    font-size: 1.0625rem;
+    line-height: 1.7;
+  }
+  .tool-detail__body :global(h2) {
+    margin: 2.5rem 0 1rem;
+    font-size: 1.625rem;
+  }
+  .tool-detail__body :global(h3) {
+    margin: 2rem 0 0.75rem;
+  }
+  .tool-detail__body :global(p) {
+    margin-bottom: 1.25rem;
+  }
+  .tool-detail__body :global(ul), .tool-detail__body :global(ol) {
+    margin: 0 0 1.25rem 1.5rem;
+  }
+  .tool-detail__body :global(li) {
+    margin-bottom: 0.375rem;
+  }
+
+  .tool-detail__verdict {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    max-width: 68ch;
+    margin: 4rem auto 0;
+    padding: 2rem;
+    background: var(--bg-subtle);
+    border-radius: var(--radius-lg);
+  }
+  @media (max-width: 640px) {
+    .tool-detail__verdict { grid-template-columns: 1fr; }
+  }
+  .verdict-col h3 {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+  }
+  .verdict-col ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .verdict-col li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.9375rem;
+  }
+  .verdict-col li:last-child { border-bottom: none; }
+  .verdict-col--pros li::before { content: '+ '; color: var(--waf-accent); font-weight: 600; }
+  .verdict-col--cons li::before { content: '− '; color: var(--text-faint); font-weight: 600; }
+
+  .tool-detail__final-cta {
+    text-align: center;
+    margin-top: 4rem;
+    padding: 3rem 2rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+  }
+  .tool-detail__final-cta h2 { margin-bottom: 0.5rem; }
+  .tool-detail__final-cta p { color: var(--text-muted); margin-bottom: 1.5rem; }
+</style>
