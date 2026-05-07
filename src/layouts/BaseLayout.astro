@@ -1,5 +1,4 @@
 ---
-import '../styles/global.css';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 
@@ -56,6 +55,7 @@ const ogImageUrl = ogImage ?? new URL('/og-default.png', Astro.site).toString();
         document.documentElement.setAttribute('data-prefers-color-scheme', theme);
       })();
     </script>
+<link rel="stylesheet" href={`${import.meta.env.BASE_URL}/styles/global.css`} />
   </head>
   <body>
     <SiteHeader />
