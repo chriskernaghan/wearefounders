@@ -6,7 +6,6 @@ import { defineConfig } from 'astro/config';
 // for testing, the project will live at [project].pages.dev/directory/.
 export default defineConfig({
   site: 'https://wearefounders.uk',
-  base: '/directory',
   trailingSlash: 'always',
   output: 'static',
   build: {
