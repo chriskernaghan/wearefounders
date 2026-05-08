@@ -12,6 +12,8 @@ interface Props {
       pricing_from: number | null;
       pricing_currency: string;
       free_tier: boolean;
+      website?: string;
+      logo?: string;
     };
   };
 }
@@ -32,6 +34,23 @@ if (tool.data.pricing_from === null) {
   priceLabel = `From ${symbol}${tool.data.pricing_from}`;
 }
 
+// Logo resolution:
+// 1. If tool.data.logo is explicitly set, use it (real brand asset)
+// 2. Otherwise, derive favicon URL from the website using Google's S2 favicon service
+// This gives every tool a logo automatically without per-tool work, and we can
+// upgrade to real logos by setting tool.data.logo when ready.
+let logoUrl: string | null = null;
+if (tool.data.logo) {
+  logoUrl = tool.data.logo;
+} else if (tool.data.website) {
+  try {
+    const domain = new URL(tool.data.website).hostname;
+    logoUrl = `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
+  } catch {
+    logoUrl = null;
+  }
+}
+
 // Build data-attributes used by the client-side filter.
 const categoriesAttr = tool.data.categories.join(',');
 const stagesAttr = tool.data.stages.join(',');
@@ -45,7 +64,10 @@ const stagesAttr = tool.data.stages.join(',');
   data-free-tier={tool.data.free_tier ? 'true' : 'false'}
 >
   <div class="tool-card__head">
-    <div>
+    <div class="tool-card__head-left">
+      {logoUrl && (
+        <img class="tool-card__logo" src={logoUrl} alt={`${tool.data.name} logo`} loading="lazy" width="32" height="32" />
+      )}
       <div class="tool-card__name">{tool.data.name}</div>
     </div>
     <div class="tool-card__price">
