@@ -138,6 +138,23 @@ a:hover { text-decoration-color: var(--waf-accent); }
 }
 .site-header__nav a:hover { color: var(--text); }
 
+/* Submit your tool — subtle pill CTA in the header */
+.site-header__submit {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.375rem 0.875rem;
+  border: 1px solid var(--waf-accent);
+  border-radius: 999px;
+  color: var(--waf-accent) !important;
+  font-weight: 500;
+  font-size: 0.8125rem;
+  transition: background 120ms ease, color 120ms ease;
+}
+.site-header__submit:hover {
+  background: var(--waf-accent);
+  color: white !important;
+}
+
 /* Theme toggle */
 .theme-toggle {
   display: inline-flex;
@@ -249,6 +266,20 @@ html:not([data-prefers-color-scheme="dark"]) .theme-toggle__icon--moon { display
   justify-content: space-between;
   margin-bottom: 1rem;
   gap: 1rem;
+}
+.tool-card__head-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+.tool-card__logo {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  flex-shrink: 0;
+  background: var(--bg-subtle);
+  object-fit: contain;
 }
 .tool-card__name {
   font-family: var(--font-display);

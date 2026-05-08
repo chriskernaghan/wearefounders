@@ -1,0 +1,211 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+// CONFIGURE: Replace with your real Stripe Payment Link before going live.
+// Generate at: https://dashboard.stripe.com/payment-links
+// Set the success URL on the Stripe side to the Tally form URL so payers
+// land directly on the intake form after checkout.
+const STRIPE_PAYMENT_LINK = 'https://buy.stripe.com/REPLACE_ME';
+
+const base = import.meta.env.BASE_URL;
+---
+<BaseLayout
+  title="Submit your tool · We Are Founders Directory"
+  description="Get your SaaS, agency tool, or founder product reviewed for inclusion in the We Are Founders editorial tools directory. Editorial review fee: $29."
+>
+  <section class="container submit-page">
+    <div class="submit-page__eyebrow">Editorial Submission</div>
+    <h1 class="submit-page__heading">
+      Submit your tool for <em>editorial review.</em>
+    </h1>
+    <p class="submit-page__lead">
+      We Are Founders Tools is a curated directory. Every entry is hand-reviewed for quality, relevance, and editorial fit. The $29 review fee covers our time evaluating your submission and writing the entry to our editorial standard.
+    </p>
+
+    <div class="submit-card">
+      <div class="submit-card__price">
+        <div class="submit-card__price-amount">$29</div>
+        <div class="submit-card__price-label">One-off editorial review fee</div>
+      </div>
+
+      <h2 class="submit-card__heading">What's included</h2>
+      <p>
+        Your $29 covers the full editorial workflow: we review your submission, verify pricing and feature claims, and write the directory entry in our house style. Once published, your listing sits alongside the rest of the directory with the same depth as our editorially-selected tools.
+      </p>
+
+      <p>
+        Affiliate links are welcome. If you're submitting your own tool and have an affiliate program, we'll happily use your tracked link as the primary CTA on the entry. Tools without affiliate programs are listed with a direct link to your site.
+      </p>
+
+      <h2 class="submit-card__heading">What we look for</h2>
+      <p>
+        We accept tools that genuinely help founders, indie hackers, or early-stage operators. Most categories in our taxonomy are open: AI agents, automation, developer tools, finance ops, growth marketing, sales CRM, productivity, design, hiring, and more.
+      </p>
+
+      <p>
+        We reject tools that are vapourware or pre-launch with no real product, derivative wrappers around obvious AI APIs without meaningful value-add, anything that breaks our content policies, and tools where the user experience is meaningfully poor. The fee is non-refundable if we reject your submission, so please make sure your product is live and ready before paying.
+      </p>
+
+      <h2 class="submit-card__heading">How it works</h2>
+      <ol class="submit-card__steps">
+        <li>Click the button below to pay the $29 review fee via Stripe.</li>
+        <li>You'll be redirected to a short intake form where you provide the listing details.</li>
+        <li>We review within 5 business days and email you with the published URL or, in the rare case of rejection, an explanation.</li>
+        <li>Your listing stays live indefinitely. We may update pricing or details over time as part of our regular directory maintenance.</li>
+      </ol>
+
+      <a href={STRIPE_PAYMENT_LINK} class="submit-card__cta" rel="noopener">
+        Pay $29 and submit your tool →
+      </a>
+
+      <p class="submit-card__small">
+        Payment processed securely by Stripe. After checkout you'll be sent directly to the submission form.
+      </p>
+    </div>
+
+    <div class="submit-faq">
+      <h2 class="submit-card__heading">Common questions</h2>
+
+      <h3>Can I submit a tool I don't own?</h3>
+      <p>
+        Yes. Agencies, freelancers, and content marketers occasionally submit tools they're not affiliated with. We treat the submission the same way regardless of who's paying.
+      </p>
+
+      <h3>Is this a sponsored listing?</h3>
+      <p>
+        No. The $29 covers editorial review and writing. Listings are not marked as sponsored because the editorial standard is the same as for our hand-selected tools. If we wouldn't be willing to write the entry, we won't take the fee.
+      </p>
+
+      <h3>What if my tool changes or I want to update the listing?</h3>
+      <p>
+        Email us with the changes. Minor updates (new pricing tier, feature addition) are free. Substantial rewrites or repositioning attract a small editing fee.
+      </p>
+
+      <h3>Do you offer a featured slot?</h3>
+      <p>
+        Featured placement is reserved for tools we consider exceptional or that have strong founder relevance. It's not for sale. If your submission earns a featured slot during review, that's at our discretion.
+      </p>
+
+      <h3>What if you reject my submission?</h3>
+      <p>
+        The review fee is non-refundable, so we encourage you to read the "what we look for" section carefully before paying. Our rejection rate is low because most founder-focused tools clear the bar, but we reserve editorial judgement.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .submit-page {
+    padding-top: 3rem;
+    padding-bottom: 5rem;
+    max-width: 760px;
+  }
+  .submit-page__eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--waf-accent);
+    margin-bottom: 1rem;
+  }
+  .submit-page__heading {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+    margin: 0 0 1.5rem;
+  }
+  .submit-page__heading em {
+    font-style: italic;
+    color: var(--waf-accent);
+    font-weight: 500;
+  }
+  .submit-page__lead {
+    font-size: 1.125rem;
+    color: var(--text-muted);
+    line-height: 1.55;
+    margin-bottom: 2.5rem;
+  }
+  .submit-card {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2.5rem;
+    background: var(--bg-subtle);
+    margin-bottom: 3rem;
+  }
+  .submit-card__price {
+    text-align: center;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 2rem;
+  }
+  .submit-card__price-amount {
+    font-family: var(--font-display);
+    font-size: 3.5rem;
+    font-weight: 600;
+    color: var(--waf-accent);
+    line-height: 1;
+  }
+  .submit-card__price-label {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+    margin-top: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .submit-card__heading {
+    font-family: var(--font-display);
+    font-size: 1.375rem;
+    font-weight: 600;
+    margin: 2rem 0 0.875rem;
+    letter-spacing: -0.02em;
+  }
+  .submit-card__heading:first-of-type { margin-top: 0; }
+  .submit-card p {
+    line-height: 1.6;
+    color: var(--text);
+    margin: 0 0 1rem;
+  }
+  .submit-card__steps {
+    padding-left: 1.25rem;
+    margin: 0 0 2rem;
+  }
+  .submit-card__steps li {
+    line-height: 1.6;
+    margin-bottom: 0.625rem;
+  }
+  .submit-card__cta {
+    display: block;
+    text-align: center;
+    background: var(--waf-accent);
+    color: white !important;
+    padding: 1.125rem 1.5rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.0625rem;
+    margin: 2rem 0 1rem;
+    transition: opacity 120ms ease;
+  }
+  .submit-card__cta:hover { opacity: 0.92; }
+  .submit-card__small {
+    text-align: center;
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+    margin: 0 !important;
+  }
+  .submit-faq h3 {
+    font-family: var(--font-display);
+    font-size: 1.0625rem;
+    font-weight: 600;
+    margin: 1.5rem 0 0.5rem;
+    letter-spacing: -0.01em;
+  }
+  .submit-faq p {
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin: 0 0 1rem;
+  }
+</style>
