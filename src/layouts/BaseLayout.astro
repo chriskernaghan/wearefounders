@@ -12,9 +12,18 @@ interface Props {
 
 const { title, description, canonical, ogImage, noindex = false } = Astro.props;
 const siteTitle = title.includes('We Are Founders') ? title : `${title} | We Are Founders`;
-const canonicalUrl = canonical ?? new URL(Astro.url.pathname, Astro.site).toString();
-const ogImageUrl = ogImage ?? new URL('/og-default.png', Astro.site).toString();
 const base = import.meta.env.BASE_URL;
+const siteOrigin = Astro.site ? new URL(Astro.site).origin : 'https://wearefounders.uk';
+// Astro quirk: when `base` is configured, Astro.url.pathname already has the
+// base appended, *and* the page route also includes the base, producing paths
+// like /tools/tools/cursor/. Strip one occurrence of the base to get the
+// canonical path users actually visit.
+const basePrefix = base.replace(/\/$/, ''); // "/tools"
+const dedupedPathname = basePrefix && Astro.url.pathname.startsWith(`${basePrefix}${basePrefix}`)
+  ? Astro.url.pathname.slice(basePrefix.length)
+  : Astro.url.pathname;
+const canonicalUrl = canonical ?? `${siteOrigin}${dedupedPathname}`;
+const ogImageUrl = ogImage ?? `${siteOrigin}/og-default.png`;
 ---
 <!doctype html>
 <html lang="en">
@@ -38,6 +47,14 @@ const base = import.meta.env.BASE_URL;
     <meta name="twitter:title" content={siteTitle} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageUrl} />
+
+    <!-- Favicon — matches wearefounders.uk W mark -->
+    <link rel="icon" type="image/x-icon" href={`${base}favicon.ico`} />
+    <link rel="icon" type="image/png" sizes="16x16" href={`${base}favicon-16x16.png`} />
+    <link rel="icon" type="image/png" sizes="32x32" href={`${base}favicon-32x32.png`} />
+    <link rel="icon" type="image/png" sizes="192x192" href={`${base}favicon-192x192.png`} />
+    <link rel="icon" type="image/png" sizes="512x512" href={`${base}favicon-512x512.png`} />
+    <link rel="apple-touch-icon" sizes="180x180" href={`${base}apple-touch-icon.png`} />
 
     <!-- Fonts: Space Grotesk (display), Overpass (body), JetBrains Mono (mono) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
