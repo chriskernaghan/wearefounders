@@ -8,7 +8,7 @@ pricing_currency: USD
 pricing_model: subscription
 free_tier: true
 free_trial_days: null
-affiliate_url: https://www.lindy.ai/?via=wearefounders
+affiliate_url: https://try.lindy.ai/87n7cd2wisfx
 affiliate_program: PartnerStack
 website: https://www.lindy.ai
 review_url: null
