@@ -3,13 +3,15 @@ const base = import.meta.env.BASE_URL;
 ---
 <header class="site-header">
   <div class="container site-header__inner">
-    <a href={`${base}/`} class="site-header__brand">
-      We Are Founders <strong>· Tools</strong>
-    </a>
+    <div class="site-header__brand-group">
+      <a href="https://wearefounders.uk/" class="site-header__brand">
+        We Are Founders
+      </a>
+      <span class="site-header__divider">·</span>
+      <a href={base} class="site-header__tools">Tools</a>
+    </div>
     <nav class="site-header__nav" aria-label="Primary">
-      <a href={`${base}/`}>Directory</a>
-      <a href={`${base}/submit/`} class="site-header__submit">Submit your tool</a>
-      <a href="https://wearefounders.uk/">Back to WAF</a>
+      <a href={`${base}submit/`} class="site-header__submit">Submit your Tool — $29</a>
       <button
         type="button"
         class="theme-toggle"
