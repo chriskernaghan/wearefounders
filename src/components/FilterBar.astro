@@ -20,9 +20,6 @@ const { hideCategoryFilter = false } = Astro.props;
         ))}
       </div>
       <div class="category-strip__fade" aria-hidden="true"></div>
-      <button type="button" class="pill pill--accent category-strip__view-all" id="open-categories-modal" aria-haspopup="dialog">
-        View all
-      </button>
     </div>
   </div>
 )}
@@ -44,37 +41,7 @@ const { hideCategoryFilter = false } = Astro.props;
   </div>
 </div>
 
-{!hideCategoryFilter && (
-  <div class="modal" id="categories-modal" role="dialog" aria-modal="true" aria-labelledby="categories-modal-title" hidden>
-    <div class="modal__backdrop" data-modal-close></div>
-    <div class="modal__panel" role="document">
-      <header class="modal__header">
-        <h2 id="categories-modal-title">All categories</h2>
-        <button type="button" class="modal__close" data-modal-close aria-label="Close">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/>
-          </svg>
-        </button>
-      </header>
-      <div class="modal__grid" id="modal-categories-grid">
-        <button type="button" class="modal__category" data-modal-category="all">
-          <strong>All</strong>
-          <span>Show every tool in the directory.</span>
-        </button>
-        {CATEGORIES.map((c) => (
-          <button type="button" class="modal__category" data-modal-category={c.slug}>
-            <strong>{c.label}</strong>
-            <span>{c.desc}</span>
-          </button>
-        ))}
-      </div>
-    </div>
-  </div>
-)}
-
 <script>
-  // Multi-axis client-side filter. With stage filter removed from the
-  // home page, only category and freetier are managed here.
   type GroupName = 'stage' | 'category' | 'freetier';
   const state: Record<GroupName, string> = {
     stage: 'all',
@@ -111,27 +78,21 @@ const { hideCategoryFilter = false } = Astro.props;
     }
   }
 
-  function setCategoryActive(value: string) {
-    document.querySelectorAll<HTMLButtonElement>(
-      '[data-filter-group="category"] button[data-filter-value]'
-    ).forEach((b) => {
-      b.setAttribute('aria-pressed', b.dataset.filterValue === value ? 'true' : 'false');
-    });
-    state.category = value;
-    apply();
-  }
-
   // Category pills (single-select)
   document.querySelectorAll<HTMLElement>('[data-filter-group="category"]').forEach((group) => {
     group.querySelectorAll<HTMLButtonElement>('button[data-filter-value]').forEach((btn) => {
       btn.addEventListener('click', () => {
-        setCategoryActive(btn.dataset.filterValue ?? 'all');
+        group.querySelectorAll<HTMLButtonElement>('button').forEach((b) => {
+          b.setAttribute('aria-pressed', 'false');
+        });
+        btn.setAttribute('aria-pressed', 'true');
+        state.category = btn.dataset.filterValue ?? 'all';
+        apply();
       });
     });
   });
 
-  // Stage pills (still used on stage pages where the row may be hidden,
-  // but the data-attribute hook persists for any other contexts)
+  // Stage pills (used on stage pages)
   document.querySelectorAll<HTMLElement>('[data-filter-group="stage"]').forEach((group) => {
     group.querySelectorAll<HTMLButtonElement>('button[data-filter-value]').forEach((btn) => {
       btn.addEventListener('click', () => {
@@ -145,51 +106,12 @@ const { hideCategoryFilter = false } = Astro.props;
     });
   });
 
-  // Free tier toggle (boolean)
+  // Free tier toggle
   const freeTierToggle = document.getElementById('freetier-toggle') as HTMLInputElement | null;
   if (freeTierToggle) {
     freeTierToggle.addEventListener('change', () => {
       state.freetier = freeTierToggle.checked ? 'true' : 'all';
       apply();
-    });
-  }
-
-  // Modal: open, close, select category
-  const modal = document.getElementById('categories-modal');
-  const openBtn = document.getElementById('open-categories-modal');
-  if (modal && openBtn) {
-    const open = () => {
-      modal.hidden = false;
-      document.body.style.overflow = 'hidden';
-      modal.querySelectorAll<HTMLButtonElement>('[data-modal-category]').forEach((b) => {
-        b.setAttribute('aria-pressed', b.dataset.modalCategory === state.category ? 'true' : 'false');
-      });
-    };
-    const close = () => {
-      modal.hidden = true;
-      document.body.style.overflow = '';
-    };
-
-    openBtn.addEventListener('click', open);
-
-    modal.querySelectorAll<HTMLElement>('[data-modal-close]').forEach((el) => {
-      el.addEventListener('click', close);
-    });
-
-    modal.querySelectorAll<HTMLButtonElement>('[data-modal-category]').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const value = btn.dataset.modalCategory ?? 'all';
-        setCategoryActive(value);
-        const inlinePill = document.querySelector<HTMLButtonElement>(
-          `[data-filter-group="category"] button[data-filter-value="${value}"]`
-        );
-        inlinePill?.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-        close();
-      });
-    });
-
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && !modal.hidden) close();
     });
   }
 

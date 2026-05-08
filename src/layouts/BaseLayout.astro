@@ -14,6 +14,7 @@ const { title, description, canonical, ogImage, noindex = false } = Astro.props;
 const siteTitle = title.includes('We Are Founders') ? title : `${title} | We Are Founders`;
 const canonicalUrl = canonical ?? new URL(Astro.url.pathname, Astro.site).toString();
 const ogImageUrl = ogImage ?? new URL('/og-default.png', Astro.site).toString();
+const base = import.meta.env.BASE_URL;
 ---
 <!doctype html>
 <html lang="en">
@@ -38,17 +39,16 @@ const ogImageUrl = ogImage ?? new URL('/og-default.png', Astro.site).toString();
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageUrl} />
 
-    <!-- Fonts: Fraunces (display), Inter Tight (body), JetBrains Mono (mono) -->
+    <!-- Fonts: Space Grotesk (display), Overpass (body), JetBrains Mono (mono) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Overpass:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@400;500&display=swap"
     />
-<link rel="stylesheet" href={`${import.meta.env.BASE_URL}styles/global.css`} />
 
-    <!-- Theme detection — defaults to light unless user has explicitly
-         chosen dark previously. Runs before render to prevent FOUC. -->
+    <link rel="stylesheet" href={`${base}styles/global.css`} />
+
     <script is:inline>
       (function () {
         const stored = localStorage.getItem('waf-theme');
