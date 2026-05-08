@@ -1,0 +1,48 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import ToolCard from '../../../components/ToolCard.astro';
+import FilterBar from '../../../components/FilterBar.astro';
+import { CATEGORIES, CATEGORY_MAP } from '../../../data/taxonomy';
+
+export async function getStaticPaths() {
+  return CATEGORIES.map((c) => ({
+    params: { slug: c.slug },
+    props: { category: c },
+  }));
+}
+
+const { category } = Astro.props;
+const allTools = await getCollection('tools');
+const tools = allTools
+  .filter((t) => t.data.categories.includes(category.slug))
+  .sort((a, b) => a.data.name.localeCompare(b.data.name));
+---
+<BaseLayout
+  title={`Best ${category.label} for founders`}
+  description={`${category.desc} ${tools.length} curated tools, filterable by founder stage and pricing.`}
+>
+  <section class="page-hero container">
+    <div class="page-hero__eyebrow">Category</div>
+    <h1>{category.label}</h1>
+    <p class="page-hero__lede">{category.desc}</p>
+  </section>
+
+  <div class="container">
+    <FilterBar hideCategoryFilter={true} />
+
+    <div class="tools-grid">
+      {tools.length === 0 ? (
+        <div class="empty-state">
+          <p>We haven't reviewed any tools in this category yet. Check back soon.</p>
+        </div>
+      ) : (
+        tools.map((tool) => <ToolCard tool={tool} />)
+      )}
+    </div>
+
+    <div class="empty-state" id="empty-state" style="display: none;">
+      <p>No tools match these filters yet.</p>
+    </div>
+  </div>
+</BaseLayout>

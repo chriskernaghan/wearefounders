@@ -1,0 +1,57 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ToolCard from '../../components/ToolCard.astro';
+import FilterBar from '../../components/FilterBar.astro';
+import { STAGES } from '../../data/taxonomy';
+
+const tools = await getCollection('tools');
+const sorted = tools.sort((a, b) => {
+  if (a.data.featured && !b.data.featured) return -1;
+  if (!a.data.featured && b.data.featured) return 1;
+  return a.data.name.localeCompare(b.data.name);
+});
+
+const base = import.meta.env.BASE_URL;
+---
+<BaseLayout
+  title="The We Are Founders Tools Directory"
+  description="A curated, editorial directory of the tools that actually move the needle for founders. Filtered by category, founder stage, and pricing. Every entry is hand-reviewed."
+>
+  <section class="container directory-intro">
+    <div class="directory-intro__eyebrow">The Directory</div>
+    <h1 class="directory-intro__heading">
+      Tools founders <em>actually use.</em>
+    </h1>
+  </section>
+
+  <FilterBar />
+
+  <div class="container">
+    <div class="tools-grid">
+      {sorted.map((tool) => <ToolCard tool={tool} />)}
+    </div>
+
+    <div class="empty-state" id="empty-state" style="display: none;">
+      <p>No tools match these filters yet. Try widening your selection.</p>
+    </div>
+
+    <div class="section-heading">
+      <h2>Tools for where you're at</h2>
+    </div>
+    <p class="section-lede">
+      Stage-specific picks. Whether you're validating, building toward your first
+      paying users, or growing past PMF, these are the tools we'd reach for.
+    </p>
+    <div class="tools-grid">
+      {STAGES.map((s) => (
+        <a href={`${base}stage/${s.slug}/`} class="tool-card">
+          <div class="tool-card__head">
+            <div class="tool-card__name">{s.label}</div>
+          </div>
+          <p class="tool-card__tagline">{s.desc}</p>
+        </a>
+      ))}
+    </div>
+  </div>
+</BaseLayout>
