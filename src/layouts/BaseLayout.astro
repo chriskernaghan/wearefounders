@@ -12,18 +12,9 @@ interface Props {
 
 const { title, description, canonical, ogImage, noindex = false } = Astro.props;
 const siteTitle = title.includes('We Are Founders') ? title : `${title} | We Are Founders`;
+const canonicalUrl = canonical ?? new URL(Astro.url.pathname, Astro.site).toString();
+const ogImageUrl = ogImage ?? new URL('/og-default.png', Astro.site).toString();
 const base = import.meta.env.BASE_URL;
-const siteOrigin = Astro.site ? new URL(Astro.site).origin : 'https://wearefounders.uk';
-// Astro quirk: when `base` is configured, Astro.url.pathname already has the
-// base appended, *and* the page route also includes the base, producing paths
-// like /tools/tools/cursor/. Strip one occurrence of the base to get the
-// canonical path users actually visit.
-const basePrefix = base.replace(/\/$/, ''); // "/tools"
-const dedupedPathname = basePrefix && Astro.url.pathname.startsWith(`${basePrefix}${basePrefix}`)
-  ? Astro.url.pathname.slice(basePrefix.length)
-  : Astro.url.pathname;
-const canonicalUrl = canonical ?? `${siteOrigin}${dedupedPathname}`;
-const ogImageUrl = ogImage ?? `${siteOrigin}/og-default.png`;
 ---
 <!doctype html>
 <html lang="en">

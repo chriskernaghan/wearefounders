@@ -1,9 +1,9 @@
 ---
 import { getCollection } from 'astro:content';
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import ToolCard from '../../components/ToolCard.astro';
-import FilterBar from '../../components/FilterBar.astro';
-import { STAGES } from '../../data/taxonomy';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ToolCard from '../components/ToolCard.astro';
+import FilterBar from '../components/FilterBar.astro';
+import { STAGES } from '../data/taxonomy';
 
 const tools = await getCollection('tools');
 const sorted = tools.sort((a, b) => {

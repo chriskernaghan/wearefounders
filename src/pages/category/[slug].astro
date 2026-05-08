@@ -1,9 +1,9 @@
 ---
 import { getCollection } from 'astro:content';
-import BaseLayout from '../../../layouts/BaseLayout.astro';
-import ToolCard from '../../../components/ToolCard.astro';
-import FilterBar from '../../../components/FilterBar.astro';
-import { CATEGORIES, CATEGORY_MAP } from '../../../data/taxonomy';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ToolCard from '../../components/ToolCard.astro';
+import FilterBar from '../../components/FilterBar.astro';
+import { CATEGORIES, CATEGORY_MAP } from '../../data/taxonomy';
 
 export async function getStaticPaths() {
   return CATEGORIES.map((c) => ({
