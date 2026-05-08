@@ -25,9 +25,9 @@ const base = import.meta.env.BASE_URL;
     </h1>
   </section>
 
-  <div class="container">
-    <FilterBar />
+  <FilterBar />
 
+  <div class="container">
     <div class="tools-grid">
       {sorted.map((tool) => <ToolCard tool={tool} />)}
     </div>
@@ -37,8 +37,12 @@ const base = import.meta.env.BASE_URL;
     </div>
 
     <div class="section-heading">
-      <h2>Browse by stage</h2>
+      <h2>Tools for where you're at</h2>
     </div>
+    <p class="section-lede">
+      Stage-specific picks. Whether you're validating, building toward your first
+      paying users, or growing past PMF, these are the tools we'd reach for.
+    </p>
     <div class="tools-grid">
       {STAGES.map((s) => (
         <a href={`${base}/stage/${s.slug}/`} class="tool-card">

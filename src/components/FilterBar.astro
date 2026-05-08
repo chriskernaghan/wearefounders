@@ -1,55 +1,46 @@
 ---
-import { CATEGORIES, STAGES } from '../data/taxonomy';
+import { CATEGORIES } from '../data/taxonomy';
 
 interface Props {
   hideCategoryFilter?: boolean;
   hideStageFilter?: boolean;
 }
 
-const { hideCategoryFilter = false, hideStageFilter = false } = Astro.props;
+const { hideCategoryFilter = false } = Astro.props;
 ---
-<div class="filter-bar" id="filter-bar">
-  {!hideStageFilter && (
-    <div class="filter-bar__row">
-      <span class="filter-bar__label">Stage</span>
-      <div class="filter-bar__pills" data-filter-group="stage">
+{!hideCategoryFilter && (
+  <div class="category-strip" id="category-strip">
+    <div class="category-strip__scroll-wrap">
+      <div class="category-strip__pills" data-filter-group="category" id="category-pills">
         <button type="button" class="pill" data-filter-value="all" aria-pressed="true">All</button>
-        {STAGES.map((s) => (
-          <button type="button" class="pill" data-filter-value={s.slug} aria-pressed="false">
-            {s.label}
+        {CATEGORIES.map((c) => (
+          <button type="button" class="pill" data-filter-value={c.slug} aria-pressed="false">
+            {c.label}
           </button>
         ))}
       </div>
-    </div>
-  )}
-
-  {!hideCategoryFilter && (
-    <div class="filter-bar__row filter-bar__row--scroll">
-      <span class="filter-bar__label">Category</span>
-      <div class="filter-bar__scroll-wrap">
-        <div class="filter-bar__pills filter-bar__pills--scroll" data-filter-group="category" id="category-pills">
-          <button type="button" class="pill" data-filter-value="all" aria-pressed="true">All</button>
-          {CATEGORIES.map((c) => (
-            <button type="button" class="pill" data-filter-value={c.slug} aria-pressed="false">
-              {c.label}
-            </button>
-          ))}
-        </div>
-        <div class="filter-bar__scroll-fade" aria-hidden="true"></div>
-      </div>
-      <button type="button" class="pill pill--accent" id="open-categories-modal" aria-haspopup="dialog">
+      <div class="category-strip__fade" aria-hidden="true"></div>
+      <button type="button" class="pill pill--accent category-strip__view-all" id="open-categories-modal" aria-haspopup="dialog">
         View all
       </button>
     </div>
-  )}
+  </div>
+)}
 
-  <div class="filter-bar__row">
-    <span class="filter-bar__label">Refine</span>
-    <div class="filter-bar__pills" data-filter-group="freetier">
-      <button type="button" class="pill" data-filter-value="all" aria-pressed="true">All tools</button>
-      <button type="button" class="pill" data-filter-value="true" aria-pressed="false">Free tier only</button>
+<div class="filter-bar" id="filter-bar">
+  <div class="container filter-bar__inner">
+    <div class="filter-bar__left">
+      <span class="filter-bar__count" id="filter-count">Loading…</span>
     </div>
-    <span class="filter-bar__count" id="filter-count">Loading…</span>
+    <div class="filter-bar__right">
+      <label class="toggle" data-filter-group="freetier">
+        <span class="toggle__label">Free tier only</span>
+        <input type="checkbox" class="toggle__input" id="freetier-toggle" />
+        <span class="toggle__track" aria-hidden="true">
+          <span class="toggle__thumb"></span>
+        </span>
+      </label>
+    </div>
   </div>
 </div>
 
@@ -82,9 +73,8 @@ const { hideCategoryFilter = false, hideStageFilter = false } = Astro.props;
 )}
 
 <script>
-  // Multi-axis client-side filter. Reads selected values per group,
-  // shows tools that match ALL active groups (AND logic across groups,
-  // single-select within each group for simplicity).
+  // Multi-axis client-side filter. With stage filter removed from the
+  // home page, only category and freetier are managed here.
   type GroupName = 'stage' | 'category' | 'freetier';
   const state: Record<GroupName, string> = {
     stage: 'all',
@@ -131,19 +121,38 @@ const { hideCategoryFilter = false, hideStageFilter = false } = Astro.props;
     apply();
   }
 
-  document.querySelectorAll<HTMLElement>('[data-filter-group]').forEach((group) => {
-    const groupName = group.dataset.filterGroup as GroupName;
+  // Category pills (single-select)
+  document.querySelectorAll<HTMLElement>('[data-filter-group="category"]').forEach((group) => {
+    group.querySelectorAll<HTMLButtonElement>('button[data-filter-value]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        setCategoryActive(btn.dataset.filterValue ?? 'all');
+      });
+    });
+  });
+
+  // Stage pills (still used on stage pages where the row may be hidden,
+  // but the data-attribute hook persists for any other contexts)
+  document.querySelectorAll<HTMLElement>('[data-filter-group="stage"]').forEach((group) => {
     group.querySelectorAll<HTMLButtonElement>('button[data-filter-value]').forEach((btn) => {
       btn.addEventListener('click', () => {
         group.querySelectorAll<HTMLButtonElement>('button').forEach((b) => {
           b.setAttribute('aria-pressed', 'false');
         });
         btn.setAttribute('aria-pressed', 'true');
-        state[groupName] = btn.dataset.filterValue ?? 'all';
+        state.stage = btn.dataset.filterValue ?? 'all';
         apply();
       });
     });
   });
+
+  // Free tier toggle (boolean)
+  const freeTierToggle = document.getElementById('freetier-toggle') as HTMLInputElement | null;
+  if (freeTierToggle) {
+    freeTierToggle.addEventListener('change', () => {
+      state.freetier = freeTierToggle.checked ? 'true' : 'all';
+      apply();
+    });
+  }
 
   // Modal: open, close, select category
   const modal = document.getElementById('categories-modal');
@@ -152,7 +161,6 @@ const { hideCategoryFilter = false, hideStageFilter = false } = Astro.props;
     const open = () => {
       modal.hidden = false;
       document.body.style.overflow = 'hidden';
-      // Sync modal selection with current state
       modal.querySelectorAll<HTMLButtonElement>('[data-modal-category]').forEach((b) => {
         b.setAttribute('aria-pressed', b.dataset.modalCategory === state.category ? 'true' : 'false');
       });
@@ -172,7 +180,6 @@ const { hideCategoryFilter = false, hideStageFilter = false } = Astro.props;
       btn.addEventListener('click', () => {
         const value = btn.dataset.modalCategory ?? 'all';
         setCategoryActive(value);
-        // Scroll the matching pill into view in the inline row
         const inlinePill = document.querySelector<HTMLButtonElement>(
           `[data-filter-group="category"] button[data-filter-value="${value}"]`
         );
