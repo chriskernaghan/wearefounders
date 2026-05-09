@@ -589,7 +589,7 @@ html:not([data-prefers-color-scheme="dark"]) .theme-toggle__icon--moon { display
   }
 
   .category-strip{
-      padding:0 1.5rem 0 0;
+      padding:0 0 0 1.5rem;
   }
 }
 
@@ -603,6 +603,6 @@ html:not([data-prefers-color-scheme="dark"]) .theme-toggle__icon--moon { display
   .site-header__nav { gap: 0.375rem; }
 
   .category-strip{
-      padding:0 1.5rem 0 0;
+      padding:0 0 0 1.5rem;
   }
 }
