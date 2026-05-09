@@ -414,9 +414,11 @@ html:not([data-prefers-color-scheme="dark"]) .theme-toggle__icon--moon { display
   scroll-snap-type: x proximity;
   scrollbar-width: none;
   -ms-overflow-style: none;
+  /* Right padding includes the gutter plus the visual width of the fade
+     gradient so the first pill on the left and the trailing fade on the
+     right feel symmetrical. */
   padding: 1rem var(--gutter);
-  /* Center the row within the container so first pill aligns
-     with the page heading above it */
+  padding-right: calc(var(--gutter) + clamp(3rem, 6vw, 4.5rem));
   max-width: var(--container);
   margin: 0 auto;
 }
