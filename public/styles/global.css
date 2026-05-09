@@ -61,7 +61,8 @@ html {
   text-rendering: optimizeLegibility;
 }
 
-body { min-height: 100vh; }
+body { min-height: 100vh; overflow-x: hidden; }
+html { overflow-x: hidden; }
 
 h1, h2, h3, h4 {
   font-family: var(--font-display);
@@ -173,6 +174,9 @@ a:hover { text-decoration-color: var(--waf-accent); }
   opacity: 0.9;
   color: white !important;
 }
+/* Submit button text adapts to viewport: full label on desktop, short on mobile */
+.site-header__submit-mobile { display: none; }
+.site-header__submit-desktop { display: inline; }
 
 /* Theme toggle */
 .theme-toggle {
@@ -550,11 +554,33 @@ html:not([data-prefers-color-scheme="dark"]) .theme-toggle__icon--moon { display
    Responsive
    ============================================================ */
 @media (max-width: 760px) {
-  .site-header__inner { padding: 1rem 0; gap: 0.75rem; }
-  .site-header__nav { gap: 0.625rem; font-size: 0.75rem; }
+  .site-header__inner {
+    padding: 1rem 0;
+    gap: 0.5rem;
+  }
+  .site-header__brand-group {
+    gap: 0.375rem;
+    min-width: 0;
+    flex-shrink: 1;
+  }
+  .site-header__nav {
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    flex-shrink: 0;
+  }
+  /* On mobile the "We Are Founders" wordmark is the longest piece in the row;
+     hide it below 480px and keep "Tools" alone, since the tools site is the
+     immediate context anyway. */
   .site-header__brand,
-  .site-header__divider,
-  .site-header__tools { font-size: 0.9375rem; }
+  .site-header__divider {
+    display: none;
+  }
+  .site-header__tools {
+    font-size: 1rem;
+  }
+  /* Swap submit button text: full label is too long for ~380px viewport */
+  .site-header__submit-desktop { display: none; }
+  .site-header__submit-mobile { display: inline; }
   .site-header__submit {
     padding: 0.4375rem 0.875rem;
     font-size: 0.75rem;
@@ -563,4 +589,14 @@ html:not([data-prefers-color-scheme="dark"]) .theme-toggle__icon--moon { display
   .category-strip__fade {
     width: 3rem;
   }
+}
+
+/* Below 480px (most phones), pull the submit button in even tighter so the
+   theme toggle still has room to breathe. */
+@media (max-width: 480px) {
+  .site-header__submit {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.6875rem;
+  }
+  .site-header__nav { gap: 0.375rem; }
 }
