@@ -587,6 +587,10 @@ html:not([data-prefers-color-scheme="dark"]) .theme-toggle__icon--moon { display
   .category-strip__fade {
     width: 3rem;
   }
+
+  .category-strip{
+      padding:0 1.5rem 0 0;
+  }
 }
 
 /* Below 480px (most phones), pull the submit button in even tighter so the
