@@ -1,0 +1,234 @@
+---
+// src/components/NewsletterSignup.astro
+// Compact inline newsletter signup for The Friday Brief.
+// Submissions POST to Tally form 2ElR09.
+---
+
+<section class="friday-brief" aria-label="Newsletter signup">
+  <form class="friday-brief__form" id="friday-brief-form" novalidate>
+    <div class="friday-brief__inputs">
+      <label class="friday-brief__field">
+        <span class="friday-brief__label">Email</span>
+        <input
+          type="email"
+          name="email"
+          autocomplete="email"
+          required
+          placeholder="you@example.com"
+        />
+      </label>
+      <button type="submit" class="friday-brief__submit">
+        <span class="friday-brief__submit-label">Join the Friday Brief</span>
+        <span class="friday-brief__submit-loading" aria-hidden="true">Sending…</span>
+      </button>
+    </div>
+          <p>Join over 1000 founders. Unsubscribe at any time.</p>
+    <p class="friday-brief__status" role="status" aria-live="polite"></p>
+  </form>
+</section>
+
+<script>
+  const form = document.getElementById('friday-brief-form') as HTMLFormElement | null;
+  if (form) {
+    const status = form.querySelector('.friday-brief__status') as HTMLParagraphElement;
+    const button = form.querySelector('.friday-brief__submit') as HTMLButtonElement;
+
+    const TALLY_FORM_ID = '2ElR09';
+    const ENDPOINT = `https://api.tally.so/forms/${TALLY_FORM_ID}/responses`;
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const formData = new FormData(form);
+      const email = (formData.get('email') as string || '').trim();
+
+      if (!email) {
+        status.textContent = 'Please enter your email.';
+        status.dataset.state = 'error';
+        return;
+      }
+
+      form.classList.add('is-loading');
+      button.disabled = true;
+      status.textContent = '';
+      status.dataset.state = '';
+
+      try {
+        const response = await fetch(ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            fields: [
+              { label: 'Email', value: email },
+            ],
+          }),
+        });
+
+        if (!response.ok) throw new Error(`Status ${response.status}`);
+
+        form.reset();
+        status.textContent = 'You\u2019re on the list. See you Friday.';
+        status.dataset.state = 'success';
+      } catch (error) {
+        status.textContent = 'Something went wrong. Try again in a moment.';
+        status.dataset.state = 'error';
+      } finally {
+        form.classList.remove('is-loading');
+        button.disabled = false;
+      }
+    });
+  }
+</script>
+
+<style>
+
+.friday-brief {
+  width: 100%;
+  margin: 0;
+}
+
+  .friday-brief__form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .friday-brief__inputs {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.5rem;
+    align-items: stretch;
+    max-width: 560px;
+  }
+
+  @media (max-width: 540px) {
+    .friday-brief__inputs {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .friday-brief__field {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .friday-brief__label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .friday-brief__field input {
+    width: 100%;
+    height: 100%;
+    padding: 0.75rem 1rem;
+    background: rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    color: inherit;
+    font-size: 0.95rem;
+    font-family: inherit;
+    transition: border-color 0.15s ease, background 0.15s ease;
+  }
+
+  .friday-brief__field input::placeholder {
+    color: rgba(0, 0, 0, 0.4);
+  }
+
+  .friday-brief__field input:focus {
+    outline: none;
+    border-color: #443fde;
+    background: rgba(255, 255, 255, 0.8);
+  }
+
+  .friday-brief__submit {
+    appearance: none;
+    border: 0;
+    background: #443fde;
+    color: #fff;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s ease, transform 0.05s ease;
+  }
+
+  .friday-brief__submit:hover:not(:disabled) {
+    background: #3631c7;
+  }
+
+  .friday-brief__submit:active:not(:disabled) {
+    transform: translateY(1px);
+  }
+
+  .friday-brief__submit:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+
+  .friday-brief__submit-loading {
+    display: none;
+  }
+
+  .friday-brief__form.is-loading .friday-brief__submit-label {
+    display: none;
+  }
+
+  .friday-brief__form.is-loading .friday-brief__submit-loading {
+    display: inline;
+  }
+
+  .friday-brief__status {
+    margin: 0;
+    font-size: 0.875rem;
+    min-height: 1.25rem;
+    color: rgba(0, 0, 0, 0.55);
+  }
+
+  .friday-brief__status:empty {
+    min-height: 0;
+  }
+
+  .friday-brief__status[data-state="success"] {
+    color: #16a34a;
+  }
+
+  .friday-brief__status[data-state="error"] {
+    color: #dc2626;
+  }
+
+  /* Dark mode support */
+  :global([data-prefers-color-scheme="dark"]) .friday-brief__field input {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  :global([data-prefers-color-scheme="dark"]) .friday-brief__field input::placeholder {
+    color: rgba(255, 255, 255, 0.35);
+  }
+
+  :global([data-prefers-color-scheme="dark"]) .friday-brief__field input:focus {
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  :global([data-prefers-color-scheme="dark"]) .friday-brief__status {
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  :global([data-prefers-color-scheme="dark"]) .friday-brief__status[data-state="success"] {
+    color: #4ade80;
+  }
+
+  :global([data-prefers-color-scheme="dark"]) .friday-brief__status[data-state="error"] {
+    color: #f87171;
+  }
+</style>

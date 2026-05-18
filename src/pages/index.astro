@@ -4,6 +4,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import ToolCard from '../components/ToolCard.astro';
 import FilterBar from '../components/FilterBar.astro';
 import { STAGES } from '../data/taxonomy';
+import NewsletterSignup from '../components/NewsletterSignup.astro';
 
 const tools = await getCollection('tools');
 const sorted = tools.sort((a, b) => {
@@ -24,8 +25,11 @@ const base = import.meta.env.BASE_URL;
       Tools founders <em>actually use.</em>
     </h1>
   </section>
-
-  <FilterBar />
+  
+  <div class="container">
+    <NewsletterSignup />
+    <FilterBar />
+  </div>
 
   <div class="container">
     <div class="tools-grid">

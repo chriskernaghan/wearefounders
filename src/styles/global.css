@@ -351,8 +351,9 @@ html:not([data-prefers-color-scheme="dark"]) .theme-toggle__icon--moon { display
 /* ============================================================
    Compact intro
    ============================================================ */
-.directory-intro {
-  padding-block: 2.5rem 1.75rem;
+
+.directory-intro{
+padding-block: 2.5rem 0.75rem;
 }
 .directory-intro__eyebrow {
   font-family: var(--font-mono);
@@ -397,10 +398,10 @@ html:not([data-prefers-color-scheme="dark"]) .theme-toggle__icon--moon { display
 /* ============================================================
    Category strip — full-width scroll, but pills aligned to container
    ============================================================ */
-.category-strip {
-  position: relative;
-  width: 100%;
-  margin-bottom: 0.5rem;
+.category-strip{
+position:relative;
+margin:0;
+padding:0 0 3rem 0;
 }
 .category-strip__scroll-wrap {
   position: relative;
