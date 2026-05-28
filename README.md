@@ -111,3 +111,5 @@ For tool entries that should also have a full review on the main Ghost site, set
 - **Search bar** — the filter handles browse cases, but a full-text search across all tools could be added later (Pagefind is the lightweight option for Astro).
 - **OG image generation** — `og-default.png` needs to exist in `public/`. Per-tool OG images can be auto-generated later.
 - **Sitemap** — add `@astrojs/sitemap` integration before launch for proper indexing.
+
+  Force Push.
