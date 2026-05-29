@@ -34,7 +34,9 @@
     const status = form.querySelector('.friday-brief__status') as HTMLParagraphElement;
     const button = form.querySelector('.friday-brief__submit') as HTMLButtonElement;
 
-const GHOST_SIGNUP_ENDPOINT = 'https://www.wearefounders.uk/members/api/send-magic-link/';
+const GHOST_BASE = 'https://www.wearefounders.uk';
+const INTEGRITY_ENDPOINT = `${GHOST_BASE}/members/api/integrity-token/`;
+const SIGNUP_ENDPOINT = `${GHOST_BASE}/members/api/send-magic-link/`;
 
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
@@ -54,12 +56,20 @@ const GHOST_SIGNUP_ENDPOINT = 'https://www.wearefounders.uk/members/api/send-mag
       status.dataset.state = '';
 
       try {
-        const response = await fetch(GHOST_SIGNUP_ENDPOINT, {
+        // Ghost 5.98+ requires fetching an integrity token before signup.
+        const tokenResponse = await fetch(INTEGRITY_ENDPOINT, { method: 'GET' });
+        if (!tokenResponse.ok) {
+          throw new Error('Could not fetch integrity token');
+        }
+        const integrityToken = (await tokenResponse.text()).trim();
+
+        const response = await fetch(SIGNUP_ENDPOINT, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             email,
             emailType: 'signup',
+            integrityToken,
           }),
         });
 
