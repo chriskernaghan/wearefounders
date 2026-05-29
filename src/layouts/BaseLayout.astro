@@ -1,6 +1,7 @@
 ---
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
+import '../styles/global.css'; //
 
 interface Props {
   title: string;
@@ -54,8 +55,6 @@ const base = import.meta.env.BASE_URL;
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Overpass:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@400;500&display=swap"
     />
-
-    <link rel="stylesheet" href="/styles/global.css" />
 
     <script is:inline>
       (function () {
