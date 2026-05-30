@@ -657,23 +657,8 @@ html:not([data-prefers-color-scheme="dark"]) .theme-toggle__icon--moon { display
   z-index: 3;
 }
 
-/* Newsletter signup — dark-background overrides scoped to the hero */
-.hero .hero__signup .friday-brief__field input {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.55);
-  color: #ffffff;
-  padding: 0.95rem 1.1rem;
-  font-size: 1rem;
-  border-radius: 10px;
-}
-.hero .hero__signup .friday-brief__field input::placeholder {
-  color: rgba(255, 255, 255, 0.55);
-}
-.hero .hero__signup .friday-brief__field input:focus {
-  outline: none;
-  background: rgba(255, 255, 255, 0.14);
-  border-color: #ffffff;
-}
+/* Newsletter signup — dark-background overrides scoped to the hero.
+   Submit button colour set here; input styling is set later in the file. */
 .hero .hero__signup .friday-brief__submit {
   background: #0e0e0c;
   border-color: #0e0e0c;
@@ -915,4 +900,23 @@ body.is-home .site-header:not(.site-header--past-hero) .theme-toggle:hover {
   }
   .filter-sidebar { display: none; }
   .directory-main__mobile-filters { display: block; margin-bottom: 0.25rem; }
+}
+
+/* ============================================================
+   Homepage: pull the hero up so it extends BEHIND the header.
+   The header on .is-home is transparent, so the purple hero
+   needs to be the surface showing through. Header height is
+   measured at runtime and set as --site-header-h.
+   ============================================================ */
+body.is-home .hero {
+  margin-top: calc(var(--site-header-h, 73px) * -1);
+}
+body.is-home .hero__inner {
+  padding-top: calc(var(--site-header-h, 73px) + clamp(2rem, 5vw, 4.5rem));
+}
+
+/* Align "21 tools" count with the sidebar's Categories heading */
+.directory-main .filter-bar {
+  padding-top: 0;
+  margin-top: 0;
 }
