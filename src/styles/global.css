@@ -658,23 +658,23 @@ html:not([data-prefers-color-scheme="dark"]) .theme-toggle__icon--moon { display
 }
 
 /* Newsletter signup — dark-background overrides scoped to the hero */
-.hero__signup .friday-brief__field input {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.35);
+.hero .hero__signup .friday-brief__field input {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.55);
   color: #ffffff;
   padding: 0.95rem 1.1rem;
   font-size: 1rem;
   border-radius: 10px;
 }
-.hero__signup .friday-brief__field input::placeholder {
+.hero .hero__signup .friday-brief__field input::placeholder {
   color: rgba(255, 255, 255, 0.55);
 }
-.hero__signup .friday-brief__field input:focus {
+.hero .hero__signup .friday-brief__field input:focus {
   outline: none;
   background: rgba(255, 255, 255, 0.14);
   border-color: #ffffff;
 }
-.hero__signup .friday-brief__submit {
+.hero .hero__signup .friday-brief__submit {
   background: #0e0e0c;
   border-color: #0e0e0c;
   color: #ffffff;
@@ -682,23 +682,23 @@ html:not([data-prefers-color-scheme="dark"]) .theme-toggle__icon--moon { display
   font-size: 0.9rem;
   border-radius: 10px;
 }
-.hero__signup .friday-brief__submit:hover:not(:disabled) {
+.hero .hero__signup .friday-brief__submit:hover:not(:disabled) {
   opacity: 1;
   background: #ffffff;
   color: #0e0e0c;
   border-color: #ffffff;
 }
-.hero__signup .friday-brief__form > p {
+.hero .hero__signup .friday-brief__form > p {
   color: rgba(255, 255, 255, 0.7);
   font-size: 0.875rem;
 }
-.hero__signup .friday-brief__status {
+.hero .hero__signup .friday-brief__status {
   color: rgba(255, 255, 255, 0.85);
 }
-.hero__signup .friday-brief__status[data-state="success"] {
+.hero .hero__signup .friday-brief__status[data-state="success"] {
   color: #ffffff;
 }
-.hero__signup .friday-brief__status[data-state="error"] {
+.hero .hero__signup .friday-brief__status[data-state="error"] {
   color: #ffd7d7;
 }
 
