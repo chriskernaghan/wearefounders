@@ -756,3 +756,163 @@ html:not([data-prefers-color-scheme="dark"]) .theme-toggle__icon--moon { display
     left: -0.85rem;
   }
 }
+
+/* ============================================================
+   Friday Brief — pill input + pill button, fully readable
+   Updates to the hero signup styles for accessibility and shape.
+   ============================================================ */
+.hero .hero__signup .friday-brief__field input {
+  background: #ffffff;
+  border: 1px solid #ffffff;
+  color: #1a1a1a;
+  border-radius: 999px;
+  padding: 0.9rem 1.25rem;
+}
+.hero .hero__signup .friday-brief__field input::placeholder {
+  color: #6a6a65;
+}
+.hero .hero__signup .friday-brief__field input:focus {
+  outline: 2px solid rgba(255, 255, 255, 0.65);
+  outline-offset: 2px;
+  background: #ffffff;
+  border-color: #ffffff;
+}
+.hero .hero__signup .friday-brief__submit {
+  border-radius: 999px;
+  padding: 0.9rem 1.5rem;
+}
+
+/* ============================================================
+   Sticky header — homepage variant
+   On the homepage the header sits over the purple hero until
+   the user scrolls past it. The over-hero state is the default
+   on .is-home; JS adds .site-header--past-hero once the hero
+   has scrolled out of view, which restores the cream state.
+   ============================================================ */
+.site-header,
+.site-header__brand,
+.site-header__divider,
+.site-header__tools,
+.site-header__submit,
+.theme-toggle {
+  transition: background 220ms ease, color 220ms ease, border-color 220ms ease, backdrop-filter 220ms ease;
+}
+
+body.is-home .site-header:not(.site-header--past-hero) {
+  background: transparent;
+  backdrop-filter: none;
+  border-bottom-color: rgba(255, 255, 255, 0.18);
+}
+body.is-home .site-header:not(.site-header--past-hero) .site-header__brand {
+  color: #ffffff;
+}
+body.is-home .site-header:not(.site-header--past-hero) .site-header__divider {
+  color: rgba(255, 255, 255, 0.55);
+}
+body.is-home .site-header:not(.site-header--past-hero) .site-header__tools {
+  color: #ffffff;
+}
+body.is-home .site-header:not(.site-header--past-hero) .site-header__submit {
+  background: #ffffff;
+  color: var(--waf-accent) !important;
+  border-color: #ffffff;
+}
+body.is-home .site-header:not(.site-header--past-hero) .site-header__submit:hover {
+  background: #0e0e0c;
+  color: #ffffff !important;
+  border-color: #0e0e0c;
+  opacity: 1;
+}
+body.is-home .site-header:not(.site-header--past-hero) .theme-toggle {
+  border-color: rgba(255, 255, 255, 0.4);
+  color: rgba(255, 255, 255, 0.85);
+  background: transparent;
+}
+body.is-home .site-header:not(.site-header--past-hero) .theme-toggle:hover {
+  color: #ffffff;
+  border-color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* ============================================================
+   Directory layout — left filter sidebar + main grid (desktop).
+   Sidebar is hidden on mobile in favour of the existing
+   horizontal category-strip below the hero.
+   ============================================================ */
+.directory-layout {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  gap: clamp(1.5rem, 3vw, 2.75rem);
+  align-items: start;
+  padding-top: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.filter-sidebar {
+  position: sticky;
+  top: calc(73px + 1.25rem);
+}
+.filter-sidebar__title {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin: 0 0 0.875rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border);
+}
+.filter-sidebar__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.filter-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 0.625rem 0.75rem;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 0.9375rem;
+  color: var(--text);
+  cursor: pointer;
+  text-align: left;
+  transition: background 120ms ease, color 120ms ease;
+}
+.filter-row:hover {
+  background: var(--bg-subtle);
+}
+.filter-row[aria-pressed="true"] {
+  background: var(--waf-accent-soft);
+  color: var(--waf-accent);
+  font-weight: 600;
+}
+.filter-row__count {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-faint);
+  font-weight: 400;
+  padding-left: 0.75rem;
+}
+.filter-row[aria-pressed="true"] .filter-row__count {
+  color: var(--waf-accent);
+}
+
+/* Mobile-only category strip + hide sidebar */
+.directory-main__mobile-filters { display: none; }
+
+@media (max-width: 899px) {
+  .directory-layout {
+    grid-template-columns: 1fr;
+    padding-top: 1rem;
+  }
+  .filter-sidebar { display: none; }
+  .directory-main__mobile-filters { display: block; margin-bottom: 0.25rem; }
+}
