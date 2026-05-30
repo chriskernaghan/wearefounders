@@ -3,7 +3,7 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ToolCard from '../components/ToolCard.astro';
 import FilterBar from '../components/FilterBar.astro';
-import { STAGES } from '../data/taxonomy';
+import { STAGES, CATEGORIES } from '../data/taxonomy';
 import NewsletterSignup from '../components/NewsletterSignup.astro';
 
 const tools = await getCollection('tools');
@@ -13,11 +13,20 @@ const sorted = tools.sort((a, b) => {
   return a.data.name.localeCompare(b.data.name);
 });
 
+// Static per-category counts for the sidebar
+const categoryCounts: Record<string, number> = {};
+sorted.forEach((tool) => {
+  (tool.data.categories || []).forEach((slug: string) => {
+    categoryCounts[slug] = (categoryCounts[slug] || 0) + 1;
+  });
+});
+
 const base = import.meta.env.BASE_URL;
 ---
 <BaseLayout
   title="The We Are Founders Tools Directory"
   description="A curated, editorial directory of the tools that actually move the needle for founders. Filtered by category, founder stage, and pricing. Every entry is hand-reviewed."
+  bodyClass="is-home"
 >
   <section class="hero" aria-labelledby="hero-heading">
     <div class="hero__bg-word" aria-hidden="true">TOOLS</div>
@@ -41,16 +50,52 @@ const base = import.meta.env.BASE_URL;
   </section>
 
   <div class="container">
-    <FilterBar />
-  </div>
+    <div class="directory-layout">
+      <aside class="filter-sidebar" aria-label="Filter by category">
+        <h2 class="filter-sidebar__title">Categories</h2>
+        <ul class="filter-sidebar__list" data-filter-group="category" role="group">
+          <li>
+            <button type="button" class="filter-row" data-filter-value="all" aria-pressed="true">
+              <span class="filter-row__label">All</span>
+              <span class="filter-row__count">{sorted.length}</span>
+            </button>
+          </li>
+          {CATEGORIES.map((c) => (
+            <li>
+              <button type="button" class="filter-row" data-filter-value={c.slug} aria-pressed="false">
+                <span class="filter-row__label">{c.label}</span>
+                <span class="filter-row__count">{categoryCounts[c.slug] || 0}</span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      </aside>
 
-  <div class="container">
-    <div class="tools-grid">
-      {sorted.map((tool) => <ToolCard tool={tool} />)}
-    </div>
+      <main class="directory-main">
+        <div class="category-strip directory-main__mobile-filters" id="category-strip-mobile">
+          <div class="category-strip__scroll-wrap">
+            <div class="category-strip__pills" data-filter-group="category">
+              <button type="button" class="pill" data-filter-value="all" aria-pressed="true">All</button>
+              {CATEGORIES.map((c) => (
+                <button type="button" class="pill" data-filter-value={c.slug} aria-pressed="false">
+                  {c.label}
+                </button>
+              ))}
+            </div>
+            <div class="category-strip__fade" aria-hidden="true"></div>
+          </div>
+        </div>
 
-    <div class="empty-state" id="empty-state" style="display: none;">
-      <p>No tools match these filters yet. Try widening your selection.</p>
+        <FilterBar hideCategoryFilter={true} />
+
+        <div class="tools-grid">
+          {sorted.map((tool) => <ToolCard tool={tool} />)}
+        </div>
+
+        <div class="empty-state" id="empty-state" style="display: none;">
+          <p>No tools match these filters yet. Try widening your selection.</p>
+        </div>
+      </main>
     </div>
 
     <div class="section-heading">
@@ -72,3 +117,38 @@ const base = import.meta.env.BASE_URL;
     </div>
   </div>
 </BaseLayout>
+
+<script>
+  // Homepage-only: header transitions from over-hero (purple/white text) to
+  // cream once the user scrolls past the hero block. Uses IntersectionObserver
+  // with rootMargin shrunk by the sticky header's height.
+  const header = document.querySelector<HTMLElement>('.site-header');
+  const hero = document.querySelector<HTMLElement>('.hero');
+
+  if (header && hero) {
+    let observer: IntersectionObserver | null = null;
+
+    const setup = () => {
+      observer?.disconnect();
+      const headerHeight = header.offsetHeight;
+      observer = new IntersectionObserver(
+        ([entry]) => {
+          header.classList.toggle('site-header--past-hero', !entry.isIntersecting);
+        },
+        {
+          rootMargin: `-${headerHeight}px 0px 0px 0px`,
+          threshold: 0,
+        }
+      );
+      observer.observe(hero);
+    };
+
+    setup();
+
+    let resizeTimer: number;
+    window.addEventListener('resize', () => {
+      window.clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(setup, 150);
+    }, { passive: true });
+  }
+</script>
