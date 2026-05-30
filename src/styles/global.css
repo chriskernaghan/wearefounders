@@ -941,3 +941,8 @@ body.is-home .hero__inner {
   letter-spacing: 0.04em;
   line-height: 1.4; /* Matches the sidebar title */
 }
+
+.diretory-main{
+   position:relative;
+   top:-10px;
+}
