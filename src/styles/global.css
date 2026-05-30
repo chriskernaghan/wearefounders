@@ -918,17 +918,26 @@ body.is-home .hero__inner {
 /* Align "21 tools" count with the sidebar's Categories heading.
    Match font size, padding-bottom, and margin so the border-bottom
    lines line up perfectly across both columns. */
+
+/* Align "21 tools" count with the sidebar's Categories heading. */
 .directory-main .filter-bar {
   padding-top: 0;
   padding-bottom: 0.75rem;
   margin-top: 0;
   margin-bottom: 0.875rem;
 }
+
 .directory-main .filter-bar__inner {
   align-items: baseline;
 }
+
+.filter-sidebar__title {
+  /* ... keep your existing styles ... */
+  line-height: 1.4; /* Match the filter-bar__count exactly */
+}
+
 .directory-main .filter-bar__count {
   font-size: 0.75rem;
   letter-spacing: 0.04em;
-  line-height: 1.4;
+  line-height: 1.4; /* Matches the sidebar title */
 }
