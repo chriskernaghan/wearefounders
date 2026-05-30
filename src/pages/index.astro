@@ -128,8 +128,19 @@ const base = import.meta.env.BASE_URL;
   if (header && hero) {
     let observer: IntersectionObserver | null = null;
 
+    // Expose the header's measured height as a CSS variable so the hero
+    // can pull itself up underneath the transparent header by exactly
+    // the right amount.
+    const setHeaderHeightVar = () => {
+      document.documentElement.style.setProperty(
+        '--site-header-h',
+        `${header.offsetHeight}px`
+      );
+    };
+
     const setup = () => {
       observer?.disconnect();
+      setHeaderHeightVar();
       const headerHeight = header.offsetHeight;
       observer = new IntersectionObserver(
         ([entry]) => {
