@@ -19,15 +19,28 @@ const base = import.meta.env.BASE_URL;
   title="The We Are Founders Tools Directory"
   description="A curated, editorial directory of the tools that actually move the needle for founders. Filtered by category, founder stage, and pricing. Every entry is hand-reviewed."
 >
-  <section class="container directory-intro">
-    <div class="directory-intro__eyebrow">The Directory</div>
-    <h1 class="directory-intro__heading">
-      Tools founders <em>actually use.</em>
-    </h1>
+  <section class="hero" aria-labelledby="hero-heading">
+    <div class="hero__bg-word" aria-hidden="true">TOOLS</div>
+    <div class="container hero__inner">
+      <div class="hero__eyebrow">The Directory</div>
+      <h1 class="hero__heading" id="hero-heading">
+        Tools founders <em>actually use.</em>
+      </h1>
+      <div class="hero__signup">
+        <NewsletterSignup />
+      </div>
+    </div>
+    <div class="hero__strip">
+      <div class="container hero__strip-inner">
+        <span>{tools.length} tools</span>
+        <span>Operator-reviewed</span>
+        <span>Free to submit</span>
+        <span>Updated weekly</span>
+      </div>
+    </div>
   </section>
-  
+
   <div class="container">
-    <NewsletterSignup />
     <FilterBar />
   </div>
 
