@@ -7,179 +7,466 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 // Example: https://tally.so/r/XXXXXX
 const TALLY_SUBMIT_FORM_URL = 'REPLACE_WITH_TALLY_SUBMIT_FORM_URL';
 
+// Founder Stories live on the main publication, not this directory subdomain.
+const STORIES_URL = 'https://wearefounders.uk/stories/';
+
 const base = import.meta.env.BASE_URL;
+
+const steps = [
+  {
+    title: 'Submit',
+    desc: "Send your tool's details. Takes a couple of minutes.",
+    icon: 'upload',
+  },
+  {
+    title: 'We review',
+    desc: 'An editorial check within 5 business days.',
+    icon: 'search',
+  },
+  {
+    title: 'We write it',
+    desc: 'A full entry in our house style, pricing verified.',
+    icon: 'pencil',
+  },
+  {
+    title: 'You go live',
+    desc: 'Published in the directory, and it stays live.',
+    icon: 'globe',
+  },
+];
+
+const perks = [
+  {
+    title: 'A real editorial entry',
+    desc: 'Written in our house style, with the same depth as the tools we pick ourselves.',
+    icon: 'doc',
+  },
+  {
+    title: 'Your link as the CTA',
+    desc: 'Run an affiliate program? We use your tracked link. No program, a direct link to your site.',
+    icon: 'link',
+  },
+  {
+    title: 'Free, and it stays',
+    desc: 'No fee to submit. Your listing stays live indefinitely, refreshed as things change.',
+    icon: 'infinity',
+  },
+  {
+    title: 'A shot at featured',
+    desc: 'Standout tools can earn a featured slot and a founder story on the main publication.',
+    icon: 'star',
+  },
+];
+
+const accept = [
+  'Live products that help founders, indie hackers, and early-stage operators',
+  'Most categories: AI agents, automation, dev tools, finance ops, growth, sales CRM, productivity, design, hiring',
+  'A genuine point of view or value-add',
+];
+
+const pass = [
+  'Vapourware or pre-launch with no real product',
+  'Thin wrappers around an AI API with nothing meaningful added',
+  'Anything that breaks our content policies',
+  'A user experience that lets the product down',
+];
+
+const faqs = [
+  {
+    q: "Can I submit a tool I don't own?",
+    a: "Yes. Agencies, freelancers, and content marketers occasionally submit tools they're not affiliated with. We treat every submission the same way.",
+  },
+  {
+    q: 'Is this a sponsored listing?',
+    a: "No. Submission is free and every entry meets the same editorial standard as our hand-selected tools. Listings aren't marked as sponsored because they aren't. If we wouldn't be willing to write the entry, we won't publish it.",
+  },
+  {
+    q: 'What if my tool changes or I want to update the listing?',
+    a: "Email us with the changes. A new pricing tier or an added feature is no problem. For a substantial repositioning, get in touch and we'll take a look.",
+  },
+  {
+    q: 'Do you offer a featured slot?',
+    a: "Featured placement is reserved for tools we consider exceptional or that have strong founder relevance. It isn't for sale. If your submission earns a featured slot during review, that's at our discretion.",
+  },
+  {
+    q: 'What if you reject my submission?',
+    a: "We'll email you a short explanation. Our rejection rate is low because most founder-focused tools clear the bar, but we reserve editorial judgement. You're welcome to resubmit once you've addressed whatever held it back.",
+  },
+];
 ---
 <BaseLayout
   title="Submit your tool · We Are Founders Directory"
   description="Submit your SaaS, agency tool, or founder product for free editorial review and inclusion in the We Are Founders tools directory. Every entry is hand-reviewed."
 >
-  <section class="container submit-page">
-    <div class="submit-page__eyebrow">Editorial Submission</div>
-    <h1 class="submit-page__heading">
-      Submit your tool for <em>editorial review.</em>
-    </h1>
-    <p class="submit-page__lead">
-      We Are Founders Tools is a curated directory. Every entry is hand-reviewed for quality, relevance, and editorial fit. Submitting is free. We just ask that your product is live and genuinely useful to founders before you send it our way.
-    </p>
-
-    <div class="submit-card">
-      <h2 class="submit-card__heading">What you get</h2>
-      <p>
-        Every accepted tool gets a full directory entry written in our house style. We verify your pricing and feature claims, write the entry, and publish it alongside the rest of the directory with the same depth as our editorially selected tools.
+  <section class="container submit">
+    <!-- Hero -->
+    <div class="submit__hero">
+      <div class="submit__eyebrow">Editorial Submission</div>
+      <h1 class="submit__heading">
+        Submit your tool for <em>editorial review.</em>
+      </h1>
+      <p class="submit__lead">
+        A curated directory of tools founders actually use. Hand-reviewed,
+        free to submit, and live indefinitely.
       </p>
-
-      <p>
-        Affiliate links are welcome. If you're submitting your own tool and run an affiliate program, we'll happily use your tracked link as the primary CTA on the entry. Tools without an affiliate program are listed with a direct link to your site.
-      </p>
-
-      <h2 class="submit-card__heading">What we look for</h2>
-      <p>
-        We accept tools that genuinely help founders, indie hackers, or early-stage operators. Most categories in our taxonomy are open: AI agents, automation, developer tools, finance ops, growth marketing, sales CRM, productivity, design, hiring, and more.
-      </p>
-
-      <p>
-        We reject tools that are vapourware or pre-launch with no real product, derivative wrappers around obvious AI APIs with no meaningful value-add, anything that breaks our content policies, and tools where the user experience is meaningfully poor. Please make sure your product is live and ready before you submit.
-      </p>
-
-      <h2 class="submit-card__heading">How it works</h2>
-      <ol class="submit-card__steps">
-        <li>Fill in the short submission form with your tool's details.</li>
-        <li>We review within 5 business days for quality, relevance, and editorial fit.</li>
-        <li>We email you with the published URL or, in the rare case of rejection, a short explanation of why.</li>
-        <li>Your listing stays live indefinitely. We may refresh pricing or details over time as part of our regular directory maintenance.</li>
-      </ol>
-
-      <a href={TALLY_SUBMIT_FORM_URL} class="submit-card__cta" rel="noopener">
-        Submit your tool →
-      </a>
-
-      <p class="submit-card__small">
-        Takes a couple of minutes. We'll be in touch within 5 business days.
-      </p>
+      <div class="submit__actions">
+        <a href={TALLY_SUBMIT_FORM_URL} class="btn btn--primary" rel="noopener">
+          Submit your tool
+          <svg viewBox="0 0 24 24" class="btn__arrow" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+        <a href={base} class="btn btn--ghost">Browse the directory</a>
+      </div>
     </div>
 
-    <div class="submit-faq">
-      <h2 class="submit-card__heading">Common questions</h2>
+    <!-- Flow -->
+    <div class="flow" aria-label="How submission works">
+      {steps.map((step, i) => (
+        <div class="flow__step" style={`--d:${i * 70}ms`}>
+          <div class="flow__badge">
+            {step.icon === 'upload' && (
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5M4 20h16"/></svg>
+            )}
+            {step.icon === 'search' && (
+              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+            )}
+            {step.icon === 'pencil' && (
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L18.5 9.5a2.1 2.1 0 0 0-3-3L5 17v3z"/><path d="M14 6l3 3"/></svg>
+            )}
+            {step.icon === 'globe' && (
+              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18 14 14 0 0 1 0-18z"/></svg>
+            )}
+          </div>
+          <div class="flow__num">{String(i + 1).padStart(2, '0')}</div>
+          <h3 class="flow__title">{step.title}</h3>
+          <p class="flow__desc">{step.desc}</p>
+        </div>
+      ))}
+    </div>
 
-      <h3>Can I submit a tool I don't own?</h3>
-      <p>
-        Yes. Agencies, freelancers, and content marketers occasionally submit tools they're not affiliated with. We treat every submission the same way.
-      </p>
+    <!-- What you get -->
+    <div class="block">
+      <h2 class="block__title">What you get</h2>
+      <div class="perks">
+        {perks.map((perk, i) => (
+          <div class="perk" style={`--d:${i * 60}ms`}>
+            <div class="perk__badge">
+              {perk.icon === 'doc' && (
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h8l4 4v16H6z"/><path d="M14 2v4h4M9 13h6M9 17h6"/></svg>
+              )}
+              {perk.icon === 'link' && (
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14a4 4 0 0 0 6 .5l2-2a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-6-.5l-2 2A4 4 0 0 0 11.7 17l1-1"/></svg>
+              )}
+              {perk.icon === 'infinity' && (
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 9a3 3 0 1 0 0 6c2 0 3-1.5 5-3s3-3 5-3a3 3 0 1 1 0 6c-2 0-3-1.5-5-3"/></svg>
+              )}
+              {perk.icon === 'star' && (
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.6 5.6 6 .7-4.4 4 1.2 6-5.4-3-5.4 3 1.2-6-4.4-4 6-.7z"/></svg>
+              )}
+            </div>
+            <h3 class="perk__title">{perk.title}</h3>
+            <p class="perk__desc">{perk.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
 
-      <h3>Is this a sponsored listing?</h3>
-      <p>
-        No. Submission is free and every entry meets the same editorial standard as our hand-selected tools. Listings aren't marked as sponsored because they aren't. If we wouldn't be willing to write the entry, we won't publish it.
-      </p>
+    <!-- The bar -->
+    <div class="block">
+      <h2 class="block__title">Where the bar sits</h2>
+      <div class="bar">
+        <div class="bar__col bar__col--yes">
+          <div class="bar__head">
+            <svg viewBox="0 0 24 24" class="bar__mark" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>
+            <span>We accept</span>
+          </div>
+          <ul class="bar__list">
+            {accept.map((item) => <li>{item}</li>)}
+          </ul>
+        </div>
+        <div class="bar__col bar__col--no">
+          <div class="bar__head">
+            <svg viewBox="0 0 24 24" class="bar__mark" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+            <span>We pass on</span>
+          </div>
+          <ul class="bar__list">
+            {pass.map((item) => <li>{item}</li>)}
+          </ul>
+        </div>
+      </div>
+    </div>
 
-      <h3>What if my tool changes or I want to update the listing?</h3>
-      <p>
-        Email us with the changes. Minor updates like a new pricing tier or an added feature are no problem. For a substantial repositioning, get in touch and we'll take a look.
-      </p>
+    <!-- Featured upside -->
+    <div class="featured">
+      <div class="featured__inner">
+        <div class="featured__tag">For standout tools</div>
+        <h2 class="featured__title">The best submissions get more than a listing</h2>
+        <p class="featured__copy">
+          A handful of products earn a featured slot and a founder story on the
+          main publication, the editorial that brings our audience here in the
+          first place. Submit well and you put yourself in the running.
+        </p>
+        <a href={STORIES_URL} class="featured__link" rel="noopener">
+          Read featured founder stories
+          <svg viewBox="0 0 24 24" class="btn__arrow" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+      </div>
+    </div>
 
-      <h3>Do you offer a featured slot?</h3>
-      <p>
-        Featured placement is reserved for tools we consider exceptional or that have strong founder relevance. It's not for sale. If your submission earns a featured slot during review, that's at our discretion.
-      </p>
+    <!-- FAQ -->
+    <div class="block">
+      <h2 class="block__title">Common questions</h2>
+      <div class="faq">
+        {faqs.map((faq) => (
+          <details class="faq__item">
+            <summary class="faq__q">
+              {faq.q}
+              <svg viewBox="0 0 24 24" class="faq__chev" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+            </summary>
+            <p class="faq__a">{faq.a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
 
-      <h3>What if you reject my submission?</h3>
-      <p>
-        We'll email you a short explanation. Our rejection rate is low because most founder-focused tools clear the bar, but we reserve editorial judgement. You're welcome to resubmit once you've addressed whatever held it back.
-      </p>
+    <!-- Closing CTA -->
+    <div class="closer">
+      <h2 class="closer__title">Ready when you are.</h2>
+      <a href={TALLY_SUBMIT_FORM_URL} class="btn btn--primary btn--lg" rel="noopener">
+        Submit your tool
+        <svg viewBox="0 0 24 24" class="btn__arrow" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+      <p class="closer__small">Takes a couple of minutes. We'll be in touch within 5 business days.</p>
     </div>
   </section>
 </BaseLayout>
 
 <style>
-  .submit-page {
-    padding-top: 3rem;
+  .submit {
+    max-width: 1080px;
+    padding-top: clamp(2.5rem, 5vw, 4rem);
     padding-bottom: 5rem;
-    max-width: 760px;
   }
-  .submit-page__eyebrow {
+
+  /* ---- Hero ---- */
+  .submit__hero { max-width: 680px; margin-bottom: clamp(3rem, 6vw, 4.5rem); }
+  .submit__eyebrow {
     font-family: var(--font-mono);
     font-size: 0.75rem;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.12em;
     color: var(--waf-accent);
     margin-bottom: 1rem;
   }
-  .submit-page__heading {
+  .submit__heading {
     font-family: var(--font-display);
-    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-size: clamp(2.25rem, 5.5vw, 3.75rem);
     font-weight: 600;
     letter-spacing: -0.03em;
-    line-height: 1.05;
-    margin: 0 0 1.5rem;
+    line-height: 1.02;
+    margin: 0 0 1.25rem;
   }
-  .submit-page__heading em {
-    font-style: italic;
-    color: var(--waf-accent);
-    font-weight: 500;
-  }
-  .submit-page__lead {
-    font-size: 1.125rem;
+  .submit__heading em { font-style: italic; color: var(--waf-accent); font-weight: 500; }
+  .submit__lead {
+    font-size: 1.1875rem;
     color: var(--text-muted);
     line-height: 1.55;
-    margin-bottom: 2.5rem;
+    margin-bottom: 2rem;
   }
-  .submit-card {
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 2.5rem;
-    background: var(--bg-subtle);
-    margin-bottom: 3rem;
-  }
-  .submit-card__heading {
-    font-family: var(--font-display);
-    font-size: 1.375rem;
+  .submit__actions { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+
+  /* ---- Buttons ---- */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.875rem 1.5rem;
+    border-radius: var(--radius);
+    font-family: var(--font-body);
     font-weight: 600;
-    margin: 2rem 0 0.875rem;
-    letter-spacing: -0.02em;
-  }
-  .submit-card__heading:first-of-type { margin-top: 0; }
-  .submit-card p {
-    line-height: 1.6;
-    color: var(--text);
-    margin: 0 0 1rem;
-  }
-  .submit-card__steps {
-    padding-left: 1.25rem;
-    margin: 0 0 2rem;
-  }
-  .submit-card__steps li {
-    line-height: 1.6;
-    margin-bottom: 0.625rem;
-  }
-  .submit-card__cta {
-    display: block;
-    text-align: center;
-    background: var(--waf-accent);
-    color: white !important;
-    padding: 1.125rem 1.5rem;
-    border-radius: 8px;
+    font-size: 1rem;
     text-decoration: none;
-    font-weight: 600;
-    font-size: 1.0625rem;
-    margin: 2rem 0 1rem;
-    transition: opacity 120ms ease;
+    border: 1px solid transparent;
+    transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
   }
-  .submit-card__cta:hover { opacity: 0.92; }
-  .submit-card__small {
-    text-align: center;
-    font-size: 0.8125rem;
-    color: var(--text-muted);
-    margin: 0 !important;
+  .btn--lg { padding: 1.0625rem 1.875rem; font-size: 1.0625rem; }
+  .btn--primary { background: var(--waf-accent); color: #fff; }
+  .btn--primary:hover { background: var(--waf-accent-hover); transform: translateY(-1px); }
+  .btn--ghost { background: transparent; color: var(--text); border-color: var(--border-strong); }
+  .btn--ghost:hover { border-color: var(--waf-accent); color: var(--waf-accent); }
+  .btn__arrow { width: 1.1em; height: 1.1em; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: transform 0.15s ease; }
+  .btn:hover .btn__arrow { transform: translateX(3px); }
+
+  /* ---- Flow ---- */
+  .flow {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.25rem;
+    margin-bottom: clamp(3.5rem, 7vw, 5.5rem);
   }
-  .submit-faq h3 {
+  .flow__step {
+    position: relative;
+    padding-right: 1.25rem;
+    animation: rise 0.5s ease both;
+    animation-delay: var(--d, 0ms);
+  }
+  /* connector arrow between steps */
+  .flow__step:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    top: 1.375rem;
+    right: -0.25rem;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-top: 2px solid var(--border-strong);
+    border-right: 2px solid var(--border-strong);
+    transform: rotate(45deg);
+  }
+  .flow__badge {
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: var(--waf-accent-soft);
+    color: var(--waf-accent);
+    margin-bottom: 1rem;
+  }
+  .flow__badge svg { width: 1.375rem; height: 1.375rem; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+  .flow__num {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.1em;
+    color: var(--text-faint);
+    margin-bottom: 0.375rem;
+  }
+  .flow__title { font-family: var(--font-display); font-size: 1.125rem; font-weight: 600; margin: 0 0 0.375rem; letter-spacing: -0.01em; }
+  .flow__desc { font-size: 0.9375rem; color: var(--text-muted); line-height: 1.5; margin: 0; }
+
+  /* ---- Blocks ---- */
+  .block { margin-bottom: clamp(3rem, 6vw, 4.5rem); }
+  .block__title {
     font-family: var(--font-display);
-    font-size: 1.0625rem;
+    font-size: clamp(1.375rem, 2.5vw, 1.75rem);
     font-weight: 600;
-    margin: 1.5rem 0 0.5rem;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.02em;
+    margin: 0 0 1.5rem;
   }
-  .submit-faq p {
-    color: var(--text-muted);
-    line-height: 1.6;
-    margin: 0 0 1rem;
+
+  /* ---- Perks grid ---- */
+  .perks { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+  .perk {
+    padding: 1.625rem;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    transition: border-color 0.2s ease, transform 0.2s ease;
+    animation: rise 0.5s ease both;
+    animation-delay: var(--d, 0ms);
+  }
+  .perk:hover { border-color: var(--border-strong); transform: translateY(-2px); }
+  .perk__badge {
+    width: 2.5rem; height: 2.5rem; border-radius: var(--radius);
+    display: grid; place-items: center;
+    background: var(--waf-accent-soft); color: var(--waf-accent);
+    margin-bottom: 1rem;
+  }
+  .perk__badge svg { width: 1.3125rem; height: 1.3125rem; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .perk__title { font-family: var(--font-display); font-size: 1.125rem; font-weight: 600; margin: 0 0 0.5rem; letter-spacing: -0.01em; }
+  .perk__desc { font-size: 0.9375rem; color: var(--text-muted); line-height: 1.55; margin: 0; }
+
+  /* ---- The bar (accept / pass) ---- */
+  .bar { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .bar__col {
+    padding: 1.625rem 1.75rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--bg-elevated);
+  }
+  .bar__head {
+    display: flex; align-items: center; gap: 0.625rem;
+    font-family: var(--font-display); font-weight: 600; font-size: 1.0625rem;
+    margin-bottom: 1rem;
+  }
+  .bar__mark { width: 1.25rem; height: 1.25rem; fill: none; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+  .bar__col--yes .bar__mark { stroke: #1d8a5a; }
+  .bar__col--no .bar__mark { stroke: var(--text-faint); }
+  .bar__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.75rem; }
+  .bar__list li { font-size: 0.9375rem; line-height: 1.5; color: var(--text-muted); padding-left: 1.125rem; position: relative; }
+  .bar__list li::before {
+    content: ""; position: absolute; left: 0; top: 0.55em;
+    width: 5px; height: 5px; border-radius: 50%; background: var(--border-strong);
+  }
+
+  /* ---- Featured upside ---- */
+  .featured {
+    background: var(--waf-accent-soft);
+    border-radius: var(--radius-lg);
+    padding: clamp(2rem, 4vw, 3rem);
+    margin-bottom: clamp(3rem, 6vw, 4.5rem);
+  }
+  .featured__inner { max-width: 620px; }
+  .featured__tag {
+    font-family: var(--font-mono); font-size: 0.6875rem; text-transform: uppercase;
+    letter-spacing: 0.12em; color: var(--waf-accent); margin-bottom: 0.875rem;
+  }
+  .featured__title {
+    font-family: var(--font-display); font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 600; letter-spacing: -0.02em; line-height: 1.1; margin: 0 0 0.875rem;
+    color: var(--text);
+  }
+  .featured__copy { font-size: 1.0625rem; color: var(--text-muted); line-height: 1.55; margin: 0 0 1.5rem; }
+  .featured__link {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    font-weight: 600; color: var(--waf-accent); text-decoration: none;
+  }
+  .featured__link:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+  /* ---- FAQ ---- */
+  .faq { border-top: 1px solid var(--border); }
+  .faq__item { border-bottom: 1px solid var(--border); }
+  .faq__q {
+    display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    cursor: pointer; list-style: none;
+    font-family: var(--font-display); font-weight: 600; font-size: 1.0625rem;
+    color: var(--text); padding: 1.125rem 0;
+  }
+  .faq__q::-webkit-details-marker { display: none; }
+  .faq__chev { width: 1.125rem; height: 1.125rem; fill: none; stroke: var(--text-faint); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; transition: transform 0.2s ease; }
+  .faq__item[open] .faq__chev { transform: rotate(180deg); }
+  .faq__a { font-size: 0.9375rem; color: var(--text-muted); line-height: 1.6; margin: 0; padding: 0 0 1.25rem; max-width: 70ch; }
+
+  /* ---- Closer ---- */
+  .closer { text-align: center; padding-top: 1rem; }
+  .closer__title { font-family: var(--font-display); font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 600; letter-spacing: -0.02em; margin: 0 0 1.5rem; }
+  .closer__small { font-size: 0.8125rem; color: var(--text-muted); margin: 1rem 0 0; }
+
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ---- Responsive ---- */
+  @media (max-width: 860px) {
+    .flow { grid-template-columns: repeat(2, 1fr); gap: 1.75rem 1.25rem; }
+    .flow__step:nth-child(2)::after { display: none; }
+  }
+  @media (max-width: 560px) {
+    .flow { grid-template-columns: 1fr; gap: 0; }
+    .flow__step {
+      margin-left: 1.375rem;
+      padding: 0 0 2rem 1.75rem;
+      border-left: 2px solid var(--border);
+    }
+    .flow__step:last-child { border-left-color: transparent; padding-bottom: 0; }
+    .flow__step::after { display: none !important; }
+    /* pull each badge left so its centre sits on the rail; the bg ring
+       hides the line passing behind it, leaving clean connectors. */
+    .flow__badge { margin-left: -3.125rem; background: var(--bg); box-shadow: 0 0 0 6px var(--bg); }
+    .perks { grid-template-columns: 1fr; }
+    .bar { grid-template-columns: 1fr; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .flow__step, .perk { animation: none; }
   }
 </style>
