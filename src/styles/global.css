@@ -835,6 +835,7 @@ body.is-home .site-header:not(.site-header--past-hero) .theme-toggle:hover {
 .filter-sidebar {
   position: sticky;
   top: calc(73px + 1.25rem);
+  padding:10px 0 0 0;
 }
 .filter-sidebar__title {
   font-family: var(--font-mono);
