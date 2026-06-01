@@ -915,34 +915,37 @@ body.is-home .hero__inner {
   padding-top: calc(var(--site-header-h, 73px) + clamp(2rem, 5vw, 4.5rem));
 }
 
-/* Align "21 tools" count with the sidebar's Categories heading.
-   Match font size, padding-bottom, and margin so the border-bottom
-   lines line up perfectly across both columns. */
-
-/* Align "21 tools" count with the sidebar's Categories heading. */
+/* Align the sidebar "Categories" heading with the main "N tools" row.
+   Both get an identical-height box with a shared bottom border, and
+   their content is bottom-aligned so the text sits on the same line
+   just above the rule. This avoids baseline-matching the small count
+   against the taller (20px) toggle, which was dropping it lower. */
+.filter-sidebar__title,
 .directory-main .filter-bar {
-  padding-top: 0;
-  padding-bottom: 0.75rem;
+  box-sizing: border-box;
+  height: 2.5rem;
   margin-top: 0;
-  margin-bottom: 0.875rem;
+  padding: 0 0 0.75rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: flex-end;
 }
 
+/* Keep each column's own gap below the rule */
+.filter-sidebar__title { margin-bottom: 0.875rem; }
+.directory-main .filter-bar { margin-bottom: 2.5rem; }
+
+/* Neutralise the .container gutter so the row left-aligns with the
+   cards below it, and center the count against the toggle. */
 .directory-main .filter-bar__inner {
-  align-items: baseline;
-}
-
-.filter-sidebar__title {
-  /* ... keep your existing styles ... */
-  line-height: 1.4; /* Match the filter-bar__count exactly */
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  align-items: center;
 }
 
 .directory-main .filter-bar__count {
   font-size: 0.75rem;
   letter-spacing: 0.04em;
-  line-height: 1.4; /* Matches the sidebar title */
-}
-
-.diretory-main{
-   position:relative;
-   top:-10px;
 }
