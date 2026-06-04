@@ -113,3 +113,4 @@ For tool entries that should also have a full review on the main Ghost site, set
 - **Sitemap** — add `@astrojs/sitemap` integration before launch for proper indexing.
 
 Force push.
+
