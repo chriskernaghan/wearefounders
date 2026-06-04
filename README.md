@@ -112,5 +112,3 @@ For tool entries that should also have a full review on the main Ghost site, set
 - **OG image generation** — `og-default.png` needs to exist in `public/`. Per-tool OG images can be auto-generated later.
 - **Sitemap** — add `@astrojs/sitemap` integration before launch for proper indexing.
 
-Force push.
-
