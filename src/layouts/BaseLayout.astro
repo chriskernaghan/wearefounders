@@ -2,7 +2,6 @@
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import '../styles/global.css';
-interface Props {
 
 interface Props {
   title: string;
@@ -26,30 +25,25 @@ const base = import.meta.env.BASE_URL;
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="canonical" href={canonicalUrl} />
     {noindex && <meta name="robots" content="noindex, nofollow" />}
-
     <title>{siteTitle}</title>
     <meta name="description" content={description} />
-
     <meta property="og:title" content={siteTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:type" content="website" />
     <meta property="og:image" content={ogImageUrl} />
     <meta property="og:site_name" content="We Are Founders" />
-
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={siteTitle} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageUrl} />
-
-    <!-- Favicon — matches wearefounders.uk W mark -->
+    <!-- Favicon matches wearefounders.uk W mark -->
     <link rel="icon" type="image/x-icon" href={`${base}favicon.ico`} />
     <link rel="icon" type="image/png" sizes="16x16" href={`${base}favicon-16x16.png`} />
     <link rel="icon" type="image/png" sizes="32x32" href={`${base}favicon-32x32.png`} />
     <link rel="icon" type="image/png" sizes="192x192" href={`${base}favicon-192x192.png`} />
     <link rel="icon" type="image/png" sizes="512x512" href={`${base}favicon-512x512.png`} />
     <link rel="apple-touch-icon" sizes="180x180" href={`${base}apple-touch-icon.png`} />
-
     <!-- Fonts: Space Grotesk (display), Overpass (body), JetBrains Mono (mono) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -57,7 +51,6 @@ const base = import.meta.env.BASE_URL;
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Overpass:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@400;500&display=swap"
     />
-
     <script is:inline>
       (function () {
         const stored = localStorage.getItem('waf-theme');
@@ -65,7 +58,6 @@ const base = import.meta.env.BASE_URL;
         document.documentElement.setAttribute('data-prefers-color-scheme', theme);
       })();
     </script>
-
     <!-- Google Analytics (GA4) -->
     <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-BGJ38Q29SD"></script>
     <script is:inline>
