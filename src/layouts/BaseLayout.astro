@@ -56,7 +56,10 @@ const base = import.meta.env.BASE_URL;
       href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Overpass:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@400;500&display=swap"
     />
 
-    <link rel="stylesheet" href={`${base}styles/global.css`} />
+    ---
+import '../styles/global.css';
+// ...rest of imports
+---
 
     <script is:inline>
       (function () {
