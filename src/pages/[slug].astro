@@ -90,43 +90,46 @@ const schema = {
         </div>
       </div>
 
-      <aside class="tool-detail__facts">
-        <dl>
-          <dt>Pricing</dt>
-          <dd>{priceLabel}</dd>
+      <div class="tool-detail__sidebar">
+        <aside class="tool-detail__facts">
+          <dl>
+            <dt>Pricing</dt>
+            <dd>{priceLabel}</dd>
 
-          <dt>Free tier</dt>
-          <dd>{tool.data.free_tier ? 'Yes' : 'No'}</dd>
+            <dt>Free tier</dt>
+            <dd>{tool.data.free_tier ? 'Yes' : 'No'}</dd>
 
-          {tool.data.free_trial_days !== null && tool.data.free_trial_days !== undefined && (
-            <>
-              <dt>Free trial</dt>
-              <dd>{tool.data.free_trial_days} days</dd>
-            </>
-          )}
+            {tool.data.free_trial_days !== null && tool.data.free_trial_days !== undefined && (
+              <>
+                <dt>Free trial</dt>
+                <dd>{tool.data.free_trial_days} days</dd>
+              </>
+            )}
 
-          <dt>Best for</dt>
-          <dd>{tool.data.stages.map((s) => STAGE_MAP[s]?.label).join(', ')}</dd>
+            <dt>Best for</dt>
+            <dd>{tool.data.stages.map((s) => STAGE_MAP[s]?.label).join(', ')}</dd>
 
-          {tool.data.founded && (
-            <>
-              <dt>Founded</dt>
-              <dd>{tool.data.founded}</dd>
-            </>
-          )}
+            {tool.data.founded && (
+              <>
+                <dt>Founded</dt>
+                <dd>{tool.data.founded}</dd>
+              </>
+            )}
 
-          {tool.data.hq && (
-            <>
-              <dt>HQ</dt>
-              <dd>{tool.data.hq}</dd>
-            </>
-          )}
+            {tool.data.hq && (
+              <>
+                <dt>HQ</dt>
+                <dd>{tool.data.hq}</dd>
+              </>
+            )}
 
-          <dt>Last verified</dt>
-          <dd>{updated}</dd>
-        </dl>
-      </aside>
-     <BoostCard />
+            <dt>Last verified</dt>
+            <dd>{updated}</dd>
+          </dl>
+        </aside>
+
+        <BoostCard />
+      </div>
     </header>
 
     <section class="tool-detail__body">
@@ -219,12 +222,18 @@ const schema = {
     flex-wrap: wrap;
   }
 
+  .tool-detail__sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    align-self: start;
+  }
+
   .tool-detail__facts {
     background: var(--bg-elevated);
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
     padding: 1.75rem;
-    align-self: start;
   }
   .tool-detail__facts dl {
     display: grid;
