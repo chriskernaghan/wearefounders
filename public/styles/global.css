@@ -606,3 +606,184 @@ html:not([data-prefers-color-scheme="dark"]) .theme-toggle__icon--moon { display
       padding:0 0 0 1.5rem;
   }
 }
+
+/* ============================================================
+   PROMOTE: marquee + boost card + promote page
+   Append to src/styles/global.css. Uses existing WAF tokens.
+   Accent: #443fde. Dark mode via [data-prefers-color-scheme="dark"].
+   ============================================================ */
+
+/* --- Promo marquee (index) --- */
+.promo-marquee {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 1.5rem 0;
+  padding: 0.6rem 1rem;
+  border: 1px solid #e6e6ee;
+  border-radius: 12px;
+  background: #f7f7ff;
+  text-decoration: none;
+  overflow: hidden;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.promo-marquee:hover {
+  border-color: #443fde;
+  background: #f1f1ff;
+}
+.promo-marquee__tag {
+  flex: 0 0 auto;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #fff;
+  background: #443fde;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+}
+.promo-marquee__viewport {
+  flex: 1 1 auto;
+  overflow: hidden;
+  position: relative;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+.promo-marquee__track {
+  display: inline-flex;
+  white-space: nowrap;
+  will-change: transform;
+  animation: promo-marquee-scroll 32s linear infinite;
+}
+.promo-marquee:hover .promo-marquee__track {
+  animation-play-state: paused;
+}
+.promo-marquee__item {
+  font-size: 0.85rem;
+  color: #4a4a5a;
+  padding-right: 0.5rem;
+}
+.promo-marquee__dot {
+  color: #443fde;
+  padding: 0 1rem 0 1.5rem;
+}
+.promo-marquee__cta {
+  flex: 0 0 auto;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #443fde;
+  white-space: nowrap;
+}
+@keyframes promo-marquee-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .promo-marquee__track { animation: none; }
+  .promo-marquee__viewport {
+    overflow-x: auto;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+}
+@media (max-width: 600px) {
+  .promo-marquee__cta { display: none; }
+}
+
+/* --- Boost card (detail sidebar) --- */
+.boost-card {
+  border: 1px solid #e6e6ee;
+  border-radius: 14px;
+  padding: 1.5rem;
+  background: #f7f7ff;
+}
+.boost-card__label {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #443fde;
+  margin-bottom: 0.6rem;
+}
+.boost-card__title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem;
+  color: #1a1a2e;
+}
+.boost-card__desc {
+  font-size: 0.9rem;
+  color: #6b6b7b;
+  margin: 0 0 1rem;
+  line-height: 1.5;
+}
+.boost-card__list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.boost-card__list li {
+  font-size: 0.85rem;
+  color: #1a1a2e;
+  padding-left: 1.3rem;
+  position: relative;
+}
+.boost-card__list li::before {
+  content: "\2713";
+  position: absolute;
+  left: 0;
+  color: #443fde;
+  font-weight: 700;
+}
+.boost-card__cta {
+  display: inline-block;
+  width: 100%;
+  text-align: center;
+  background: #443fde;
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0.7rem 1rem;
+  border-radius: 10px;
+  text-decoration: none;
+  transition: opacity 0.15s ease;
+}
+.boost-card__cta:hover { opacity: 0.9; }
+
+/* --- Promote page --- */
+.promote-hero { text-align: center; max-width: 680px; margin: 0 auto 2.5rem; }
+.promote-hero__eyebrow {
+  font-size: 0.8rem; font-weight: 700; letter-spacing: 0.08em;
+  text-transform: uppercase; color: #443fde;
+}
+.promote-hero h1 { font-size: clamp(2rem, 5vw, 2.75rem); margin: 0.5rem 0 1rem; color: #1a1a2e; }
+.promote-hero p { font-size: 1.05rem; color: #6b6b7b; line-height: 1.6; }
+.promote-note {
+  max-width: 760px; margin: 2rem auto 0; padding: 1rem 1.25rem;
+  border-left: 3px solid #443fde; background: #f7f7ff; border-radius: 0 8px 8px 0;
+  font-size: 0.9rem; color: #4a4a5a; line-height: 1.6;
+}
+.promote-cta { text-align: center; margin: 2.5rem 0 1rem; }
+.promote-cta a {
+  display: inline-block; background: #443fde; color: #fff; font-weight: 600;
+  padding: 0.85rem 1.75rem; border-radius: 12px; text-decoration: none;
+}
+.promote-cta a:hover { opacity: 0.9; }
+
+/* --- Dark mode --- */
+[data-prefers-color-scheme="dark"] .promo-marquee,
+[data-prefers-color-scheme="dark"] .boost-card {
+  background: #16161d; border-color: #2a2a36;
+}
+[data-prefers-color-scheme="dark"] .promo-marquee:hover { background: #1b1a2e; border-color: #443fde; }
+[data-prefers-color-scheme="dark"] .promo-marquee__item { color: #b8b8c8; }
+[data-prefers-color-scheme="dark"] .boost-card__title,
+[data-prefers-color-scheme="dark"] .boost-card__list li { color: #f0f0f5; }
+[data-prefers-color-scheme="dark"] .boost-card__desc { color: #9a9aab; }
+[data-prefers-color-scheme="dark"] .promote-hero h1 { color: #f0f0f5; }
+[data-prefers-color-scheme="dark"] .promote-hero p { color: #9a9aab; }
+[data-prefers-color-scheme="dark"] .promote-note { background: #16161d; color: #b8b8c8; }
