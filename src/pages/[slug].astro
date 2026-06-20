@@ -32,6 +32,48 @@ const updated = new Intl.DateTimeFormat('en-US', {
   month: 'long', day: 'numeric', year: 'numeric'
 }).format(tool.data.last_updated);
 
+/* ------------------------------------------------------------------
+   Lede extraction: pull the first body paragraph up into the header
+   left column to balance the column heights against the facts +
+   boost card stack on the right.
+
+   We read the raw markdown (tool.body), take the first non-empty block,
+   and only treat it as a lede if it is a plain prose paragraph (not a
+   heading, list, quote, table, or image). When it is a lede, we render
+   it in the header and hide the body's first <p> via a body class so it
+   does not appear twice. Otherwise we fall back to current behaviour.
+------------------------------------------------------------------- */
+const rawBody = (tool.body ?? '').trim();
+// First block = everything up to the first blank line.
+const firstBlock = rawBody.split(/\n\s*\n/)[0]?.trim() ?? '';
+const isProseParagraph =
+  firstBlock.length > 0 &&
+  !/^(#{1,6}\s|[-*+]\s|>\s|\||!\[|\d+\.\s|```)/.test(firstBlock);
+
+// Light inline-markdown to HTML for the lede only (bold, italic, links,
+// inline code). Body rendering is still handled fully by <Content />.
+function inlineMd(s: string): string {
+  // Escape HTML first.
+  let out = s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+  // links [text](url)
+  out = out.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
+  // bold **text**
+  out = out.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  // italic *text*  (avoid touching ** already handled)
+  out = out.replace(/(^|[^*])\*([^*]+)\*($|[^*])/g, '$1<em>$2</em>$3');
+  // inline code `code`
+  out = out.replace(/`([^`]+)`/g, '<code>$1</code>');
+  // collapse single newlines inside the paragraph to spaces
+  out = out.replace(/\n+/g, ' ');
+  return out;
+}
+
+const ledeHtml = isProseParagraph ? inlineMd(firstBlock) : '';
+const hasLede = ledeHtml.length > 0;
+
 // Structured data for SEO (SoftwareApplication schema)
 const schema = {
   '@context': 'https://schema.org',
@@ -63,7 +105,7 @@ const schema = {
 >
   <script type="application/ld+json" set:html={JSON.stringify(schema)} />
 
-  <article class="tool-detail container">
+  <article class={`tool-detail container${hasLede ? ' tool-detail--has-lede' : ''}`}>
     <a href={base} class="back-link">← All tools</a>
 
     <header class="tool-detail__header">
@@ -88,6 +130,10 @@ const schema = {
             </a>
           )}
         </div>
+
+        {hasLede && (
+          <p class="tool-detail__lede" set:html={ledeHtml} />
+        )}
       </div>
 
       <div class="tool-detail__sidebar">
@@ -132,7 +178,7 @@ const schema = {
       </div>
     </header>
 
-    <section class="tool-detail__body">
+    <section class={`tool-detail__body${hasLede ? ' tool-detail__body--lede-lifted' : ''}`}>
       <Content />
     </section>
 
@@ -222,6 +268,17 @@ const schema = {
     flex-wrap: wrap;
   }
 
+  /* Lede lifted from the body into the header left column. Sits under the
+     CTA and fills the column so it balances the facts + boost card stack. */
+  .tool-detail__lede {
+    margin-top: 2rem;
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    color: var(--text);
+    max-width: 60ch;
+  }
+  .tool-detail__lede :global(a) { color: var(--waf-accent); }
+
   .tool-detail__sidebar {
     display: flex;
     flex-direction: column;
@@ -263,9 +320,20 @@ const schema = {
     font-size: 1.0625rem;
     line-height: 1.7;
   }
+  /* When the first paragraph has been lifted into the header, hide the
+     body's original first paragraph so it does not appear twice. */
+  .tool-detail__body--lede-lifted :global(> p:first-child) {
+    display: none;
+  }
   .tool-detail__body :global(h2) {
     margin: 2.5rem 0 1rem;
     font-size: 1.625rem;
+  }
+  /* If the first visible block after hiding the lede is a heading, drop
+     its top margin so the body does not start with a big gap. */
+  .tool-detail__body--lede-lifted :global(> p:first-child + h2),
+  .tool-detail__body--lede-lifted :global(> h2:first-child) {
+    margin-top: 0;
   }
   .tool-detail__body :global(h3) {
     margin: 2rem 0 0.75rem;
