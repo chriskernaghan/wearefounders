@@ -16,7 +16,7 @@ affiliate_url: null
 affiliate_program: "None"
 website: "https://magentic.studio"
 review_url: null
-our_take: "An AI process audit tool that builds a roadmap around your actual workflows instead of generic best practice, and tells you honestly when AI is not the answer. Built for non-technical teams who want in on AI without going deep."
+our_take: "An AI process audit that builds a roadmap around your actual workflows, not generic best practice, and tells you honestly when AI is not the answer. Built for non-technical teams."
 pros:
   - "Roadmaps are tailored to your specific processes rather than the median organization, so the advice fits how you actually work"
   - "Transparent when AI would not fix the underlying issue, instead of pushing AI at every problem"
