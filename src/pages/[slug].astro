@@ -27,6 +27,12 @@ const primaryCta = tool.data.affiliate_url ?? tool.data.website;
 const isAffiliate = tool.data.affiliate_url !== null;
 const ctaRel = isAffiliate ? 'sponsored noopener' : 'noopener';
 
+// Screenshot: manual override (frontmatter `screenshot`) wins, else fall
+// back to the committed file at /screenshots/<slug>.png. If neither exists
+// the <img> onerror hides the figure cleanly (no broken-image icon).
+const slug = tool.id.replace(/\.md$/, '');
+const screenshotSrc = tool.data.screenshot ?? `${base}screenshots/${slug}.png`;
+
 // Format date for display
 const updated = new Intl.DateTimeFormat('en-US', {
   month: 'long', day: 'numeric', year: 'numeric'
@@ -91,6 +97,15 @@ const schema = {
             )}
           </div>
         </div>
+
+        <figure class="tool-detail__shot">
+          <img
+            src={screenshotSrc}
+            alt={`Screenshot of the ${tool.data.name} website`}
+            loading="lazy"
+            onerror="this.closest('.tool-detail__shot').style.display='none'"
+          />
+        </figure>
 
         <section class="tool-detail__body">
           <Content />
@@ -230,6 +245,21 @@ const schema = {
     flex-wrap: wrap;
   }
 
+  /* Website screenshot, sits between the intro and the body. Hides itself
+     via onerror when no image exists for this listing yet. */
+  .tool-detail__shot {
+    margin: 0 0 2.5rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--bg-subtle);
+  }
+  .tool-detail__shot img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
   /* Sidebar: facts + boost card stacked, sticky so it follows the long
      left column as the reader scrolls. */
   .tool-detail__sidebar {
@@ -274,7 +304,7 @@ const schema = {
     align-self: end;
   }
 
-  /* Body now sits in the left column at full column width (no centring). */
+  /* Body sits in the left column at full column width. */
   .tool-detail__body {
     font-size: 1.0625rem;
     line-height: 1.7;
