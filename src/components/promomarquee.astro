@@ -1,0 +1,24 @@
+---
+// Slim animated marquee for the directory index.
+// Place near the top of src/pages/index.astro, below the hero, above FilterBar.
+// Styles live in src/styles/global.css (see promo-marquee.css block).
+const items = [
+  'Get featured at the top of the directory for 30 days',
+  'Spotlight + Story: a full write-up and a dofollow link from a DA50 domain',
+  'Reach 2,000+ founders in The Friday Brief',
+  'Boost your reach from $49',
+];
+// Duplicated once so the scroll loops seamlessly.
+const loop = [...items, ...items];
+---
+<a class="promo-marquee" href="/promote/" aria-label="Promote your tool on We Are Founders">
+  <span class="promo-marquee__tag">Promote</span>
+  <div class="promo-marquee__viewport">
+    <div class="promo-marquee__track">
+      {loop.map((text) => (
+        <span class="promo-marquee__item">{text}<span class="promo-marquee__dot">&bull;</span></span>
+      ))}
+    </div>
+  </div>
+  <span class="promo-marquee__cta">See packages &rarr;</span>
+</a>
