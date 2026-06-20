@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { CATEGORY_MAP, STAGE_MAP } from '../data/taxonomy';
+import BoostCard from '../components/BoostCard.astro';
 
 export async function getStaticPaths() {
   const tools = await getCollection('tools');
@@ -124,6 +125,7 @@ const schema = {
           <dt>Last verified</dt>
           <dd>{updated}</dd>
         </dl>
+       <BoostCard />
       </aside>
     </header>
 
