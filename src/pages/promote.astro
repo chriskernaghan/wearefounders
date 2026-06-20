@@ -1,0 +1,131 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+const TALLY = 'https://tally.so/r/PdvzgQ';
+---
+<BaseLayout
+  title="Promote your tool — We Are Founders Directory"
+  description="Get your tool in front of thousands of founders. Featured placement, a full story, and a slot in The Friday Brief. Packages from $49."
+>
+  <div class="container">
+    <section class="promote-hero">
+      <span class="promote-hero__eyebrow">Marketing packages</span>
+      <h1>Get your tool in front of founders</h1>
+      <p>
+        Your listing is always free. When you want more reach, these packages put you
+        at the top of the directory, in a full story on We Are Founders, and in front
+        of our newsletter readers.
+      </p>
+    </section>
+
+    <div class="waf-pricing">
+      <div class="waf-pricing__label">Choose your reach</div>
+
+      <div class="waf-tier">
+        <h3 class="waf-tier__name">Spotlight</h3>
+        <div class="waf-tier__price">$49</div>
+        <p class="waf-tier-desc">Featured placement for 30 days. Get seen first.</p>
+        <ul class="waf-tier__includes">
+          <li>Featured at the top of the directory home</li>
+          <li>Top placement on your category and stage pages</li>
+          <li>Featured badge on your listing card</li>
+          <li>30-day window</li>
+        </ul>
+        <div class="waf-tier__bestfor">
+          <strong>Best for</strong>
+          Founders who just want more eyes on their tool, fast.
+        </div>
+      </div>
+
+      <div class="waf-tier waf-tier--featured">
+        <span class="waf-badge">Most popular</span>
+        <h3 class="waf-tier__name">Spotlight + Story</h3>
+        <div class="waf-tier__price">$199</div>
+        <p class="waf-tier-desc">Featured placement plus a full story on We Are Founders.</p>
+        <ul class="waf-tier__includes">
+          <li>Everything in Spotlight</li>
+          <li>A full written story on wearefounders.uk</li>
+          <li>Dofollow link from a DA50 domain</li>
+          <li>Permanent article, not just a directory row</li>
+        </ul>
+        <div class="waf-tier__bestfor">
+          <strong>Best for</strong>
+          Founders who want lasting SEO value and a real write-up.
+        </div>
+      </div>
+
+      <div class="waf-tier">
+        <h3 class="waf-tier__name">Spotlight + Story + Brief</h3>
+        <div class="waf-tier__price">$399</div>
+        <p class="waf-tier-desc">The full package, including The Friday Brief.</p>
+        <ul class="waf-tier__includes">
+          <li>Everything in Spotlight + Story</li>
+          <li>A slot in The Friday Brief newsletter</li>
+          <li>In front of 2,000+ founder subscribers</li>
+          <li>Limited to one per issue</li>
+        </ul>
+        <div class="waf-tier__bestfor">
+          <strong>Best for</strong>
+          Founders who want maximum reach across site and newsletter.
+        </div>
+      </div>
+    </div>
+
+    <div class="promote-cta">
+      <a href={TALLY}>Request a package &rarr;</a>
+    </div>
+
+    <p class="promote-note">
+      Every placement is still subject to editorial approval. We keep the directory
+      curated, so paid packages do not override our standards, and we do not run
+      gambling, crypto, adult, or similar categories. If your tool is not a fit, we
+      will tell you before you pay.
+    </p>
+  </div>
+
+  <style>
+    .waf-pricing {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      max-width: 960px;
+      margin: 2rem auto;
+      align-items: stretch;
+    }
+    .waf-pricing__label {
+      grid-column: 1 / -1; text-align: center; font-size: 0.8rem;
+      letter-spacing: 0.08em; text-transform: uppercase; color: #6b6b7b;
+      margin-bottom: 0.25rem;
+    }
+    .waf-tier {
+      border: 1px solid #e6e6ee; border-radius: 14px; padding: 1.75rem 1.5rem;
+      background: #fff; display: flex; flex-direction: column; position: relative;
+    }
+    .waf-tier--featured { border-color: #443fde; border-width: 2px; background: #f5f5ff; }
+    .waf-badge {
+      position: absolute; top: -0.75rem; left: 50%; transform: translateX(-50%);
+      background: #443fde; color: #fff; font-size: 0.7rem; letter-spacing: 0.06em;
+      text-transform: uppercase; padding: 0.3rem 0.8rem; border-radius: 999px; white-space: nowrap;
+    }
+    .waf-tier__name { font-size: 1.05rem; font-weight: 700; color: #1a1a2e; margin: 0 0 0.5rem; }
+    .waf-tier__price { font-size: 2rem; font-weight: 800; color: #1a1a2e; line-height: 1; margin-bottom: 0.25rem; }
+    .waf-tier-desc { font-size: 0.9rem; color: #6b6b7b; margin: 0.5rem 0 1.25rem; min-height: 2.6em; }
+    .waf-tier__includes { list-style: none; padding: 0; margin: 0 0 1.5rem; display: flex; flex-direction: column; gap: 0.6rem; }
+    .waf-tier__includes li { font-size: 0.9rem; color: #1a1a2e; padding-left: 1.4rem; position: relative; line-height: 1.4; }
+    .waf-tier__includes li::before { content: "\2713"; position: absolute; left: 0; color: #443fde; font-weight: 700; }
+    .waf-tier__bestfor { margin-top: auto; padding-top: 1rem; border-top: 1px solid #e6e6ee; font-size: 0.85rem; color: #6b6b7b; }
+    .waf-tier__bestfor strong { display: block; color: #1a1a2e; font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.3rem; }
+
+    [data-prefers-color-scheme="dark"] .waf-tier { background: #16161d; border-color: #2a2a36; }
+    [data-prefers-color-scheme="dark"] .waf-tier--featured { background: #1b1a2e; border-color: #443fde; }
+    [data-prefers-color-scheme="dark"] .waf-tier__name,
+    [data-prefers-color-scheme="dark"] .waf-tier__price,
+    [data-prefers-color-scheme="dark"] .waf-tier__includes li { color: #f0f0f5; }
+    [data-prefers-color-scheme="dark"] .waf-tier-desc,
+    [data-prefers-color-scheme="dark"] .waf-tier__bestfor { color: #9a9aab; }
+    [data-prefers-color-scheme="dark"] .waf-tier__bestfor strong { color: #f0f0f5; }
+    [data-prefers-color-scheme="dark"] .waf-pricing__label { color: #9a9aab; }
+    [data-prefers-color-scheme="dark"] .waf-tier__bestfor { border-top-color: #2a2a36; }
+
+    @media (max-width: 720px) { .waf-pricing { grid-template-columns: 1fr; } }
+  </style>
+</BaseLayout>
