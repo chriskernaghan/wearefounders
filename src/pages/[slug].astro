@@ -32,48 +32,6 @@ const updated = new Intl.DateTimeFormat('en-US', {
   month: 'long', day: 'numeric', year: 'numeric'
 }).format(tool.data.last_updated);
 
-/* ------------------------------------------------------------------
-   Lede extraction: pull the first body paragraph up into the header
-   left column to balance the column heights against the facts +
-   boost card stack on the right.
-
-   We read the raw markdown (tool.body), take the first non-empty block,
-   and only treat it as a lede if it is a plain prose paragraph (not a
-   heading, list, quote, table, or image). When it is a lede, we render
-   it in the header and hide the body's first <p> via a body class so it
-   does not appear twice. Otherwise we fall back to current behaviour.
-------------------------------------------------------------------- */
-const rawBody = (tool.body ?? '').trim();
-// First block = everything up to the first blank line.
-const firstBlock = rawBody.split(/\n\s*\n/)[0]?.trim() ?? '';
-const isProseParagraph =
-  firstBlock.length > 0 &&
-  !/^(#{1,6}\s|[-*+]\s|>\s|\||!\[|\d+\.\s|```)/.test(firstBlock);
-
-// Light inline-markdown to HTML for the lede only (bold, italic, links,
-// inline code). Body rendering is still handled fully by <Content />.
-function inlineMd(s: string): string {
-  // Escape HTML first.
-  let out = s
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
-  // links [text](url)
-  out = out.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
-  // bold **text**
-  out = out.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-  // italic *text*  (avoid touching ** already handled)
-  out = out.replace(/(^|[^*])\*([^*]+)\*($|[^*])/g, '$1<em>$2</em>$3');
-  // inline code `code`
-  out = out.replace(/`([^`]+)`/g, '<code>$1</code>');
-  // collapse single newlines inside the paragraph to spaces
-  out = out.replace(/\n+/g, ' ');
-  return out;
-}
-
-const ledeHtml = isProseParagraph ? inlineMd(firstBlock) : '';
-const hasLede = ledeHtml.length > 0;
-
 // Structured data for SEO (SoftwareApplication schema)
 const schema = {
   '@context': 'https://schema.org',
@@ -105,37 +63,56 @@ const schema = {
 >
   <script type="application/ld+json" set:html={JSON.stringify(schema)} />
 
-  <article class={`tool-detail container${hasLede ? ' tool-detail--has-lede' : ''}`}>
+  <article class="tool-detail container">
     <a href={base} class="back-link">← All tools</a>
 
-    <header class="tool-detail__header">
-      <div class="tool-detail__intro">
-        <div class="mono-label">{tool.data.categories.map((s) => CATEGORY_MAP[s]?.label).join(' · ')}</div>
-        <h1>{tool.data.name}</h1>
-        <p class="tool-detail__tagline">{tool.data.tagline}</p>
-        <p class="tool-detail__take">{tool.data.our_take}</p>
+    <div class="tool-detail__layout">
+      <!-- LEFT COLUMN: all editorial content -->
+      <div class="tool-detail__main">
+        <div class="tool-detail__intro">
+          <div class="mono-label">{tool.data.categories.map((s) => CATEGORY_MAP[s]?.label).join(' · ')}</div>
+          <h1>{tool.data.name}</h1>
+          <p class="tool-detail__tagline">{tool.data.tagline}</p>
+          <p class="tool-detail__take">{tool.data.our_take}</p>
 
-        <div class="tool-detail__cta-row">
-          <a
-            href={primaryCta}
-            class="btn btn--primary"
-            target="_blank"
-            rel={ctaRel}
-          >
-            Visit {tool.data.name} →
-          </a>
-          {tool.data.review_url && (
-            <a href={tool.data.review_url} class="btn btn--ghost">
-              Read our full review
+          <div class="tool-detail__cta-row">
+            <a
+              href={primaryCta}
+              class="btn btn--primary"
+              target="_blank"
+              rel={ctaRel}
+            >
+              Visit {tool.data.name} →
             </a>
-          )}
+            {tool.data.review_url && (
+              <a href={tool.data.review_url} class="btn btn--ghost">
+                Read our full review
+              </a>
+            )}
+          </div>
         </div>
 
-        {hasLede && (
-          <p class="tool-detail__lede" set:html={ledeHtml} />
-        )}
+        <section class="tool-detail__body">
+          <Content />
+        </section>
+
+        <section class="tool-detail__verdict">
+          <div class="verdict-col verdict-col--pros">
+            <h3>What we like</h3>
+            <ul>
+              {tool.data.pros.map((p) => <li>{p}</li>)}
+            </ul>
+          </div>
+          <div class="verdict-col verdict-col--cons">
+            <h3>What to watch</h3>
+            <ul>
+              {tool.data.cons.map((c) => <li>{c}</li>)}
+            </ul>
+          </div>
+        </section>
       </div>
 
+      <!-- RIGHT COLUMN: facts + boost card, sticky -->
       <div class="tool-detail__sidebar">
         <aside class="tool-detail__facts">
           <dl>
@@ -176,26 +153,7 @@ const schema = {
 
         <BoostCard />
       </div>
-    </header>
-
-    <section class={`tool-detail__body${hasLede ? ' tool-detail__body--lede-lifted' : ''}`}>
-      <Content />
-    </section>
-
-    <section class="tool-detail__verdict">
-      <div class="verdict-col verdict-col--pros">
-        <h3>What we like</h3>
-        <ul>
-          {tool.data.pros.map((p) => <li>{p}</li>)}
-        </ul>
-      </div>
-      <div class="verdict-col verdict-col--cons">
-        <h3>What to watch</h3>
-        <ul>
-          {tool.data.cons.map((c) => <li>{c}</li>)}
-        </ul>
-      </div>
-    </section>
+    </div>
 
     <section class="tool-detail__final-cta">
       <h2>Try {tool.data.name}</h2>
@@ -227,21 +185,25 @@ const schema = {
   }
   .back-link:hover { color: var(--text); }
 
-  .tool-detail__header {
+  /* Whole-page two-column layout: editorial left, sticky sidebar right. */
+  .tool-detail__layout {
     display: grid;
-    grid-template-columns: minmax(0, 2fr) 280px;
+    grid-template-columns: minmax(0, 1fr) 280px;
     gap: 3rem;
-    padding-bottom: 3rem;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 3rem;
+    align-items: start;
   }
   @media (max-width: 820px) {
-    .tool-detail__header {
+    .tool-detail__layout {
       grid-template-columns: 1fr;
       gap: 2rem;
     }
   }
 
+  .tool-detail__intro {
+    padding-bottom: 2.5rem;
+    margin-bottom: 2.5rem;
+    border-bottom: 1px solid var(--border);
+  }
   .tool-detail__intro h1 {
     margin: 0.5rem 0 1rem;
   }
@@ -268,22 +230,20 @@ const schema = {
     flex-wrap: wrap;
   }
 
-  /* Lede lifted from the body into the header left column. Sits under the
-     CTA and fills the column so it balances the facts + boost card stack. */
-  .tool-detail__lede {
-    margin-top: 2rem;
-    font-size: 1.0625rem;
-    line-height: 1.7;
-    color: var(--text);
-    max-width: 60ch;
-  }
-  .tool-detail__lede :global(a) { color: var(--waf-accent); }
-
+  /* Sidebar: facts + boost card stacked, sticky so it follows the long
+     left column as the reader scrolls. */
   .tool-detail__sidebar {
     display: flex;
     flex-direction: column;
     gap: 1.25rem;
-    align-self: start;
+    position: sticky;
+    top: calc(73px + 1.25rem);
+  }
+  @media (max-width: 820px) {
+    .tool-detail__sidebar {
+      position: static;
+      top: auto;
+    }
   }
 
   .tool-detail__facts {
@@ -314,25 +274,16 @@ const schema = {
     align-self: end;
   }
 
+  /* Body now sits in the left column at full column width (no centring). */
   .tool-detail__body {
-    max-width: 68ch;
-    margin: 0 auto;
     font-size: 1.0625rem;
     line-height: 1.7;
-  }
-  /* When the first paragraph has been lifted into the header, hide the
-     body's original first paragraph so it does not appear twice. */
-  .tool-detail__body--lede-lifted :global(> p:first-child) {
-    display: none;
   }
   .tool-detail__body :global(h2) {
     margin: 2.5rem 0 1rem;
     font-size: 1.625rem;
   }
-  /* If the first visible block after hiding the lede is a heading, drop
-     its top margin so the body does not start with a big gap. */
-  .tool-detail__body--lede-lifted :global(> p:first-child + h2),
-  .tool-detail__body--lede-lifted :global(> h2:first-child) {
+  .tool-detail__body :global(h2:first-child) {
     margin-top: 0;
   }
   .tool-detail__body :global(h3) {
@@ -348,12 +299,12 @@ const schema = {
     margin-bottom: 0.375rem;
   }
 
+  /* Verdict sits in the left column under the body. */
   .tool-detail__verdict {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 2rem;
-    max-width: 68ch;
-    margin: 4rem auto 0;
+    margin: 3rem 0 0;
     padding: 2rem;
     background: var(--bg-subtle);
     border-radius: var(--radius-lg);
@@ -362,7 +313,6 @@ const schema = {
     .tool-detail__verdict { grid-template-columns: 1fr; }
   }
   .verdict-col h3 {
-    font-size: 1rem;
     margin-bottom: 1rem;
     font-family: var(--font-mono);
     font-size: 0.75rem;
@@ -384,6 +334,7 @@ const schema = {
   .verdict-col--pros li::before { content: '+ '; color: var(--waf-accent); font-weight: 600; }
   .verdict-col--cons li::before { content: '− '; color: var(--text-faint); font-weight: 600; }
 
+  /* Final CTA spans full width below the two-column layout. */
   .tool-detail__final-cta {
     text-align: center;
     margin-top: 4rem;
