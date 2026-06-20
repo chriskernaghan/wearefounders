@@ -86,45 +86,59 @@ const TALLY = 'https://tally.so/r/ZjWlez';
     .waf-pricing {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 1rem;
+      gap: 1.25rem;
       max-width: 960px;
       margin: 2rem auto;
       align-items: stretch;
     }
     .waf-pricing__label {
-      grid-column: 1 / -1; text-align: center; font-size: 0.8rem;
-      letter-spacing: 0.08em; text-transform: uppercase; color: #6b6b7b;
+      grid-column: 1 / -1; text-align: center;
+      font-family: var(--font-mono); font-size: 0.75rem;
+      letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-faint);
       margin-bottom: 0.25rem;
     }
     .waf-tier {
-      border: 1px solid #e6e6ee; border-radius: 14px; padding: 1.75rem 1.5rem;
-      background: #fff; display: flex; flex-direction: column; position: relative;
+      border: 1px solid var(--border); border-radius: var(--radius-lg);
+      padding: 1.75rem 1.5rem; background: var(--bg-elevated);
+      display: flex; flex-direction: column; position: relative;
     }
-    .waf-tier--featured { border-color: #443fde; border-width: 2px; background: #f5f5ff; }
+    .waf-tier--featured { border-color: var(--waf-accent); border-width: 2px; background: var(--waf-accent-soft); }
     .waf-badge {
       position: absolute; top: -0.75rem; left: 50%; transform: translateX(-50%);
-      background: #443fde; color: #fff; font-size: 0.7rem; letter-spacing: 0.06em;
+      background: var(--waf-accent); color: #fff;
+      font-family: var(--font-mono); font-size: 0.6875rem; letter-spacing: 0.06em;
       text-transform: uppercase; padding: 0.3rem 0.8rem; border-radius: 999px; white-space: nowrap;
     }
-    .waf-tier__name { font-size: 1.05rem; font-weight: 700; color: #1a1a2e; margin: 0 0 0.5rem; }
-    .waf-tier__price { font-size: 2rem; font-weight: 800; color: #1a1a2e; line-height: 1; margin-bottom: 0.25rem; }
-    .waf-tier-desc { font-size: 0.9rem; color: #6b6b7b; margin: 0.5rem 0 1.25rem; min-height: 2.6em; }
+    .waf-tier__name { font-family: var(--font-display); font-size: 1.25rem; font-weight: 600; color: var(--text); margin: 0 0 0.5rem; }
+    .waf-tier__price { font-family: var(--font-display); font-size: 2rem; font-weight: 600; color: var(--text); line-height: 1; margin-bottom: 0.25rem; }
+    .waf-tier-desc { font-size: 0.9rem; color: var(--text-muted); margin: 0.5rem 0 1.25rem; min-height: 2.6em; }
     .waf-tier__includes { list-style: none; padding: 0; margin: 0 0 1.5rem; display: flex; flex-direction: column; gap: 0.6rem; }
-    .waf-tier__includes li { font-size: 0.9rem; color: #1a1a2e; padding-left: 1.4rem; position: relative; line-height: 1.4; }
-    .waf-tier__includes li::before { content: "\2713"; position: absolute; left: 0; color: #443fde; font-weight: 700; }
-    .waf-tier__bestfor { margin-top: auto; padding-top: 1rem; border-top: 1px solid #e6e6ee; font-size: 0.85rem; color: #6b6b7b; }
-    .waf-tier__bestfor strong { display: block; color: #1a1a2e; font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.3rem; }
+    .waf-tier__includes li { font-size: 0.9rem; color: var(--text); padding-left: 1.4rem; position: relative; line-height: 1.4; }
+    .waf-tier__includes li::before { content: "\2713"; position: absolute; left: 0; color: var(--waf-accent); font-weight: 700; }
+    .waf-tier__bestfor { margin-top: auto; padding-top: 1rem; border-top: 1px solid var(--border); font-size: 0.85rem; color: var(--text-muted); }
+    .waf-tier__bestfor strong { display: block; color: var(--text); font-family: var(--font-mono); font-size: 0.6875rem; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.3rem; }
 
-    [data-prefers-color-scheme="dark"] .waf-tier { background: #16161d; border-color: #2a2a36; }
-    [data-prefers-color-scheme="dark"] .waf-tier--featured { background: #1b1a2e; border-color: #443fde; }
-    [data-prefers-color-scheme="dark"] .waf-tier__name,
-    [data-prefers-color-scheme="dark"] .waf-tier__price,
-    [data-prefers-color-scheme="dark"] .waf-tier__includes li { color: #f0f0f5; }
-    [data-prefers-color-scheme="dark"] .waf-tier-desc,
-    [data-prefers-color-scheme="dark"] .waf-tier__bestfor { color: #9a9aab; }
-    [data-prefers-color-scheme="dark"] .waf-tier__bestfor strong { color: #f0f0f5; }
-    [data-prefers-color-scheme="dark"] .waf-pricing__label { color: #9a9aab; }
-    [data-prefers-color-scheme="dark"] .waf-tier__bestfor { border-top-color: #2a2a36; }
+    .promote-hero { text-align: center; max-width: 680px; margin: 0 auto 2.5rem; padding-top: 2.5rem; }
+    .promote-hero__eyebrow {
+      font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--waf-accent);
+    }
+    .promote-hero h1 { margin: 0.75rem 0 1rem; }
+    .promote-hero p { font-size: 1.0625rem; color: var(--text-muted); line-height: 1.6; }
+
+    .promote-cta { text-align: center; margin: 2.5rem 0 1rem; }
+    .promote-cta a {
+      display: inline-block; background: var(--waf-accent); color: #fff;
+      font-weight: 600; padding: 0.85rem 1.75rem; border-radius: var(--radius); text-decoration: none;
+    }
+    .promote-cta a:hover { background: var(--waf-accent-hover); }
+
+    .promote-note {
+      max-width: 760px; margin: 2rem auto 0; padding: 1rem 1.25rem;
+      border-left: 3px solid var(--waf-accent); background: var(--bg-subtle);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      font-size: 0.9rem; color: var(--text-muted); line-height: 1.6;
+    }
 
     @media (max-width: 720px) { .waf-pricing { grid-template-columns: 1fr; } }
   </style>
