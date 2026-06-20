@@ -5,6 +5,7 @@ import ToolCard from '../components/ToolCard.astro';
 import FilterBar from '../components/FilterBar.astro';
 import { STAGES, CATEGORIES } from '../data/taxonomy';
 import NewsletterSignup from '../components/NewsletterSignup.astro';
+import PromoMarquee from '../components/PromoMarquee.astro';
 
 const tools = await getCollection('tools');
 const sorted = tools.sort((a, b) => {
@@ -48,6 +49,8 @@ const base = import.meta.env.BASE_URL;
       </div>
     </div>
   </section>
+
+<PromoMarquee />
 
   <div class="container">
     <div class="directory-layout">
