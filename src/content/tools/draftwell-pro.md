@@ -8,7 +8,7 @@ stages:
   - scaling
 pricing_from: 9.99
 pricing_currency: "USD"
-pricing_model: "Subscription"
+pricing_model: "one-time"
 free_tier: false
 free_trial_days: null
 affiliate_url: null
