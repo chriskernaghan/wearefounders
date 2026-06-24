@@ -16,5 +16,5 @@ pros:
 cons:
   - "Not built for legal, medical, or research-heavy documents needing expert review"
   - "No substitute for a human editor on important final drafts"
-last_updated: "2026-06-24"
+last_updated: 2026-06-24
 ---
