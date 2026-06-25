@@ -1,5 +1,6 @@
 ---
 import { getCollection, render } from 'astro:content';
+import { existsSync } from 'node:fs';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { CATEGORY_MAP, STAGE_MAP } from '../data/taxonomy';
 import BoostCard from '../components/BoostCard.astro';
@@ -32,6 +33,19 @@ const ctaRel = isAffiliate ? 'sponsored noopener' : 'noopener';
 // the <img> onerror hides the figure cleanly (no broken-image icon).
 const slug = tool.id.replace(/\.md$/, '');
 const screenshotSrc = tool.data.screenshot ?? `${base}screenshots/${slug}.png`;
+
+// OG image: reuse the page screenshot when we can prove it exists. A manual
+// frontmatter `screenshot` wins; otherwise we check the committed file on
+// disk at build time. We can't rely on the on-page <img onerror> trick for
+// social tags — a 404 there shows a broken preview — so we only set ogImage
+// when the file is real. Everything else falls back to the Layout default.
+const screenshotFile = `screenshots/${slug}.png`;
+const hasCommittedShot = existsSync(`public/${screenshotFile}`);
+const ogImage = tool.data.screenshot
+  ? new URL(tool.data.screenshot, Astro.site).toString()
+  : hasCommittedShot
+    ? new URL(`${base}${screenshotFile}`, Astro.site).toString()
+    : undefined; // BaseLayout falls back to /og-default.png
 
 // Format date for display
 const updated = new Intl.DateTimeFormat('en-US', {
@@ -66,6 +80,7 @@ const schema = {
 <BaseLayout
   title={`${tool.data.name} review and pricing`}
   description={`${tool.data.our_take} Read our editorial review of ${tool.data.name}, including pricing, pros, cons, and who it's for.`}
+  ogImage={ogImage}
 >
   <script type="application/ld+json" set:html={JSON.stringify(schema)} />
 
