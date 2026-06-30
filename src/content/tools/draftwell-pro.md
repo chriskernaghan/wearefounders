@@ -15,7 +15,7 @@ affiliate_url: null
 affiliate_program: "None"
 website: "https://draftwellpro.github.io/Draftwell-Pro/"
 review_url: null
-our_take: "A fully local novel-writing app that keeps your book, your writing time, and deep prose analytics in one place. No cloud, no subscription, no AI. Windows only, and built by a solo dev for his wife."
+our_take: "A fully local novel-writing app that keeps your book, your writing time, and deep prose analytics in one place. No cloud, no subscription, no AI. One-time purchase, available on Windows and macOS, and built by a solo dev for his wife."
 pros:
   - "Keeps everything in one place: scenes, chapters, character relationships, story timelines, per-scene research notes, even your query letter, without juggling separate tools"
   - "Automatically tracks time and word count each session with no setup, clocking in when you type and out after inactivity, so goals stay accurate even when you forget"
@@ -23,11 +23,11 @@ pros:
   - "100% local with no cloud, account, or subscription, your manuscript lives in one file with tiered automatic backups, and you own your data outright"
   - "Practical extras like an offline thesaurus, full-text search across notes, direct DOCX and PDF export, per-scene revision history, and a multi-book library"
 cons:
-  - "Windows only, with no Mac, Linux, or browser version, so it is the wrong tool if you are not on Windows"
+  - "Windows and macOS only, with no Linux or browser version, so it is the wrong tool if you write on either of those"
   - "Single user on a single machine, with no sync between devices and no co-author sharing"
   - "Built for long-form narrative, so it is not suited to screenwriters, poets, academic, or technical writers (no screenplay, citation, or structured-authoring support)"
   - "Prose revision history is basic, not Git-level version control"
-last_updated: 2026-06-20
+last_updated: 2026-06-30
 featured: false
 comparable: true
 ---
@@ -42,6 +42,6 @@ Privacy and ownership are the foundation. Everything is 100% local: no cloud, no
 
 There are useful extras too: an offline thesaurus for looking up synonyms mid-draft, full-text search across the manuscript including scene notes, direct export to DOCX and PDF, per-scene revision history so you can roll back overwrites, and a library for managing a whole series from one place.
 
-Be clear on who it is not for. It is Windows only, with no Mac, Linux, or browser version. It is single-user on a single machine, with no sync or co-author sharing. And because it assumes long-form narrative structure, it is not the right tool for screenwriters, poets, academic writers, journalists, or technical writers, who all need formats and features it does not offer.
+Be clear on who it is not for. It runs on Windows and macOS, but there is no Linux or browser version. It is single-user on a single machine, with no sync or co-author sharing. And because it assumes long-form narrative structure, it is not the right tool for screenwriters, poets, academic writers, journalists, or technical writers, who all need formats and features it does not offer.
 
 Draftwell Pro is a one-time purchase, regularly $19.99 and currently 50% off at $9.99 while the maker builds an early user base. There is a usage-based trial of around ten working hours so you can test the workflow before buying. It was built by a solo developer for his wife, who has refined it over years of her own writing before it went public.
