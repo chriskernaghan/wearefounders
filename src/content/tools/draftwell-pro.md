@@ -15,7 +15,7 @@ affiliate_url: null
 affiliate_program: "None"
 website: "https://draftwellpro.github.io/Draftwell-Pro/"
 review_url: null
-our_take: "A fully local novel-writing app that keeps your book, your writing time, and deep prose analytics in one place. No cloud, no subscription, no AI. One-time purchase, available on Windows and macOS, and built by a solo dev for his wife."
+our_take: "A fully local novel-writing app that keeps your book, your writing time, and deep prose analytics in one place. No cloud, no subscription, no AI. Windows and macOS, built by a solo dev for his wife."
 pros:
   - "Keeps everything in one place: scenes, chapters, character relationships, story timelines, per-scene research notes, even your query letter, without juggling separate tools"
   - "Automatically tracks time and word count each session with no setup, clocking in when you type and out after inactivity, so goals stay accurate even when you forget"
