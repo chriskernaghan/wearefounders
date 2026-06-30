@@ -21,7 +21,13 @@ const symbol = tool.data.pricing_currency === 'GBP' ? '£' : tool.data.pricing_c
 let priceLabel: string;
 if (tool.data.pricing_from === null) priceLabel = 'Custom pricing';
 else if (tool.data.pricing_from === 0) priceLabel = 'Free';
-else priceLabel = `From ${symbol}${tool.data.pricing_from}/mo`;
+else {
+  // Only recurring pricing models get a "/mo" suffix. One-time, usage-based,
+  // and custom pricing should not — a one-time purchase is not "From $X/mo".
+  const isRecurring = tool.data.pricing_model === 'subscription' || tool.data.pricing_model === 'freemium';
+  const suffix = isRecurring ? '/mo' : '';
+  priceLabel = `From ${symbol}${tool.data.pricing_from}${suffix}`;
+}
 
 // Primary CTA target — affiliate URL if present, otherwise direct website
 const primaryCta = tool.data.affiliate_url ?? tool.data.website;
