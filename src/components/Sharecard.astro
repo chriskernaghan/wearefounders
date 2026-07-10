@@ -1,0 +1,51 @@
+---
+// "Share your listing" sidebar prompt for tool detail pages.
+// Place inside .tool-detail__sidebar, alongside BoostCard.
+//
+// Generates a UTM-tagged link back to this listing so founders can share
+// it themselves. utm_content carries the tool's own slug so each listing's
+// referral traffic is distinguishable in GA4 / Cloudflare Analytics —
+// this is the data source the trending bar should eventually run on
+// instead of the manually curated array in TrendingBar.astro.
+interface Props {
+  slug: string;
+  toolName: string;
+}
+const { slug, toolName } = Astro.props;
+
+const shareUrl = `https://directory.wearefounders.uk/${slug}/?utm_source=share&utm_medium=social&utm_campaign=founder_share&utm_content=${slug}`;
+const tweetText = `${toolName} just got listed on the We Are Founders tools directory`;
+const tweetHref = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}&url=${encodeURIComponent(shareUrl)}`;
+---
+<aside class="share-card">
+  <span class="share-card__label">Share this listing</span>
+  <h3 class="share-card__title">Help {toolName} climb the leaderboard</h3>
+  <p class="share-card__desc">
+    Shares tracked through this link count toward the trending spot on our homepage.
+  </p>
+  <div class="share-card__actions">
+    <a class="share-card__cta share-card__cta--primary" href={tweetHref} target="_blank" rel="noopener">
+      Share on X
+    </a>
+    <button type="button" class="share-card__cta share-card__cta--ghost" data-copy-link={shareUrl}>
+      Copy link
+    </button>
+  </div>
+</aside>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('[data-copy-link]').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const url = btn.dataset.copyLink;
+      if (!url) return;
+      try {
+        await navigator.clipboard.writeText(url);
+        const original = btn.textContent;
+        btn.textContent = 'Copied!';
+        setTimeout(() => { btn.textContent = original; }, 1500);
+      } catch {
+        // Clipboard API unavailable — silently no-op, link is still visible via copy-paste of the URL bar.
+      }
+    });
+  });
+</script>
