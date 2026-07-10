@@ -1,0 +1,38 @@
+---
+// Trending leaderboard strip for the directory index.
+// Place at the very top of src/pages/index.astro, above PromoMarquee.
+//
+// Data is manually curated for now (same pattern as PromoMarquee's `items`
+// array). Once UTM-tagged share links have real traffic behind them, swap
+// the `trending` array below for a query against referral data — the
+// component itself doesn't need to change, just how `trending` is built.
+interface TrendingTool {
+  name: string;
+  slug: string; // matches the tool's content filename, no .md
+}
+
+const trending: TrendingTool[] = [
+  { name: 'Plantool.App', slug: 'plantool-app' },
+  { name: 'vidmo', slug: 'vidmo' },
+  { name: 'CopyChecker Grammar Checker', slug: 'copychecker-grammar-checker' },
+];
+
+const base = import.meta.env.BASE_URL;
+---
+<div class="trending-bar">
+  <span class="trending-bar__label">
+    <span class="trending-bar__icon" aria-hidden="true">&#9650;</span>
+    Trending this week
+  </span>
+  <ol class="trending-bar__list">
+    {trending.map((tool, i) => (
+      <li>
+        <a href={`${base}${tool.slug}/`}>
+          <span class="trending-bar__rank">{i + 1}</span>
+          {tool.name}
+        </a>
+      </li>
+    ))}
+  </ol>
+  <a class="trending-bar__cta" href={`${base}promote/`}>Get featured here &rarr;</a>
+</div>
