@@ -4,6 +4,7 @@ import { existsSync } from 'node:fs';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { CATEGORY_MAP, STAGE_MAP } from '../data/taxonomy';
 import BoostCard from '../components/BoostCard.astro';
+import ShareCard from '../components/ShareCard.astro';
 
 export async function getStaticPaths() {
   const tools = await getCollection('tools');
@@ -188,6 +189,7 @@ const schema = {
         </aside>
 
         <BoostCard />
+        <ShareCard slug={slug} toolName={tool.data.name} />
       </div>
     </div>
 
