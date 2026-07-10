@@ -1135,14 +1135,17 @@ body.is-home .hero__inner {
    Append to the BOTTOM of src/styles/global.css.
    ============================================================ */
 .trending-bar {
+  width: 100%;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-subtle);
+  font-size: 0.8125rem;
+}
+.trending-bar__inner {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
   gap: 0.5rem 1.5rem;
-  margin: 1rem 0 0;
-  padding: 0.5rem 1rem;
-  border-bottom: 1px solid var(--border);
-  font-size: 0.8125rem;
+  padding: 0.5rem 0;
 }
 .trending-bar__label {
   flex: 0 0 auto;
