@@ -1,6 +1,7 @@
 ---
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
+import TrendingBar from '../components/TrendingBar.astro';
 import '../styles/global.css';
 
 interface Props {
@@ -68,6 +69,7 @@ const base = import.meta.env.BASE_URL;
     </script>
   </head>
   <body class={bodyClass}>
+    <TrendingBar />
     <SiteHeader />
     <main>
       <slot />
