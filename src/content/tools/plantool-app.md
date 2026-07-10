@@ -19,5 +19,5 @@ cons:
   - "Not built for teams wanting fully automated, hands-off scheduling"
   - "Manual approval workflow adds friction for high-volume booking"
   - "Fewer AI-driven scheduling smarts than more automated competitors"
-last_updated: "2026-07-10"
+last_updated: 2026-07-10
 ---
