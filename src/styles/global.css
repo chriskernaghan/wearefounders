@@ -1126,3 +1126,128 @@ body.is-home .hero__inner {
   font-weight: 600; padding: 0.85rem 1.75rem; border-radius: var(--radius); text-decoration: none;
 }
 .promote-cta a:hover { background: var(--waf-accent-hover); }
+
+/* ============================================================
+   TRENDING BAR: homepage leaderboard strip
+   Sits above the promo marquee, thinner and quieter — it's the
+   free/organic leaderboard, not a paid placement, so it should
+   read as lighter-weight than .promo-marquee.
+   Append to the BOTTOM of src/styles/global.css.
+   ============================================================ */
+.trending-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  margin: 1rem 0 0;
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.8125rem;
+}
+.trending-bar__label {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.trending-bar__icon {
+  color: var(--waf-accent);
+  font-size: 0.6rem;
+}
+.trending-bar__list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.25rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex: 1 1 auto;
+}
+.trending-bar__list a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 500;
+}
+.trending-bar__list a:hover { color: var(--waf-accent); }
+.trending-bar__rank {
+  font-family: var(--font-mono);
+  color: var(--text-faint);
+  font-weight: 400;
+}
+.trending-bar__cta {
+  flex: 0 0 auto;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--waf-accent);
+  text-decoration: none;
+  white-space: nowrap;
+}
+@media (max-width: 600px) {
+  .trending-bar__cta { display: none; }
+}
+
+/* ============================================================
+   SHARE CARD: "share this listing" sidebar prompt (detail page)
+   Sits below BoostCard in .tool-detail__sidebar. Quieter than
+   BoostCard since this is a free growth loop, not a paid upsell.
+   Append to the BOTTOM of src/styles/global.css.
+   ============================================================ */
+.share-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  background: var(--bg-subtle);
+}
+.share-card__label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-bottom: 0.5rem;
+}
+.share-card__title {
+  font-size: 1.0625rem;
+  margin: 0 0 0.5rem;
+}
+.share-card__desc {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin: 0 0 1.25rem;
+}
+.share-card__actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.share-card__cta {
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  padding: 0.55rem 0.9rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  text-decoration: none;
+  background: transparent;
+  color: var(--text);
+}
+.share-card__cta--primary {
+  background: var(--waf-accent);
+  border-color: var(--waf-accent);
+  color: #fff !important;
+}
+.share-card__cta--primary:hover { background: var(--waf-accent-hover); }
+.share-card__cta--ghost:hover { border-color: var(--waf-accent); color: var(--waf-accent); }
