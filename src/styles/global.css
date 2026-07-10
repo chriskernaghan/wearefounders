@@ -1094,16 +1094,17 @@ body.is-home .hero__inner {
   display: block;
   width: 100%;
   text-align: center;
-  background: var(--waf-accent);
-  color: #fff !important;
+  background: transparent;
+  color: var(--waf-accent) !important;
+  border: 1px solid var(--waf-accent);
   font-size: 0.9rem;
   font-weight: 600;
-  padding: 0.7rem 1rem;
+  padding: 0.65rem 1rem;
   border-radius: var(--radius);
   text-decoration: none;
-  transition: background 0.15s ease;
+  transition: background 0.15s ease, color 0.15s ease;
 }
-.boost-card__cta:hover { background: var(--waf-accent-hover); color: #fff !important; }
+.boost-card__cta:hover { background: var(--waf-accent); color: #fff !important; }
 
 /* --- Promote page --- */
 .promote-hero { text-align: center; max-width: 680px; margin: 0 auto 2.5rem; padding-top: 2.5rem; }
@@ -1218,7 +1219,7 @@ body.is-home .hero__inner {
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   padding: 1.5rem;
-  background: var(--bg-subtle);
+  background: var(--bg-elevated);
 }
 .share-card__label {
   display: block;
@@ -1257,9 +1258,9 @@ body.is-home .hero__inner {
   color: var(--text);
 }
 .share-card__cta--primary {
-  background: var(--waf-accent);
+  background: transparent;
   border-color: var(--waf-accent);
-  color: #fff !important;
+  color: var(--waf-accent) !important;
 }
-.share-card__cta--primary:hover { background: var(--waf-accent-hover); }
+.share-card__cta--primary:hover { background: var(--waf-accent); color: #fff !important; }
 .share-card__cta--ghost:hover { border-color: var(--waf-accent); color: var(--waf-accent); }
