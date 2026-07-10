@@ -20,19 +20,21 @@ const trending: TrendingTool[] = [
 const base = import.meta.env.BASE_URL;
 ---
 <div class="trending-bar">
-  <span class="trending-bar__label">
-    <span class="trending-bar__icon" aria-hidden="true">&#9650;</span>
-    Trending this week
-  </span>
-  <ol class="trending-bar__list">
-    {trending.map((tool, i) => (
-      <li>
-        <a href={`${base}${tool.slug}/`}>
-          <span class="trending-bar__rank">{i + 1}</span>
-          {tool.name}
-        </a>
-      </li>
-    ))}
-  </ol>
-  <a class="trending-bar__cta" href={`${base}promote/`}>Get featured here &rarr;</a>
+  <div class="container trending-bar__inner">
+    <span class="trending-bar__label">
+      <span class="trending-bar__icon" aria-hidden="true">&#9650;</span>
+      Trending this week
+    </span>
+    <ol class="trending-bar__list">
+      {trending.map((tool, i) => (
+        <li>
+          <a href={`${base}${tool.slug}/`}>
+            <span class="trending-bar__rank">{i + 1}</span>
+            {tool.name}
+          </a>
+        </li>
+      ))}
+    </ol>
+    <a class="trending-bar__cta" href={`${base}promote/`}>Get featured here &rarr;</a>
+  </div>
 </div>
