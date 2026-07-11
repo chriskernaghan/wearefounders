@@ -1,51 +1,71 @@
----
-// "Share your listing" sidebar prompt for tool detail pages.
-// Place inside .tool-detail__sidebar, alongside BoostCard.
-//
-// Generates a UTM-tagged link back to this listing so founders can share
-// it themselves. utm_content carries the tool's own slug so each listing's
-// referral traffic is distinguishable in GA4 / Cloudflare Analytics —
-// this is the data source the trending bar should eventually run on
-// instead of the manually curated array in TrendingBar.astro.
-interface Props {
-  slug: string;
-  toolName: string;
-}
-const { slug, toolName } = Astro.props;
+import { defineCollection, z } from 'astro:content';
+import { glob } from 'astro/loaders';
 
-const shareUrl = `https://directory.wearefounders.uk/${slug}/?utm_source=share&utm_medium=social&utm_campaign=founder_share&utm_content=${slug}`;
-const tweetText = `${toolName} just got listed on the We Are Founders tools directory`;
-const tweetHref = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}&url=${encodeURIComponent(shareUrl)}`;
----
-<aside class="share-card">
-  <span class="share-card__label">Share this listing</span>
-  <h3 class="share-card__title">Help {toolName} climb the leaderboard</h3>
-  <p class="share-card__desc">
-    Shares tracked through this link count toward the trending spot on our homepage.
-  </p>
-  <div class="share-card__actions">
-    <a class="share-card__cta share-card__cta--primary" href={tweetHref} target="_blank" rel="noopener">
-      Share on X
-    </a>
-    <button type="button" class="share-card__cta share-card__cta--ghost" data-copy-link={shareUrl}>
-      Copy link
-    </button>
-  </div>
-</aside>
+const tools = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/tools' }),
+  schema: z.object({
+    // Identity
+    name: z.string(),
+    tagline: z.string().max(120),
+    logo: z.string().optional(),
+    screenshot: z.string().optional(),
 
-<script>
-  document.querySelectorAll<HTMLButtonElement>('[data-copy-link]').forEach((btn) => {
-    btn.addEventListener('click', async () => {
-      const url = btn.dataset.copyLink;
-      if (!url) return;
-      try {
-        await navigator.clipboard.writeText(url);
-        const original = btn.textContent;
-        btn.textContent = 'Copied!';
-        setTimeout(() => { btn.textContent = original; }, 1500);
-      } catch {
-        // Clipboard API unavailable — silently no-op, link is still visible via copy-paste of the URL bar.
-      }
-    });
-  });
-</script>
+    // Taxonomy — tool can sit in multiple categories and serve multiple stages
+    categories: z.array(
+      z.enum([
+        'ai-agents',
+        'automation',
+        'developer-tools',
+        'finance-ops',
+        'growth-marketing',
+        'sales-crm',
+        'customer-support',
+        'analytics',
+        'productivity',
+        'design',
+        'hiring-hr',
+        'legal-compliance',
+      ])
+    ).min(1),
+    stages: z.array(
+      z.enum(['pre-launch', 'mvp', 'scaling', 'established'])
+    ).min(1),
+
+    // Pricing snapshot (kept deliberately vague per WAF style — use "from")
+    pricing_from: z.number().nullable(),
+    pricing_currency: z.enum(['USD', 'GBP', 'EUR']).default('USD'),
+    pricing_model: z.enum([
+      'subscription',
+      'usage-based',
+      'one-time',
+      'freemium',
+      'free',
+      'custom',
+    ]),
+    free_tier: z.boolean().default(false),
+    free_trial_days: z.number().nullable().default(null),
+
+    // Commercial
+    affiliate_url: z.string().url().nullable().default(null),
+    affiliate_program: z.enum(['PartnerStack', 'Impact', 'Direct', 'None']).default('None'),
+    website: z.string().url(),
+    twitter_handle: z.string().nullable().default(null), // no leading @, e.g. "plantoolapp"
+    linkedin_url: z.string().url().nullable().default(null), // full profile or company page URL
+
+    // Editorial
+    review_url: z.string().nullable().default(null),
+    our_take: z.string().max(200),
+    pros: z.array(z.string()).min(1).max(5),
+    cons: z.array(z.string()).min(1).max(5),
+    verdict_score: z.number().min(1).max(10).optional(),
+
+    // Meta
+    founded: z.number().optional(),
+    hq: z.string().optional(),
+    last_updated: z.date(),
+    featured: z.boolean().default(false),
+    comparable: z.boolean().default(true),
+  }),
+});
+
+export const collections = { tools };
