@@ -1,0 +1,9 @@
+{
+  "_readme": "Updated weekly from GA4. Go to Reports > Engagement > Events (or a saved Explore), filter to eventName=page_view with utm_campaign=founder_share, breakdown by utm_content (this is the tool's slug), sort descending, take the top 3. Put their slugs below in rank order. Tool names are looked up automatically from the content collection at build time, so you only need the slug here — if a slug doesn't match a live listing the build will fail loudly rather than show a broken link.",
+  "week_of": "2026-07-13",
+  "slugs": [
+    "plantool-app",
+    "vidmo",
+    "copychecker-grammar-checker"
+  ]
+}
