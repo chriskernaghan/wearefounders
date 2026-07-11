@@ -49,6 +49,8 @@ const tools = defineCollection({
     affiliate_url: z.string().url().nullable().default(null),
     affiliate_program: z.enum(['PartnerStack', 'Impact', 'Direct', 'None']).default('None'),
     website: z.string().url(),
+    twitter_handle: z.string().nullable().default(null), // no leading @, e.g. "plantoolapp"
+    linkedin_url: z.string().url().nullable().default(null), // full profile or company page URL
 
     // Editorial
     review_url: z.string().nullable().default(null),
