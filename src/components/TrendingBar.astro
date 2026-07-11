@@ -1,21 +1,31 @@
 ---
 // Trending leaderboard strip for the directory index.
-// Place at the very top of src/pages/index.astro, above PromoMarquee.
+// Place at the very top of src/layouts/BaseLayout.astro, above SiteHeader.
 //
-// Data is manually curated for now (same pattern as PromoMarquee's `items`
-// array). Once UTM-tagged share links have real traffic behind them, swap
-// the `trending` array below for a query against referral data — the
-// component itself doesn't need to change, just how `trending` is built.
-interface TrendingTool {
-  name: string;
-  slug: string; // matches the tool's content filename, no .md
-}
+// Ranking data lives in src/data/trending.json, updated by hand once a week
+// from GA4 (Reports > Engagement > Events, filtered to utm_campaign=
+// founder_share, broken down by utm_content, sorted by count). See that
+// file's _readme field for the exact steps.
+//
+// Tool names/links are resolved here from the live content collection, not
+// stored in the JSON — this means a stale or mistyped slug in trending.json
+// fails the build loudly instead of silently shipping a broken link or a
+// name that's drifted from the actual listing.
+import { getCollection } from 'astro:content';
+import trendingData from '../data/trending.json';
 
-const trending: TrendingTool[] = [
-  { name: 'Plantool.App', slug: 'plantool-app' },
-  { name: 'vidmo', slug: 'vidmo' },
-  { name: 'CopyChecker Grammar Checker', slug: 'copychecker-grammar-checker' },
-];
+const allTools = await getCollection('tools');
+
+const trending = trendingData.slugs.map((slug) => {
+  const tool = allTools.find((t) => t.id.replace(/\.md$/, '') === slug);
+  if (!tool) {
+    throw new Error(
+      `TrendingBar: "${slug}" in src/data/trending.json does not match any listing in src/content/tools. ` +
+      `Check for a typo, or remove it if the tool was unlisted.`
+    );
+  }
+  return { name: tool.data.name, slug };
+});
 
 const base = import.meta.env.BASE_URL;
 ---
