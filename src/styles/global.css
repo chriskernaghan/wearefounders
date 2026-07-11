@@ -1,11 +1,3 @@
-/* ============================================================
-   WAF Tools Directory — Global Styles
-   Typography: Space Grotesk (display + logo), Overpass (body),
-   JetBrains Mono (metadata).
-   WAF brand purple #443fde as the only strong accent.
-   Light by default, dark via [data-prefers-color-scheme="dark"].
-   ============================================================ */
-
 :root {
   /* Brand */
   --waf-accent: #443fde;
@@ -1243,7 +1235,7 @@ body.is-home .hero__inner {
 .share-card__actions {
   display: flex;
   gap: 0.5rem;
-  flex-wrap: wrap;
+  flex-wrap: wrap-reverse;
 }
 .share-card__cta {
   font-family: var(--font-sans);
