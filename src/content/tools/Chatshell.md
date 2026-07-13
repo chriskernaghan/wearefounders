@@ -23,8 +23,6 @@ cons:
   - Currently limited to ChatGPT in Chromium browsers
   - Free plan capped on monthly exports, batch and team features need Pro
 verdict_score: 7
-founded: null
-hq: null
 last_updated: 2026-07-13
 featured: false
 comparable: true
