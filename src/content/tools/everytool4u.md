@@ -8,7 +8,7 @@ pricing_model: "free"
 pricing_from: 0
 pricing_currency: "USD"
 free_tier: true
-our_take: "A 109-tool browser toolkit covering PDFs, images, video, text, office files, loan calculators, and dev utilities like JSON, regex, and hashing. Everything runs locally, no uploads, no account, no file limits."
+our_take: "A 109-tool browser toolkit covering PDFs, images, video, text, office files, loan calculators, and dev utilities. Runs entirely locally, no uploads, no account, no file limits."
 pros:
   - "109 tools spanning PDF, image, video, text, office, finance, and developer utilities in one place"
   - "Fully local processing, files never leave your device"
