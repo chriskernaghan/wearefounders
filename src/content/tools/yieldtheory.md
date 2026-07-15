@@ -3,7 +3,7 @@ name: Yield Theory
 tagline: Monthly market research, stock analysis, congressional trades and free investing tools
 website: https://www.yieldtheory.app
 categories:
-  - finance
+  - finance-ops
 stages:
   - mvp
 pricing_model: freemium
