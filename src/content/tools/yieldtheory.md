@@ -2,14 +2,25 @@
 name: Yield Theory
 tagline: Monthly market research, stock analysis, congressional trades and free investing tools
 website: https://www.yieldtheory.app
-category: finance
-stage: mvp
+categories:
+  - finance
+stages:
+  - mvp
 pricing_model: freemium
-pricing_starts: 24.99
+pricing_from: 24.99
 free_trial: false
 date_added: 2026-07-15
+last_updated: 2026-07-15
 twitter_handle: amrit_rai1
 our_take: A monthly research letter combining macro analysis, stock research, and congressional trade tracking, source-led and explicit about assumptions and risk.
+pros:
+  - Combines macro research, stock analysis, congressional trades, and calculators in one place
+  - Cites sources and states assumptions and risks up front
+  - Explains investing concepts in plain English
+  - Free research archive and tools alongside the paid monthly letter
+cons:
+  - Not built for day traders or short-term signals
+  - Educational only, does not provide personalized financial advice
 ---
 
 Yield Theory is a monthly research letter for self-directed investors, combining macro analysis, stock research across 100+ tickers, congressional trade tracking, and a free set of investing tools in one place.
