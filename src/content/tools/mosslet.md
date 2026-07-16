@@ -6,11 +6,11 @@ categories:
   - productivity
 stages:
   - established
-pricing_model: one-time
-pricing_from: 10
-our_take: A pay-once, no-ads alternative to Facebook and Instagram. Open source, encrypted, and built by a solo founder who taught himself Elixir to make it.
+pricing_model: subscription
+pricing_from: 5
+our_take: A privacy-first alternative to Facebook and Instagram, funded by users instead of ads. Open source, encrypted, and built by a solo founder who taught himself Elixir to make it.
 pros:
-  - One-time payment, no recurring subscription
+  - Funded by users, not ads or data sales
   - Open source and independently verifiable
   - Zero-knowledge encryption on posts and memories
 cons:
@@ -20,6 +20,6 @@ date_added: 2026-07-16
 last_updated: 2026-07-16
 ---
 
-Mosslet is a privacy-first social network built as an alternative to Facebook, Twitter, and Instagram. Instead of ads or a subscription, it uses a single one-time payment for lifetime access. Every post and memory is protected with asymmetric encryption, and the codebase is open source so anyone can verify how it works.
+Mosslet is a privacy-first social network built as an alternative to Facebook, Twitter, and Instagram. It's funded directly by users rather than ads or data sales, with Personal, Family, and Business tiers and a 14-day free trial on each. Every post and memory is protected with asymmetric encryption, and the codebase is open source so anyone can verify how it works.
 
 Founder Mark Thayer built Mosslet solo using Elixir and Phoenix LiveView, after reading Shoshana Zuboff's *The Age of Surveillance Capitalism* convinced him to teach himself to code. The company, Moss Piglet Corporation, is a public benefit corporation rather than a venture-backed startup, and Mosslet is the first of two products under that banner.
