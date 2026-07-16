@@ -3,9 +3,9 @@ name: Mosslet
 tagline: A privacy-first social network with zero-knowledge encryption and no ads
 website: https://mosslet.com
 categories:
-  - privacy-security
+  - productivity
 stages:
-  - bootstrapped
+  - established
 pricing_model: one-time
 pricing_from: 10
 our_take: A pay-once, no-ads alternative to Facebook and Instagram. Open source, encrypted, and built by a solo founder who taught himself Elixir to make it.
