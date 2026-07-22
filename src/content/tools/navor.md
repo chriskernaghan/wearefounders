@@ -15,7 +15,7 @@ our_take: Swiss-specific AI accounting you can run from ChatGPT, Claude, WhatsAp
 pros:
   - Built for Swiss VAT and QR-bill requirements specifically, not generic accounting
   - Works from tools already in use, including ChatGPT, Claude, and WhatsApp
-  - 100% Swiss hosting with zero AI data retention, FADP compliant 
+  - 100% Swiss hosting with zero AI data retention, FADP compliant
 cons:
   - No free tier, 14-day trial only
   - Not built for companies outside Switzerland or multinational consolidation
