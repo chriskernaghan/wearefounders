@@ -1,6 +1,5 @@
 ---
 import { CATEGORY_MAP, STAGE_MAP } from '../data/taxonomy';
-
 interface Props {
   tool: {
     id: string;
@@ -17,13 +16,10 @@ interface Props {
     };
   };
 }
-
 const { tool } = Astro.props;
 const base = import.meta.env.BASE_URL;
 const slug = tool.id.replace(/\.md$/, '');
-
-const symbol = tool.data.pricing_currency === 'GBP' ? '£' : tool.data.pricing_currency === 'EUR' ? '€' : '$';
-
+const symbol = tool.data.pricing_currency === 'GBP' ? '£' : tool.data.pricing_currency === 'EUR' ? '€' : tool.data.pricing_currency === 'CHF' ? 'CHF ' : '$';
 // Pricing display string. "From $X" pattern keeps copy future-proof.
 let priceLabel: string;
 if (tool.data.pricing_from === null) {
@@ -33,7 +29,6 @@ if (tool.data.pricing_from === null) {
 } else {
   priceLabel = `From ${symbol}${tool.data.pricing_from}`;
 }
-
 // Logo resolution:
 // 1. If tool.data.logo is explicitly set, use it (real brand asset)
 // 2. Otherwise, derive favicon URL from the website using Google's S2 favicon service
@@ -50,7 +45,6 @@ if (tool.data.logo) {
     logoUrl = null;
   }
 }
-
 // Build data-attributes used by the client-side filter.
 const categoriesAttr = tool.data.categories.join(',');
 const stagesAttr = tool.data.stages.join(',');
