@@ -18,7 +18,7 @@ const { tool } = Astro.props;
 const { Content } = await render(tool);
 const base = import.meta.env.BASE_URL;
 
-const symbol = tool.data.pricing_currency === 'GBP' ? '£' : tool.data.pricing_currency === 'EUR' ? '€' : '$';
+const symbol = tool.data.pricing_currency === 'GBP' ? '£' : tool.data.pricing_currency === 'EUR' ? '€' : tool.data.pricing_currency === 'CHF' ? 'CHF ' : '$';
 let priceLabel: string;
 if (tool.data.pricing_from === null) priceLabel = 'Custom pricing';
 else if (tool.data.pricing_from === 0) priceLabel = 'Free';
@@ -35,31 +35,21 @@ const primaryCta = tool.data.affiliate_url ?? tool.data.website;
 const isAffiliate = tool.data.affiliate_url !== null;
 const ctaRel = isAffiliate ? 'sponsored noopener' : 'noopener';
 
-// Screenshot: manual override (frontmatter `screenshot`) wins, else fall
-// back to the committed file at /screenshots/<slug>.png. If neither exists
-// the <img> onerror hides the figure cleanly (no broken-image icon).
 const slug = tool.id.replace(/\.md$/, '');
 const screenshotSrc = tool.data.screenshot ?? `${base}screenshots/${slug}.png`;
 
-// OG image: reuse the page screenshot when we can prove it exists. A manual
-// frontmatter `screenshot` wins; otherwise we check the committed file on
-// disk at build time. We can't rely on the on-page <img onerror> trick for
-// social tags — a 404 there shows a broken preview — so we only set ogImage
-// when the file is real. Everything else falls back to the Layout default.
 const screenshotFile = `screenshots/${slug}.png`;
 const hasCommittedShot = existsSync(`public/${screenshotFile}`);
 const ogImage = tool.data.screenshot
   ? new URL(tool.data.screenshot, Astro.site).toString()
   : hasCommittedShot
     ? new URL(`${base}${screenshotFile}`, Astro.site).toString()
-    : undefined; // BaseLayout falls back to /og-default.png
+    : undefined;
 
-// Format date for display
 const updated = new Intl.DateTimeFormat('en-US', {
   month: 'long', day: 'numeric', year: 'numeric'
 }).format(tool.data.last_updated);
 
-// Structured data for SEO (SoftwareApplication schema)
 const schema = {
   '@context': 'https://schema.org',
   '@type': 'SoftwareApplication',
@@ -95,7 +85,6 @@ const schema = {
     <a href={base} class="back-link">← All tools</a>
 
     <div class="tool-detail__layout">
-      <!-- LEFT COLUMN: all editorial content -->
       <div class="tool-detail__main">
         <div class="tool-detail__intro">
           <div class="mono-label">{tool.data.categories.map((s) => CATEGORY_MAP[s]?.label).join(' · ')}</div>
@@ -104,18 +93,11 @@ const schema = {
           <p class="tool-detail__take">{tool.data.our_take}</p>
 
           <div class="tool-detail__cta-row">
-            <a
-              href={primaryCta}
-              class="btn btn--primary"
-              target="_blank"
-              rel={ctaRel}
-            >
+            <a href={primaryCta} class="btn btn--primary" target="_blank" rel={ctaRel}>
               Visit {tool.data.name} →
             </a>
             {tool.data.review_url && (
-              <a href={tool.data.review_url} class="btn btn--ghost">
-                Read our full review
-              </a>
+              <a href={tool.data.review_url} class="btn btn--ghost">Read our full review</a>
             )}
           </div>
         </div>
@@ -136,20 +118,15 @@ const schema = {
         <section class="tool-detail__verdict">
           <div class="verdict-col verdict-col--pros">
             <h3>What we like</h3>
-            <ul>
-              {tool.data.pros.map((p) => <li>{p}</li>)}
-            </ul>
+            <ul>{tool.data.pros.map((p) => <li>{p}</li>)}</ul>
           </div>
           <div class="verdict-col verdict-col--cons">
             <h3>What to watch</h3>
-            <ul>
-              {tool.data.cons.map((c) => <li>{c}</li>)}
-            </ul>
+            <ul>{tool.data.cons.map((c) => <li>{c}</li>)}</ul>
           </div>
         </section>
       </div>
 
-      <!-- RIGHT COLUMN: facts + boost card, sticky -->
       <div class="tool-detail__sidebar">
         <aside class="tool-detail__facts">
           <dl>
@@ -196,12 +173,7 @@ const schema = {
     <section class="tool-detail__final-cta">
       <h2>Try {tool.data.name}</h2>
       <p>{priceLabel}{tool.data.free_tier && ' · Free tier available'}{tool.data.free_trial_days && ` · ${tool.data.free_trial_days}-day trial`}.</p>
-      <a
-        href={primaryCta}
-        class="btn btn--primary"
-        target="_blank"
-        rel={ctaRel}
-      >
+      <a href={primaryCta} class="btn btn--primary" target="_blank" rel={ctaRel}>
         Visit {tool.data.name} →
       </a>
     </section>
@@ -209,9 +181,7 @@ const schema = {
 </BaseLayout>
 
 <style>
-  .tool-detail {
-    padding-block: 2rem 4rem;
-  }
+  .tool-detail { padding-block: 2rem 4rem; }
   .back-link {
     display: inline-block;
     margin-bottom: 2rem;
@@ -222,7 +192,6 @@ const schema = {
   }
   .back-link:hover { color: var(--text); }
 
-  /* Whole-page two-column layout: editorial left, sticky sidebar right. */
   .tool-detail__layout {
     display: grid;
     grid-template-columns: minmax(0, 1fr) 280px;
@@ -230,10 +199,7 @@ const schema = {
     align-items: start;
   }
   @media (max-width: 820px) {
-    .tool-detail__layout {
-      grid-template-columns: 1fr;
-      gap: 2rem;
-    }
+    .tool-detail__layout { grid-template-columns: 1fr; gap: 2rem; }
   }
 
   .tool-detail__intro {
@@ -241,9 +207,7 @@ const schema = {
     margin-bottom: 2.5rem;
     border-bottom: 1px solid var(--border);
   }
-  .tool-detail__intro h1 {
-    margin: 0.5rem 0 1rem;
-  }
+  .tool-detail__intro h1 { margin: 0.5rem 0 1rem; }
   .tool-detail__tagline {
     font-family: var(--font-display);
     font-size: 1.5rem;
@@ -261,14 +225,8 @@ const schema = {
     margin-bottom: 2rem;
     color: var(--text);
   }
-  .tool-detail__cta-row {
-    display: flex;
-    gap: 0.75rem;
-    flex-wrap: wrap;
-  }
+  .tool-detail__cta-row { display: flex; gap: 0.75rem; flex-wrap: wrap; }
 
-  /* Website screenshot, sits between the intro and the body. Hides itself
-     via onerror when no image exists for this listing yet. */
   .tool-detail__shot {
     margin: 0 0 2.5rem;
     border: 1px solid var(--border);
@@ -276,14 +234,8 @@ const schema = {
     overflow: hidden;
     background: var(--bg-subtle);
   }
-  .tool-detail__shot img {
-    display: block;
-    width: 100%;
-    height: auto;
-  }
+  .tool-detail__shot img { display: block; width: 100%; height: auto; }
 
-  /* Sidebar: facts + boost card stacked, sticky so it follows the long
-     left column as the reader scrolls. */
   .tool-detail__sidebar {
     display: flex;
     flex-direction: column;
@@ -292,10 +244,7 @@ const schema = {
     top: calc(73px + 1.25rem);
   }
   @media (max-width: 820px) {
-    .tool-detail__sidebar {
-      position: static;
-      top: auto;
-    }
+    .tool-detail__sidebar { position: static; top: auto; }
   }
 
   .tool-detail__facts {
@@ -326,32 +275,14 @@ const schema = {
     align-self: end;
   }
 
-  /* Body sits in the left column at full column width. */
-  .tool-detail__body {
-    font-size: 1.0625rem;
-    line-height: 1.7;
-  }
-  .tool-detail__body :global(h2) {
-    margin: 2.5rem 0 1rem;
-    font-size: 1.625rem;
-  }
-  .tool-detail__body :global(h2:first-child) {
-    margin-top: 0;
-  }
-  .tool-detail__body :global(h3) {
-    margin: 2rem 0 0.75rem;
-  }
-  .tool-detail__body :global(p) {
-    margin-bottom: 1.25rem;
-  }
-  .tool-detail__body :global(ul), .tool-detail__body :global(ol) {
-    margin: 0 0 1.25rem 1.5rem;
-  }
-  .tool-detail__body :global(li) {
-    margin-bottom: 0.375rem;
-  }
+  .tool-detail__body { font-size: 1.0625rem; line-height: 1.7; }
+  .tool-detail__body :global(h2) { margin: 2.5rem 0 1rem; font-size: 1.625rem; }
+  .tool-detail__body :global(h2:first-child) { margin-top: 0; }
+  .tool-detail__body :global(h3) { margin: 2rem 0 0.75rem; }
+  .tool-detail__body :global(p) { margin-bottom: 1.25rem; }
+  .tool-detail__body :global(ul), .tool-detail__body :global(ol) { margin: 0 0 1.25rem 1.5rem; }
+  .tool-detail__body :global(li) { margin-bottom: 0.375rem; }
 
-  /* Verdict sits in the left column under the body. */
   .tool-detail__verdict {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -372,11 +303,7 @@ const schema = {
     text-transform: uppercase;
     color: var(--text-faint);
   }
-  .verdict-col ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
+  .verdict-col ul { list-style: none; margin: 0; padding: 0; }
   .verdict-col li {
     padding: 0.5rem 0;
     border-bottom: 1px solid var(--border);
@@ -386,7 +313,6 @@ const schema = {
   .verdict-col--pros li::before { content: '+ '; color: var(--waf-accent); font-weight: 600; }
   .verdict-col--cons li::before { content: '− '; color: var(--text-faint); font-weight: 600; }
 
-  /* Final CTA spans full width below the two-column layout. */
   .tool-detail__final-cta {
     text-align: center;
     margin-top: 4rem;
