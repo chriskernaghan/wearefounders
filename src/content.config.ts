@@ -1,6 +1,5 @@
 import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
-
 const tools = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/tools' }),
   schema: z.object({
@@ -9,7 +8,6 @@ const tools = defineCollection({
     tagline: z.string().max(120),
     logo: z.string().optional(),
     screenshot: z.string().optional(),
-
     // Taxonomy — tool can sit in multiple categories and serve multiple stages
     categories: z.array(
       z.enum([
@@ -30,10 +28,9 @@ const tools = defineCollection({
     stages: z.array(
       z.enum(['pre-launch', 'mvp', 'scaling', 'established'])
     ).min(1),
-
     // Pricing snapshot (kept deliberately vague per WAF style — use "from")
     pricing_from: z.number().nullable(),
-    pricing_currency: z.enum(['USD', 'GBP', 'EUR']).default('USD'),
+    pricing_currency: z.enum(['USD', 'GBP', 'EUR', 'CHF']).default('USD'),
     pricing_model: z.enum([
       'subscription',
       'usage-based',
@@ -44,21 +41,18 @@ const tools = defineCollection({
     ]),
     free_tier: z.boolean().default(false),
     free_trial_days: z.number().nullable().default(null),
-
     // Commercial
     affiliate_url: z.string().url().nullable().default(null),
     affiliate_program: z.enum(['PartnerStack', 'Impact', 'Direct', 'None']).default('None'),
     website: z.string().url(),
     twitter_handle: z.string().nullable().default(null), // no leading @, e.g. "plantoolapp"
     linkedin_url: z.string().url().nullable().default(null), // full profile or company page URL
-
     // Editorial
     review_url: z.string().nullable().default(null),
     our_take: z.string().max(200),
     pros: z.array(z.string()).min(1).max(5),
     cons: z.array(z.string()).min(1).max(5),
     verdict_score: z.number().min(1).max(10).optional(),
-
     // Meta
     founded: z.number().optional(),
     hq: z.string().optional(),
@@ -67,5 +61,4 @@ const tools = defineCollection({
     comparable: z.boolean().default(true),
   }),
 });
-
 export const collections = { tools };
