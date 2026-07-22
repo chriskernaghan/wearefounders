@@ -14,7 +14,7 @@ pricing_currency: CHF
 our_take: Swiss-specific AI accounting you can run from ChatGPT, Claude, WhatsApp, or email, handling document capture, bank reconciliation, and VAT while keeping data hosted in Switzerland.
 pros:
   - Built for Swiss VAT and QR-bill requirements specifically, not generic accounting
-  - Works from tools already in use: ChatGPT, Claude, WhatsApp, email
+  - Works from tools already in use, including ChatGPT, Claude, and WhatsApp
   - 100% Swiss hosting with zero AI data retention, FADP compliant
 cons:
   - No free tier, 14-day trial only
