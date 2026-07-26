@@ -20,7 +20,7 @@ const steps = [
   },
   {
     title: 'We review',
-    desc: 'An editorial check within 5 business days.',
+    desc: 'Free listings in 2 to 4 weeks. Fast-track in 48 hours.',
     icon: 'search',
   },
   {
@@ -52,8 +52,8 @@ const perks = [
     icon: 'infinity',
   },
   {
-    title: 'A shot at featured',
-    desc: 'Standout tools can earn a featured slot and a founder story on the main publication.',
+    title: 'Fast-track for $49',
+    desc: 'Optional. Reviewed in 48 hours and featured at the top of your category for 30 days, then kept on permanently.',
     icon: 'star',
   },
 ];
@@ -77,16 +77,20 @@ const faqs = [
     a: "Yes. Agencies, freelancers, and content marketers occasionally submit tools they're not affiliated with. We treat every submission the same way.",
   },
   {
-    q: 'Is this a sponsored listing?',
-    a: "No. Submission is free and every entry meets the same editorial standard as our hand-selected tools. Listings aren't marked as sponsored because they aren't. If we wouldn't be willing to write the entry, we won't publish it.",
+    q: 'What does the $49 fast-track get me?',
+    a: "Two things: your submission is reviewed within 48 hours instead of the usual 2 to 4 weeks, and once live it sits at the top of its category for 30 days before settling into a standard, permanent listing. It buys speed and placement, not a softer review. Every tool clears the same editorial bar.",
+  },
+  {
+    q: 'Is a paid listing a sponsored listing?',
+    a: "No. Free or fast-tracked, every entry meets the same editorial standard and is written the same way, so nothing is marked sponsored. The $49 moves you up the queue and adds a featured window. It doesn't buy a place we wouldn't otherwise give you, and it doesn't change what we write.",
   },
   {
     q: 'What if my tool changes or I want to update the listing?',
     a: "Email us with the changes. A new pricing tier or an added feature is no problem. For a substantial repositioning, get in touch and we'll take a look.",
   },
   {
-    q: 'Do you offer a featured slot?',
-    a: "Featured placement is reserved for tools we consider exceptional or that have strong founder relevance. It isn't for sale. If your submission earns a featured slot during review, that's at our discretion.",
+    q: 'Do you still feature tools for free?',
+    a: "Yes. Beyond the paid fast-track, a handful of standout tools each month earn an editorial featured slot and a founder story on the main publication, entirely on merit and at no cost. Submitting well puts you in the running.",
   },
   {
     q: 'What if you reject my submission?',
@@ -103,11 +107,12 @@ const faqs = [
     <div class="submit__hero">
       <div class="submit__eyebrow">Editorial Submission</div>
       <h1 class="submit__heading">
-        Submit your tool for <em>editorial review.</em>
+        Get your tool in front of founders <em>who are looking for it.</em>
       </h1>
       <p class="submit__lead">
         A curated directory of tools founders actually use. Hand-reviewed,
-        free to submit, and live indefinitely.
+        free to submit, and live indefinitely. Want it live in 48 hours and
+        featured at the top of your category? There's a fast-track for that.
       </p>
       <div class="submit__actions">
         <a href={TALLY_SUBMIT_FORM_URL} class="btn btn--primary" rel="noopener">
@@ -195,15 +200,36 @@ const faqs = [
       </div>
     </div>
 
-    <!-- Featured upside -->
+    <!-- Fast-track upsell -->
     <div class="featured">
+      <div class="featured__inner">
+        <div class="featured__tag">Fast-track · $49</div>
+        <h2 class="featured__title">Skip the queue and start at the top</h2>
+        <p class="featured__copy">
+          Free listings are worth the wait, but if you're launching or timing a
+          push, fast-track gets you reviewed in 48 hours and featured at the top
+          of your category for 30 days. After that it stays on permanently as a
+          standard listing. One payment, no subscription. It's also what keeps
+          the directory free for everyone else.
+        </p>
+        <a href={TALLY_SUBMIT_FORM_URL} class="featured__link" rel="noopener">
+          Fast-track your tool
+          <svg viewBox="0 0 24 24" class="btn__arrow" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- Editorial featured upside -->
+    <div class="featured featured--merit">
       <div class="featured__inner">
         <div class="featured__tag">For standout tools</div>
         <h2 class="featured__title">The best submissions get more than a listing</h2>
         <p class="featured__copy">
-          A handful of products earn a featured slot and a founder story on the
-          main publication, the editorial that brings our audience here in the
-          first place. Submit well and you put yourself in the running.
+          Separate from the fast-track, a handful of products each month earn an
+          editorial featured slot and a founder story on the main publication,
+          the editorial that brings our audience here in the first place. That
+          one's on merit, not money. Submit well and you put yourself in the
+          running.
         </p>
         <a href={STORIES_URL} class="featured__link" rel="noopener">
           Read featured founder stories
@@ -235,7 +261,7 @@ const faqs = [
         Submit your tool
         <svg viewBox="0 0 24 24" class="btn__arrow" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
       </a>
-      <p class="closer__small">Takes a couple of minutes. We'll be in touch within 5 business days.</p>
+      <p class="closer__small">Free listing, or fast-track for $49. Takes a couple of minutes either way.</p>
     </div>
   </section>
 </BaseLayout>
@@ -405,6 +431,7 @@ const faqs = [
     padding: clamp(2rem, 4vw, 3rem);
     margin-bottom: clamp(3rem, 6vw, 4.5rem);
   }
+  .featured--merit { background: var(--bg-elevated); border: 1px solid var(--border); }
   .featured__inner { max-width: 620px; }
   .featured__tag {
     font-family: var(--font-mono); font-size: 0.6875rem; text-transform: uppercase;
