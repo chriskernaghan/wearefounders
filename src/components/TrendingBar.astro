@@ -13,9 +13,7 @@
 // name that's drifted from the actual listing.
 import { getCollection } from 'astro:content';
 import trendingData from '../data/trending.json';
-
 const allTools = await getCollection('tools');
-
 const trending = trendingData.slugs.map((slug) => {
   const tool = allTools.find((t) => t.id.replace(/\.md$/, '') === slug);
   if (!tool) {
@@ -26,7 +24,6 @@ const trending = trendingData.slugs.map((slug) => {
   }
   return { name: tool.data.name, slug };
 });
-
 const base = import.meta.env.BASE_URL;
 ---
 <div class="trending-bar">
@@ -45,6 +42,6 @@ const base = import.meta.env.BASE_URL;
         </li>
       ))}
     </ol>
-    <a class="trending-bar__cta" href={`${base}promote/`}>Get featured here &rarr;</a>
+    <a class="trending-bar__cta" href={`${base}trending/`}>How this works &rarr;</a>
   </div>
 </div>
