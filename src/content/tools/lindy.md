@@ -26,7 +26,7 @@ verdict_score: 8
 founded: 2023
 hq: San Francisco
 last_updated: 2026-05-07
-featured: true
+featured: false
 comparable: true
 ---
 
