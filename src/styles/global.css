@@ -1282,3 +1282,21 @@ body.is-home .hero__inner {
   border-radius: 999px;
   white-space: nowrap;
 }
+
+/* ---- Monogram logo fallback ---- */
+/* Shown when a tool has no `logo` set. Sized to match the 32x32 favicon
+   img so the grid stays aligned whether a tool has a real logo or not. */
+.tool-card__logo--monogram {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--waf-accent-soft);
+  color: var(--waf-accent);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1rem;
+  line-height: 1;
+}
