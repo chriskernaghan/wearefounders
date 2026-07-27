@@ -26,7 +26,7 @@ verdict_score: 9
 founded: 2022
 hq: London / New York
 last_updated: 2026-05-08
-featured: true
+featured: false
 comparable: true
 ---
 
