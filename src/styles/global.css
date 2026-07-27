@@ -1256,3 +1256,29 @@ body.is-home .hero__inner {
 }
 .share-card__cta--primary:hover { background: var(--waf-accent); color: #fff !important; }
 .share-card__cta--ghost:hover { border-color: var(--waf-accent); color: var(--waf-accent); }
+
+/* ---- Featured tool card ---- */
+/* Add to src/styles/global.css. The card needs position: relative so the
+   badge anchors to it; most card setups already have this, in which case
+   the first rule is a harmless no-op. */
+.tool-card { position: relative; }
+
+.tool-card--featured {
+  border-color: var(--waf-accent);
+  box-shadow: 0 0 0 1px var(--waf-accent);
+}
+
+.tool-card__featured-badge {
+  position: absolute;
+  top: -0.6rem;
+  left: 1.25rem;
+  background: var(--waf-accent);
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  white-space: nowrap;
+}
