@@ -1300,3 +1300,11 @@ body.is-home .hero__inner {
   font-size: 1rem;
   line-height: 1;
 }
+
+/* ---- Logo slot wrapper ---- */
+/* Holds the favicon img and the monogram fallback in the same spot. The
+   monogram is hidden until the img's onerror reveals it (favicon 404). */
+.tool-card__logo-wrap {
+  display: inline-flex;
+  flex-shrink: 0;
+}
