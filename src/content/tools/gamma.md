@@ -27,7 +27,7 @@ verdict_score: 8
 founded: 2020
 hq: San Francisco
 last_updated: 2026-05-08
-featured: true
+featured: false
 comparable: true
 ---
 
