@@ -32,16 +32,17 @@ if (tool.data.pricing_from === null) {
 }
 // Logo resolution:
 // 1. If tool.data.logo is set, use it (real brand asset).
-// 2. Otherwise pull the site's favicon via Google's S2 service, with
-//    &default=404 so that sites WITHOUT a favicon return a 404 instead of
-//    the generic globe. That 404 trips the <img> onerror, which reveals the
-//    monogram tile sitting behind it. Net effect: real favicons where they
-//    exist, clean monograms where they don't, and never a globe.
+// 2. Otherwise pull the site's favicon via DuckDuckGo's icon service.
+//    Unlike Google S2 (which serves a generic globe with a 200 status for
+//    sites lacking an icon, so onerror never fires), DuckDuckGo returns an
+//    error for missing icons, which trips the <img> onerror and reveals the
+//    monogram behind it. Net: real favicons where they exist, monograms
+//    where they don't, never a globe.
 let logoUrl: string | null = tool.data.logo ?? null;
 if (!logoUrl && tool.data.website) {
   try {
     const domain = new URL(tool.data.website).hostname;
-    logoUrl = `https://www.google.com/s2/favicons?domain=${domain}&sz=64&default=404`;
+    logoUrl = `https://icons.duckduckgo.com/ip3/${domain}.ico`;
   } catch {
     logoUrl = null;
   }
