@@ -896,7 +896,7 @@ body.is-home .site-header:not(.site-header--past-hero) .theme-toggle:hover {
 
 @media (max-width: 899px) {
   .directory-layout {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     padding-top: 1rem;
   }
   .filter-sidebar { display: none; }
