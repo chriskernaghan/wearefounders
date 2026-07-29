@@ -339,6 +339,11 @@ html:not([data-prefers-color-scheme="dark"]) .theme-toggle__icon--moon { display
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 1.25rem;
 }
+@media (max-width: 380px) {
+  .tools-grid {
+    grid-template-columns: 1fr;
+  }
+}
 
 /* ============================================================
    Compact intro
@@ -1199,6 +1204,17 @@ body.is-home .hero__inner {
 }
 @media (max-width: 600px) {
   .trending-bar__cta { display: none; }
+  .trending-bar__inner {
+    gap: 0.4rem 0.75rem;
+    padding: 0.6rem 0;
+  }
+  .trending-bar__label {
+    flex-basis: 100%;
+  }
+  .trending-bar__list {
+    gap: 0.85rem;
+    font-size: 0.75rem;
+  }
 }
 
 /* ============================================================
