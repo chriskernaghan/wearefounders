@@ -12,7 +12,7 @@ stages:
 pricing_model: freemium
 pricing_from: 3.50
 free_tier: true
-our_take: A YouTube script editor built around how videos actually work, hook, promise, tension, payoff, CTA, with filming cues and spoken-runtime estimates beside the words, so you plan the whole video before recording.
+our_take: A YouTube script editor built around how videos work, hook, promise, tension, payoff, CTA, with filming cues and spoken-runtime estimates beside the words. Plan the whole video before recording.
 pros:
   - Structures scripts around retention, not a blank page
   - Template library and runtime timer work with no account
