@@ -951,19 +951,11 @@ body.is-home .hero__inner {
   letter-spacing: 0.04em;
 }
 
-/* ============================================================
-   PROMOTE: marquee + boost card + promote page
-   Append to the BOTTOM of src/styles/global.css.
-   Uses existing WAF tokens (--waf-accent, --bg-elevated, --border,
-   --text-muted, etc.) so dark mode is handled automatically.
-   ============================================================ */
-
-/* --- Promo marquee (index) --- */
 .promo-marquee {
   display: flex;
   align-items: center;
   gap: 1rem;
-  margin: 1.5rem 0;
+  /*margin: 1.5rem 0;*/
   padding: 0.6rem 1rem;
   border: 1px solid var(--border);
   border-radius: var(--radius);
