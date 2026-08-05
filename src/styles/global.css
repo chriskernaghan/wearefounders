@@ -958,7 +958,7 @@ body.is-home .hero__inner {
   /*margin: 1.5rem 0;*/
   padding: 0.6rem 1rem;
   border: 1px solid var(--border);
-  border-radius: var(--radius);
+  /*border-radius: var(--radius);*/
   background: var(--bg-elevated);
   text-decoration: none;
   overflow: hidden;
