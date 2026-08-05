@@ -1,0 +1,364 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const TALLY_SUBMIT_FORM_URL = 'https://tally.so/r/PdvzgQ';
+const base = import.meta.env.BASE_URL;
+
+// CONFIGURE: Update these as you work through the queue.
+// REVIEWED = PUBLISHED + DECLINED. Keep them consistent or the math on the
+// page stops adding up and the whole point of this page is undermined.
+const PUBLISHED = 51;
+const DECLINED = 13;
+const REVIEWED = PUBLISHED + DECLINED;
+const STATS_UPDATED = 'August 5, 2026';
+
+const declineRate = Math.round((DECLINED / REVIEWED) * 100);
+
+const stats = [
+  { value: REVIEWED, label: 'submissions reviewed' },
+  { value: PUBLISHED, label: 'published' },
+  { value: DECLINED, label: 'declined' },
+  { value: `${declineRate}%`, label: 'decline rate' },
+];
+
+const process = [
+  {
+    title: 'We open the product',
+    desc: 'Every tool gets loaded and used before anything is written. If a site is gated behind a signup wall with nothing verifiable behind it, that is usually where the review ends.',
+  },
+  {
+    title: 'We check pricing against the source',
+    desc: 'Prices come from the vendor pricing page on the day of review, not from the submission form and not from a third-party roundup. Where sources disagree, the listing says "from" rather than committing to a figure we cannot stand behind.',
+  },
+  {
+    title: 'We write it ourselves',
+    desc: 'No submitted copy is published as-is. Every entry is written in our own words, including the parts a founder would rather we left out.',
+  },
+  {
+    title: 'We say what it is bad at',
+    desc: 'Each listing carries real limitations. A tool with no downsides listed is a tool nobody actually tested.',
+  },
+];
+
+const automaticNo = [
+  'Adult content and anything sexual in nature',
+  'Crypto and forex trading tools, regardless of how the tool is categorised on submission',
+  'Gambling, payday lending, and pharmaceuticals',
+  'Tools built to deceive an employer, a customer, or an analytics platform',
+  'AI image and video generators, unless the technical approach is genuinely new rather than a new interface on an existing model',
+  'Products whose social proof does not survive a check, including invented testimonials and stat counters that never move',
+];
+
+const judgementCalls = [
+  'Thin wrappers around an AI API with nothing meaningful added on top',
+  'Pre-launch products with nothing working to look at yet',
+  'Tools whose own site contradicts what the submission claimed about pricing or positioning',
+  'Near-identical products submitted repeatedly under different domains',
+];
+
+const money = [
+  {
+    q: 'Does paying change whether you get listed?',
+    a: 'No. The $49 fast-track buys a 48-hour review instead of a place in a long queue, plus 30 days of featured placement. It does not lower the bar. Fast-tracked tools get declined too, and the fee is refunded when that happens.',
+  },
+  {
+    q: 'Does paying change what you write?',
+    a: 'No. Listings are written the same way whether the tool paid or waited. That includes the limitations section.',
+  },
+  {
+    q: 'What about affiliate links?',
+    a: 'Some listings use affiliate links, and we earn a commission if you sign up through them. It never costs you more. It also does not decide who gets listed, because plenty of tools in this directory have no affiliate program at all and are here anyway.',
+  },
+  {
+    q: 'Who reviews all this?',
+    a: 'One person. Chris, who also runs a WordPress maintenance business and writes the publication this directory sits under. That is why the free queue is slow, and it is also why every entry reads like somebody actually used the product.',
+  },
+];
+---
+<BaseLayout
+  title="Editorial standards · We Are Founders Directory"
+  description="How tools get reviewed, what gets declined, and how money does and does not influence the We Are Founders tools directory."
+>
+  <section class="container std">
+    <!-- Hero -->
+    <div class="std__hero">
+      <div class="std__eyebrow">Editorial Standards</div>
+      <h1 class="std__heading">
+        How tools get in, <em>and what gets turned away</em>
+      </h1>
+      <p class="std__lead">
+        Most directories publish everything they receive and call it curation.
+        This one declines about one in five submissions that reach review. Here
+        is the process behind that, and the running count.
+      </p>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats" aria-label="Review statistics">
+      {stats.map((stat) => (
+        <div class="stat">
+          <div class="stat__value">{stat.value}</div>
+          <div class="stat__label">{stat.label}</div>
+        </div>
+      ))}
+    </div>
+    <p class="stats__note">
+      Updated {STATS_UPDATED}. Reviewed means a decision was made and the
+      submitter was told. Tools still waiting in the free queue are not counted
+      here, because sitting in a queue is not a judgement.
+    </p>
+
+    <!-- Process -->
+    <div class="block">
+      <h2 class="block__title">What a review involves</h2>
+      <ol class="steps">
+        {process.map((step, i) => (
+          <li class="step">
+            <div class="step__num">{String(i + 1).padStart(2, '0')}</div>
+            <div class="step__body">
+              <h3 class="step__title">{step.title}</h3>
+              <p class="step__desc">{step.desc}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+
+    <!-- Exclusions -->
+    <div class="block">
+      <h2 class="block__title">What gets declined</h2>
+      <div class="cols">
+        <div class="col col--hard">
+          <div class="col__head">
+            <svg viewBox="0 0 24 24" class="col__mark" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+            <span>Automatic no</span>
+          </div>
+          <p class="col__intro">No review needed. These are declined on sight.</p>
+          <ul class="col__list">
+            {automaticNo.map((item) => <li>{item}</li>)}
+          </ul>
+        </div>
+        <div class="col col--soft">
+          <div class="col__head">
+            <svg viewBox="0 0 24 24" class="col__mark" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg>
+            <span>Judgement call</span>
+          </div>
+          <p class="col__intro">Usually declined, occasionally not. These get a proper look first.</p>
+          <ul class="col__list">
+            {judgementCalls.map((item) => <li>{item}</li>)}
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Money -->
+    <div class="block">
+      <h2 class="block__title">Where money fits</h2>
+      <div class="money">
+        {money.map((item) => (
+          <div class="money__item">
+            <h3 class="money__q">{item.q}</h3>
+            <p class="money__a">{item.a}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- Closer -->
+    <div class="closer">
+      <h2 class="closer__title">Think your tool clears the bar?</h2>
+      <a href={TALLY_SUBMIT_FORM_URL} class="btn btn--primary btn--lg" rel="noopener">
+        Submit your tool
+        <svg viewBox="0 0 24 24" class="btn__arrow" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+      <p class="closer__small">
+        <a href={`${base}submit/`} class="closer__link">See the full submission process</a>
+        , or <a href={base} class="closer__link">browse what made it in</a>.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .std {
+    padding-top: clamp(2.5rem, 5vw, 4rem);
+    padding-bottom: 5rem;
+  }
+
+  /* ---- Hero ---- */
+  .std__hero { max-width: 680px; margin-bottom: clamp(2.5rem, 5vw, 3.5rem); }
+  .std__eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--waf-accent);
+    margin-bottom: 1rem;
+  }
+  .std__heading {
+    font-family: var(--font-display);
+    font-size: clamp(2.25rem, 5.5vw, 3.5rem);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1.04;
+    margin: 0 0 1.25rem;
+  }
+  .std__heading em { font-style: italic; color: var(--waf-accent); font-weight: 500; }
+  .std__lead {
+    font-size: 1.1875rem;
+    color: var(--text-muted);
+    line-height: 1.55;
+    margin: 0;
+  }
+
+  /* ---- Stats ---- */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    margin-bottom: 1rem;
+  }
+  .stat {
+    background: var(--bg-elevated);
+    padding: 1.5rem 1.25rem;
+    text-align: center;
+  }
+  .stat__value {
+    font-family: var(--font-display);
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    color: var(--waf-accent);
+    font-variant-numeric: tabular-nums;
+    margin-bottom: 0.5rem;
+  }
+  .stat__label {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-faint);
+    line-height: 1.4;
+  }
+  .stats__note {
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin: 0 0 clamp(3rem, 6vw, 4.5rem);
+    max-width: 68ch;
+  }
+
+  /* ---- Blocks ---- */
+  .block { margin-bottom: clamp(3rem, 6vw, 4.5rem); }
+  .block__title {
+    font-family: var(--font-display);
+    font-size: clamp(1.375rem, 2.5vw, 1.75rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin: 0 0 1.5rem;
+  }
+
+  /* ---- Process steps ---- */
+  .steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 1rem; }
+  .step {
+    display: flex;
+    gap: 1.25rem;
+    padding: 1.5rem 1.625rem;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+  }
+  .step__num {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    color: var(--waf-accent);
+    padding-top: 0.25rem;
+    flex: 0 0 auto;
+  }
+  .step__title {
+    font-family: var(--font-display);
+    font-size: 1.0625rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin: 0 0 0.4375rem;
+  }
+  .step__desc { font-size: 0.9375rem; color: var(--text-muted); line-height: 1.6; margin: 0; max-width: 70ch; }
+
+  /* ---- Exclusion columns ---- */
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .col {
+    padding: 1.625rem 1.75rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--bg-elevated);
+  }
+  .col--hard { border-color: var(--border-strong); }
+  .col__head {
+    display: flex; align-items: center; gap: 0.625rem;
+    font-family: var(--font-display); font-weight: 600; font-size: 1.0625rem;
+    margin-bottom: 0.5rem;
+  }
+  .col__mark { width: 1.25rem; height: 1.25rem; fill: none; stroke: var(--text-faint); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+  .col--hard .col__mark { stroke: #c0392b; }
+  .col__intro { font-size: 0.8125rem; color: var(--text-faint); margin: 0 0 1.125rem; line-height: 1.5; }
+  .col__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.75rem; }
+  .col__list li { font-size: 0.9375rem; line-height: 1.55; color: var(--text-muted); padding-left: 1.125rem; position: relative; }
+  .col__list li::before {
+    content: ""; position: absolute; left: 0; top: 0.58em;
+    width: 5px; height: 5px; border-radius: 50%; background: var(--border-strong);
+  }
+
+  /* ---- Money ---- */
+  .money { display: grid; gap: 1.75rem; max-width: 74ch; }
+  .money__q {
+    font-family: var(--font-display);
+    font-size: 1.0625rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin: 0 0 0.5rem;
+  }
+  .money__a { font-size: 0.9375rem; color: var(--text-muted); line-height: 1.65; margin: 0; }
+
+  /* ---- Buttons ---- */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.875rem 1.5rem;
+    border-radius: var(--radius);
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 1rem;
+    text-decoration: none;
+    border: 1px solid transparent;
+    transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+  }
+  .btn--lg { padding: 1.0625rem 1.875rem; font-size: 1.0625rem; }
+  .btn--primary { background: var(--waf-accent); color: #fff; }
+  .btn--primary:hover { background: var(--waf-accent-hover); transform: translateY(-1px); }
+  .btn__arrow { width: 1.1em; height: 1.1em; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: transform 0.15s ease; }
+  .btn:hover .btn__arrow { transform: translateX(3px); }
+
+  /* ---- Closer ---- */
+  .closer { text-align: center; padding-top: 1rem; }
+  .closer__title { font-family: var(--font-display); font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 600; letter-spacing: -0.02em; margin: 0 0 1.5rem; }
+  .closer__small { font-size: 0.8125rem; color: var(--text-muted); margin: 1rem 0 0; }
+  .closer__link { color: var(--waf-accent); text-decoration: none; font-weight: 600; }
+  .closer__link:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+  /* ---- Responsive ---- */
+  @media (max-width: 860px) {
+    .stats { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 560px) {
+    .cols { grid-template-columns: 1fr; }
+    .step { flex-direction: column; gap: 0.625rem; }
+    .step__num { padding-top: 0; }
+  }
+</style>
