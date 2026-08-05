@@ -607,16 +607,16 @@ html:not([data-prefers-color-scheme="dark"]) .theme-toggle__icon--moon { display
   }
 }
 
-/* ============================================================
-   Hero — bold full-bleed purple block (Rig-inspired redesign)
-   Replaces .directory-intro on the homepage. Used only on index.
-   ============================================================ */
 .hero {
   position: relative;
   background: var(--waf-accent);
   color: #ffffff;
   overflow: hidden;
   margin-bottom: clamp(2rem, 4vw, 3rem);
+}
+
+.is-home .hero{
+  margin-bottom:0 !important;
 }
 
 .hero__inner {
