@@ -1,24 +1,23 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 
+import {
+  PUBLISHED,
+  DECLINED,
+  REVIEWED,
+  DECLINE_RATE,
+  DECLINE_RATIO,
+  STATS_UPDATED,
+} from '../data/review-stats';
+
 const TALLY_SUBMIT_FORM_URL = 'https://tally.so/r/PdvzgQ';
 const base = import.meta.env.BASE_URL;
-
-// CONFIGURE: Update these as you work through the queue.
-// REVIEWED = PUBLISHED + DECLINED. Keep them consistent or the math on the
-// page stops adding up and the whole point of this page is undermined.
-const PUBLISHED = 51;
-const DECLINED = 13;
-const REVIEWED = PUBLISHED + DECLINED;
-const STATS_UPDATED = 'August 5, 2026';
-
-const declineRate = Math.round((DECLINED / REVIEWED) * 100);
 
 const stats = [
   { value: REVIEWED, label: 'submissions reviewed' },
   { value: PUBLISHED, label: 'published' },
   { value: DECLINED, label: 'declined' },
-  { value: `${declineRate}%`, label: 'decline rate' },
+  { value: `${DECLINE_RATE}%`, label: 'decline rate' },
 ];
 
 const process = [
@@ -88,8 +87,8 @@ const money = [
       </h1>
       <p class="std__lead">
         Most directories publish everything they receive and call it curation.
-        This one declines about one in five submissions that reach review. Here
-        is the process behind that, and the running count.
+        This one declines about one in {DECLINE_RATIO} submissions that reach
+        review. Here is the process behind that, and the running count.
       </p>
     </div>
 
