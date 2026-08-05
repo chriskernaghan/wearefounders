@@ -10,11 +10,10 @@ const TALLY_SUBMIT_FORM_URL = 'https://tally.so/r/PdvzgQ';
 // Founder Stories live on the main publication, not this directory subdomain.
 const STORIES_URL = 'https://wearefounders.uk/stories/';
 
-// CONFIGURE: Update these two values when you clear the backlog or check Tally.
-// QUEUE_LENGTH is the number of unreviewed free submissions currently waiting.
-// QUEUE_UPDATED is shown to submitters so the number reads as live, not decorative.
-const QUEUE_LENGTH = 172;
-const QUEUE_UPDATED = 'August 5, 2026';
+// Queue length and date now live in src/data/review-stats.ts so this page and
+// the thanks page stay in sync. Update QUEUE_COUNT in that one file.
+const QUEUE_LENGTH = QUEUE_COUNT;
+const QUEUE_UPDATED = STATS_UPDATED;
 
 // Visual only. Caps how many dots render so very long queues stay readable.
 const QUEUE_DOTS = Math.min(QUEUE_LENGTH, 180);
