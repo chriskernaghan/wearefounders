@@ -6,6 +6,7 @@ import FilterBar from '../components/FilterBar.astro';
 import { STAGES, CATEGORIES } from '../data/taxonomy';
 import NewsletterSignup from '../components/NewsletterSignup.astro';
 import PromoMarquee from '../components/PromoMarquee.astro';
+import { DECLINE_RATIO } from '../data/review-stats';
 
 const tools = await getCollection('tools');
 const sorted = tools.sort((a, b) => {
@@ -43,8 +44,8 @@ const base = import.meta.env.BASE_URL;
     <div class="hero__strip">
       <div class="container hero__strip-inner">
         <span>{tools.length} tools</span>
-        <span>Operator-reviewed</span>
-        <span>Free to submit</span>
+        <a href={`${base}standards/`} class="hero__strip-link">Operator-reviewed</a>
+        <a href={`${base}standards/`} class="hero__strip-link">1 in {DECLINE_RATIO} declined</a>
         <span>Updated weekly</span>
       </div>
     </div>
@@ -120,6 +121,24 @@ const base = import.meta.env.BASE_URL;
     </div>
   </div>
 </BaseLayout>
+
+<style>
+  /* Strip items that link through to the editorial standards page. Styled to
+     sit flush with the plain spans beside them, with the underline only on
+     hover so the strip stays quiet until someone looks for the proof. */
+  .hero__strip-link {
+    color: inherit;
+    text-decoration: none;
+    border-bottom: 1px dotted currentColor;
+    padding-bottom: 1px;
+    transition: opacity 0.15s ease, border-color 0.15s ease;
+  }
+  .hero__strip-link:hover,
+  .hero__strip-link:focus-visible {
+    opacity: 0.75;
+    border-bottom-style: solid;
+  }
+</style>
 
 <script>
   // Homepage-only: header transitions from over-hero (purple/white text) to
