@@ -3,6 +3,10 @@
 // Compact inline newsletter signup for The Friday Brief.
 // Submissions POST directly to the Ghost CMS members API on wearefounders.uk,
 // which sends a confirmation magic link (double opt-in).
+//
+// The subscriber count comes from src/data/review-stats.ts so this component,
+// the promote marquee, and the rate card can never quote different figures.
+import { SUBSCRIBERS } from '../data/review-stats';
 ---
 
 <section class="friday-brief" aria-label="Newsletter signup">
@@ -23,7 +27,7 @@
         <span class="friday-brief__submit-loading" aria-hidden="true">Sending…</span>
       </button>
     </div>
-          <p>Join over 1000 founders. Unsubscribe at any time.</p>
+          <p>Join {SUBSCRIBERS} founders. Unsubscribe at any time.</p>
     <p class="friday-brief__status" role="status" aria-live="polite"></p>
   </form>
 </section>
