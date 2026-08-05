@@ -10,6 +10,15 @@ const TALLY_SUBMIT_FORM_URL = 'https://tally.so/r/PdvzgQ';
 // Founder Stories live on the main publication, not this directory subdomain.
 const STORIES_URL = 'https://wearefounders.uk/stories/';
 
+// CONFIGURE: Update these two values when you clear the backlog or check Tally.
+// QUEUE_LENGTH is the number of unreviewed free submissions currently waiting.
+// QUEUE_UPDATED is shown to submitters so the number reads as live, not decorative.
+const QUEUE_LENGTH = 172;
+const QUEUE_UPDATED = 'August 5, 2026';
+
+// Visual only. Caps how many dots render so very long queues stay readable.
+const QUEUE_DOTS = Math.min(QUEUE_LENGTH, 180);
+
 const base = import.meta.env.BASE_URL;
 
 const steps = [
@@ -20,7 +29,7 @@ const steps = [
   },
   {
     title: 'We review',
-    desc: 'Free listings in 2 to 4 weeks. Fast-track in 48 hours.',
+    desc: 'Free listings in 6 to 8 weeks. Fast-track in 48 hours.',
     icon: 'search',
   },
   {
@@ -53,7 +62,7 @@ const perks = [
   },
   {
     title: 'Fast-track for $49',
-    desc: 'Optional. Reviewed in 48 hours and featured at the top of your category for 30 days, then kept on permanently.',
+    desc: 'Optional. Reviewed in 48 hours instead of 6 to 8 weeks, and featured at the top of your category for 30 days, then kept on permanently.',
     icon: 'star',
   },
 ];
@@ -73,16 +82,24 @@ const pass = [
 
 const faqs = [
   {
+    q: 'Why is the free queue so long?',
+    a: "Demand outgrew the review capacity. Every listing is written by hand, pricing is checked against the live site, and one person does that work, so the queue moves at the speed of real editorial rather than the speed of submissions. We would rather be honest about the wait than quietly sit on your entry. The queue number above is updated as we work through it.",
+  },
+  {
     q: "Can I submit a tool I don't own?",
     a: "Yes. Agencies, freelancers, and content marketers occasionally submit tools they're not affiliated with. We treat every submission the same way.",
   },
   {
     q: 'What does the $49 fast-track get me?',
-    a: "Two things: your submission is reviewed within 48 hours instead of the usual 2 to 4 weeks, and once live it sits at the top of its category for 30 days before settling into a standard, permanent listing. It buys speed and placement, not a softer review. Every tool clears the same editorial bar.",
+    a: "Two things: your submission is reviewed within 48 hours instead of the current 6 to 8 week wait, and once live it sits at the top of its category for 30 days before settling into a standard, permanent listing. It buys speed and placement, not a softer review. Every tool clears the same editorial bar.",
   },
   {
     q: 'Is a paid listing a sponsored listing?',
     a: "No. Free or fast-tracked, every entry meets the same editorial standard and is written the same way, so nothing is marked sponsored. The $49 moves you up the queue and adds a featured window. It doesn't buy a place we wouldn't otherwise give you, and it doesn't change what we write.",
+  },
+  {
+    q: 'Can I pay to skip the queue after I have already submitted?',
+    a: "Yes. Email us with your tool name and we'll send you the fast-track link. Your original submission stays as it is, it just moves to the front.",
   },
   {
     q: 'What if my tool changes or I want to update the listing?',
@@ -94,13 +111,13 @@ const faqs = [
   },
   {
     q: 'What if you reject my submission?',
-    a: "We'll email you a short explanation. Our rejection rate is low because most founder-focused tools clear the bar, but we reserve editorial judgement. You're welcome to resubmit once you've addressed whatever held it back.",
+    a: "We'll email you a short explanation. We reserve editorial judgement, and we do turn down a meaningful share of what comes in, usually on fit rather than quality. You're welcome to resubmit once you've addressed whatever held it back.",
   },
 ];
 ---
 <BaseLayout
   title="Submit your tool · We Are Founders Directory"
-  description="Submit your SaaS, agency tool, or founder product for free editorial review and inclusion in the We Are Founders tools directory. Every entry is hand-reviewed."
+  description="Submit your SaaS, agency tool, or founder product for editorial review and inclusion in the We Are Founders tools directory. Every entry is hand-reviewed."
 >
   <section class="container submit">
     <!-- Hero -->
@@ -110,9 +127,9 @@ const faqs = [
         Get your tool in front of founders <em>who are looking for it</em>
       </h1>
       <p class="submit__lead">
-        A curated directory of tools founders actually use. Hand-reviewed,
-        free to submit, and live indefinitely. Want it live in 48 hours and
-        featured at the top of your category? There's a fast-track for that.
+        A curated directory of tools founders actually use. Hand-reviewed and
+        live indefinitely. Free submissions are open, though the queue is long
+        right now. Fast-track puts you at the front for $49.
       </p>
       <div class="submit__actions">
         <a href={TALLY_SUBMIT_FORM_URL} class="btn btn--primary" rel="noopener">
@@ -121,6 +138,66 @@ const faqs = [
         </a>
         <a href={base} class="btn btn--ghost">Browse the directory</a>
       </div>
+    </div>
+
+    <!-- Queue -->
+    <div class="queue">
+      <div class="queue__head">
+        <div>
+          <div class="queue__tag">The queue right now</div>
+          <h2 class="queue__title">
+            <span class="queue__count">{QUEUE_LENGTH}</span>
+            tools are waiting ahead of you
+          </h2>
+          <p class="queue__note">
+            Updated {QUEUE_UPDATED}. We review by hand, in the order things
+            arrive, and submissions are coming in faster than we can publish
+            them. Free entries are taking 6 to 8 weeks.
+          </p>
+        </div>
+      </div>
+
+      <div class="queue__lanes">
+        <!-- Free lane -->
+        <div class="lane">
+          <div class="lane__label">
+            <span class="lane__name">Free</span>
+            <span class="lane__eta">6 to 8 weeks</span>
+          </div>
+          <div class="lane__track" role="img" aria-label={`${QUEUE_LENGTH} submissions ahead of you in the free queue`}>
+            {Array.from({ length: QUEUE_DOTS }).map(() => (
+              <span class="dot"></span>
+            ))}
+            <span class="dot dot--you"></span>
+          </div>
+          <div class="lane__foot">
+            <span class="lane__pin">You submit today, you land at #{QUEUE_LENGTH + 1}</span>
+          </div>
+        </div>
+
+        <!-- Fast-track lane -->
+        <div class="lane lane--fast">
+          <div class="lane__label">
+            <span class="lane__name">Fast-track · $49</span>
+            <span class="lane__eta lane__eta--fast">48 hours</span>
+          </div>
+          <div class="lane__track lane__track--fast" role="img" aria-label="With fast-track you move to first in the queue">
+            <span class="dot dot--you dot--first"></span>
+          </div>
+          <div class="lane__foot">
+            <span class="lane__pin lane__pin--fast">You submit today, you land at #1</span>
+          </div>
+        </div>
+      </div>
+
+      <a href={TALLY_SUBMIT_FORM_URL} class="btn btn--primary queue__cta" rel="noopener">
+        Skip the queue for $49
+        <svg viewBox="0 0 24 24" class="btn__arrow" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+      <p class="queue__small">
+        Or submit free and wait it out. Both routes get the same editorial
+        treatment, and both stay live permanently.
+      </p>
     </div>
 
     <!-- Flow -->
@@ -206,11 +283,12 @@ const faqs = [
         <div class="featured__tag">Fast-track · $49</div>
         <h2 class="featured__title">Skip the queue and start at the top</h2>
         <p class="featured__copy">
-          Free listings are worth the wait, but if you're launching or timing a
-          push, fast-track gets you reviewed in 48 hours and featured at the top
-          of your category for 30 days. After that it stays on permanently as a
-          standard listing. One payment, no subscription. It's also what keeps
-          the directory free for everyone else.
+          With {QUEUE_LENGTH} tools already waiting, a free listing is a real
+          wait. If you're launching or timing a push, fast-track gets you
+          reviewed in 48 hours and featured at the top of your category for 30
+          days. After that it stays on permanently as a standard listing. One
+          payment, no subscription. It's also what keeps the directory free for
+          everyone else.
         </p>
         <a href={TALLY_SUBMIT_FORM_URL} class="featured__link" rel="noopener">
           Fast-track your tool
@@ -261,7 +339,7 @@ const faqs = [
         Submit your tool
         <svg viewBox="0 0 24 24" class="btn__arrow" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
       </a>
-      <p class="closer__small">Free listing, or fast-track for $49. Takes a couple of minutes either way.</p>
+      <p class="closer__small">Free listing at #{QUEUE_LENGTH + 1} in the queue, or fast-track to #1 for $49. Takes a couple of minutes either way.</p>
     </div>
   </section>
 </BaseLayout>
@@ -275,7 +353,7 @@ const faqs = [
   }
 
   /* ---- Hero ---- */
-  .submit__hero { max-width: 680px; margin-bottom: clamp(3rem, 6vw, 4.5rem); }
+  .submit__hero { max-width: 680px; margin-bottom: clamp(2.5rem, 5vw, 3.5rem); }
   .submit__eyebrow {
     font-family: var(--font-mono);
     font-size: 0.75rem;
@@ -322,6 +400,123 @@ const faqs = [
   .btn--ghost:hover { border-color: var(--waf-accent); color: var(--waf-accent); }
   .btn__arrow { width: 1.1em; height: 1.1em; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: transform 0.15s ease; }
   .btn:hover .btn__arrow { transform: translateX(3px); }
+
+  /* ---- Queue ---- */
+  .queue {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--bg-elevated);
+    padding: clamp(1.75rem, 4vw, 2.75rem);
+    margin-bottom: clamp(3.5rem, 7vw, 5.5rem);
+  }
+  .queue__head { margin-bottom: 2rem; }
+  .queue__tag {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--waf-accent);
+    margin-bottom: 0.875rem;
+  }
+  .queue__title {
+    font-family: var(--font-display);
+    font-size: clamp(1.375rem, 3vw, 1.875rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    margin: 0 0 0.75rem;
+  }
+  .queue__count {
+    font-variant-numeric: tabular-nums;
+    color: var(--waf-accent);
+  }
+  .queue__note {
+    font-size: 0.9375rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin: 0;
+    max-width: 62ch;
+  }
+
+  .queue__lanes { display: flex; flex-direction: column; gap: 1.5rem; margin-bottom: 1.75rem; }
+
+  .lane {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.125rem 1.25rem;
+    background: var(--bg);
+  }
+  .lane--fast { border-color: var(--waf-accent); background: var(--waf-accent-soft); }
+
+  .lane__label {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.875rem;
+  }
+  .lane__name {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 0.9375rem;
+    letter-spacing: -0.01em;
+  }
+  .lane__eta {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    color: var(--text-faint);
+  }
+  .lane__eta--fast { color: var(--waf-accent); }
+
+  .lane__track {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;
+    min-height: 1.25rem;
+    margin-bottom: 0.875rem;
+  }
+  .lane__track--fast { gap: 0; }
+
+  .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--border-strong);
+    flex: 0 0 auto;
+  }
+  .dot--you {
+    width: 11px;
+    height: 11px;
+    background: var(--waf-accent);
+    box-shadow: 0 0 0 3px var(--waf-accent-soft);
+    animation: pulse 2.4s ease-in-out infinite;
+  }
+  .dot--first { margin-left: 0; }
+
+  .lane__foot { display: flex; }
+  .lane__pin {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.02em;
+    color: var(--text-muted);
+  }
+  .lane__pin--fast { color: var(--waf-accent); font-weight: 600; }
+
+  .queue__cta { margin-bottom: 0.875rem; }
+  .queue__small {
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+    margin: 0;
+    max-width: 56ch;
+    line-height: 1.55;
+  }
+
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 3px var(--waf-accent-soft); }
+    50% { box-shadow: 0 0 0 6px var(--waf-accent-soft); }
+  }
 
   /* ---- Flow ---- */
   .flow {
@@ -492,9 +687,13 @@ const faqs = [
     .flow__badge { margin-left: -3.125rem; background: var(--bg); box-shadow: 0 0 0 6px var(--bg); }
     .perks { grid-template-columns: 1fr; }
     .bar { grid-template-columns: 1fr; }
+    .queue__cta { width: 100%; justify-content: center; }
+    .dot { width: 5px; height: 5px; }
+    .lane__track { gap: 3px; }
   }
 
   @media (prefers-reduced-motion: reduce) {
     .flow__step, .perk { animation: none; }
+    .dot--you { animation: none; }
   }
 </style>
