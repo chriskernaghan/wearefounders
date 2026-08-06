@@ -22,7 +22,7 @@ export const QUEUE_COUNT = 170;
 export const SUBSCRIBERS = '2,000+';
 
 /** Date the numbers above were last checked. Shown publicly. */
-export const STATS_UPDATED = 'August 5, 2026';
+export const STATS_UPDATED = 'August 6, 2026';
 
 // --- Derived. Do not edit by hand. ---
 
