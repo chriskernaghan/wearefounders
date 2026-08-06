@@ -16,7 +16,7 @@ export const DECLINED = 13;
 /** Tools currently waiting in the free queue, not yet reviewed. This is the
  *  "N tools waiting ahead of you" figure on the submit page. Update it as the
  *  backlog grows or clears. */
-export const QUEUE_COUNT = 170;
+export const QUEUE_COUNT = 169;
 
 /** Newsletter subscribers. Keep in step with the promote page and Ghost. */
 export const SUBSCRIBERS = '2,000+';
