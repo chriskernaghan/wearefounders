@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="220" height="54" viewBox="0 0 220 54" role="img" aria-label="Listed on We Are Founders">
+  <rect width="220" height="54" rx="10" fill="#18181b" stroke="#3f3f46"/>
+  <rect x="14" y="15" width="24" height="24" rx="6" fill="#443fde"/>
+  <text x="26" y="32" font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13" font-weight="700" fill="#ffffff" text-anchor="middle">W</text>
+  <text x="48" y="24" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="8.5" letter-spacing="1.2" fill="#a1a1aa">LISTED ON</text>
+  <text x="48" y="39" font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#fafafa">We Are Founders</text>
+</svg>
