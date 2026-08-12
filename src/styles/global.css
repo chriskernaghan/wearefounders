@@ -1319,3 +1319,144 @@ body.is-home .hero__inner {
   display: inline-flex;
   flex-shrink: 0;
 }
+/* ============================================================
+   Directory: full-width layout (sidebar removed), 3-up grid,
+   sort control. Added when categories moved to a top strip.
+   ============================================================ */
+
+/* Full-width main column now that the category sidebar is gone. */
+.directory-main--full {
+  padding-top: clamp(1.25rem, 3vw, 2rem);
+}
+
+/* The primary category strip sits above the filter bar on all viewports. */
+#category-strip-primary {
+  margin-bottom: 0.5rem;
+}
+
+/* Small per-category count inside each pill. */
+.pill__count {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  opacity: 0.55;
+  margin-left: 0.4rem;
+}
+
+/* Three across on desktop, two on mid widths, one on mobile. The base
+   .tools-grid auto-fill rule still applies elsewhere (stage tiles etc);
+   this modifier forces an explicit column count on the directory grid. */
+.tools-grid--three {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+@media (max-width: 1024px) {
+  .tools-grid--three {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 640px) {
+  .tools-grid--three {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Sort dropdown in the filter bar. */
+.sort-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-right: 1.5rem;
+}
+.sort-control__label {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  white-space: nowrap;
+}
+.sort-control__select,
+select.sort-control__select {
+  font-family: inherit;
+  font-size: 0.8125rem;
+  line-height: 1.2;
+  color: var(--text);
+  background-color: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.4rem 1.9rem 0.4rem 0.85rem;
+  margin: 0;
+  cursor: pointer;
+  outline: none;
+  /* Vendor prefixes are required to fully suppress native select chrome. */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.65rem center;
+  background-size: 0.8rem;
+}
+.sort-control__select:hover { border-color: var(--border-strong); }
+.sort-control__select:focus-visible {
+  border-color: var(--waf-accent);
+  box-shadow: 0 0 0 3px var(--waf-accent-soft);
+}
+/* Dropdown options render with OS styling; set sane colours for dark mode. */
+.sort-control__select option {
+  background: var(--bg-elevated);
+  color: var(--text);
+}
+
+/* Keep the filter bar right side aligned when the sort control is present. */
+.directory-main .filter-bar__right {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+/* ============================================================
+   Category strip scroll arrows
+   ============================================================ */
+.strip-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+  color: var(--text-muted);
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 0.06);
+  transition: color 120ms ease, border-color 120ms ease;
+}
+.strip-arrow:hover {
+  color: var(--waf-accent);
+  border-color: var(--waf-accent);
+}
+.strip-arrow[hidden] { display: none; }
+.strip-arrow svg {
+  width: 0.85rem;
+  height: 0.85rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.strip-arrow--prev { left: 0; }
+.strip-arrow--next { right: 0; }
+
+/* Keep the right-hand fade clear of the next arrow so the arrow stays
+   legible rather than sitting under the gradient. */
+.category-strip__fade { z-index: 1; }
+
+@media (max-width: 640px) {
+  /* Touch devices swipe the strip; arrows would just crowd it. */
+  .strip-arrow { display: none; }
+}
