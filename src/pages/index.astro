@@ -57,7 +57,16 @@ const base = import.meta.env.BASE_URL;
     <main class="directory-main directory-main--full">
       <div class="category-strip" id="category-strip-primary">
         <div class="category-strip__scroll-wrap">
-          <div class="category-strip__pills" data-filter-group="category">
+          <button
+            type="button"
+            class="strip-arrow strip-arrow--prev"
+            id="strip-prev"
+            aria-label="Scroll categories left"
+            hidden
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>
+          </button>
+          <div class="category-strip__pills" data-filter-group="category" id="category-pills-primary">
             <button type="button" class="pill" data-filter-value="all" aria-pressed="true">All</button>
             {CATEGORIES.map((c) => (
               <button type="button" class="pill" data-filter-value={c.slug} aria-pressed="false">
@@ -66,6 +75,14 @@ const base = import.meta.env.BASE_URL;
               </button>
             ))}
           </div>
+          <button
+            type="button"
+            class="strip-arrow strip-arrow--next"
+            id="strip-next"
+            aria-label="Scroll categories right"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+          </button>
           <div class="category-strip__fade" aria-hidden="true"></div>
         </div>
       </div>
@@ -118,6 +135,38 @@ const base = import.meta.env.BASE_URL;
     border-bottom-style: solid;
   }
 </style>
+
+<script>
+  // Category strip: scroll arrows. Each click nudges the strip by ~75% of its
+  // visible width. Arrows hide themselves at either end so they never look
+  // clickable when there is nothing further to scroll to.
+  const stripPills = document.getElementById('category-pills-primary');
+  const stripPrev = document.getElementById('strip-prev');
+  const stripNext = document.getElementById('strip-next');
+
+  if (stripPills && stripPrev && stripNext) {
+    const updateArrows = () => {
+      const { scrollLeft, scrollWidth, clientWidth } = stripPills;
+      const maxScroll = scrollWidth - clientWidth;
+      // 2px tolerance for sub-pixel rounding at the extremes.
+      stripPrev.hidden = scrollLeft <= 2;
+      stripNext.hidden = scrollLeft >= maxScroll - 2;
+    };
+
+    const nudge = (direction: number) => {
+      stripPills.scrollBy({
+        left: direction * stripPills.clientWidth * 0.75,
+        behavior: 'smooth',
+      });
+    };
+
+    stripPrev.addEventListener('click', () => nudge(-1));
+    stripNext.addEventListener('click', () => nudge(1));
+    stripPills.addEventListener('scroll', updateArrows, { passive: true });
+    window.addEventListener('resize', updateArrows, { passive: true });
+    updateArrows();
+  }
+</script>
 
 <script>
   // Homepage-only: header transitions from over-hero (purple/white text) to
