@@ -1460,3 +1460,45 @@ select.sort-control__select {
   /* Touch devices swipe the strip; arrows would just crowd it. */
   .strip-arrow { display: none; }
 }
+
+/* ============================================================
+   Filter bar: narrow-screen layout
+   At small widths the count, sort control, and free-tier toggle
+   cannot share one row without wrapping mid-label. Stack them:
+   count on its own line, then sort and toggle side by side.
+   ============================================================ */
+@media (max-width: 640px) {
+  .directory-main .filter-bar {
+    height: auto;
+    align-items: stretch;
+    padding-bottom: 0.85rem;
+  }
+  .directory-main .filter-bar__inner {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+  .directory-main .filter-bar__left {
+    display: flex;
+    align-items: center;
+  }
+  .directory-main .filter-bar__right {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    width: 100%;
+  }
+  .sort-control {
+    margin-right: 0;
+    flex: 0 1 auto;
+    min-width: 0;
+  }
+  .sort-control__select {
+    max-width: 100%;
+  }
+  /* Stop the toggle label breaking onto two lines. */
+  .toggle__label {
+    white-space: nowrap;
+  }
+}
