@@ -1414,3 +1414,50 @@ select.sort-control__select {
   align-items: center;
   gap: 0;
 }
+
+/* ============================================================
+   Category strip scroll arrows
+   ============================================================ */
+.strip-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+  color: var(--text-muted);
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 0.06);
+  transition: color 120ms ease, border-color 120ms ease;
+}
+.strip-arrow:hover {
+  color: var(--waf-accent);
+  border-color: var(--waf-accent);
+}
+.strip-arrow[hidden] { display: none; }
+.strip-arrow svg {
+  width: 0.85rem;
+  height: 0.85rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.strip-arrow--prev { left: 0; }
+.strip-arrow--next { right: 0; }
+
+/* Keep the right-hand fade clear of the next arrow so the arrow stays
+   legible rather than sitting under the gradient. */
+.category-strip__fade { z-index: 1; }
+
+@media (max-width: 640px) {
+  /* Touch devices swipe the strip; arrows would just crowd it. */
+  .strip-arrow { display: none; }
+}
