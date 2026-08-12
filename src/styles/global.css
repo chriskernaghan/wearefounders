@@ -1502,3 +1502,16 @@ select.sort-control__select {
     white-space: nowrap;
   }
 }
+
+/* ============================================================
+   Mobile: hide the category strip entirely.
+   At small widths the pills cannot fit without horizontal
+   scrolling, and the scroll arrows are hidden on touch, so the
+   strip ends up cramped and half-usable. Category browsing is
+   still available via the /category/ pages.
+   ============================================================ */
+@media (max-width: 640px) {
+  #category-strip-primary {
+    display: none;
+  }
+}
