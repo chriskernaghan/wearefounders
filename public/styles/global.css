@@ -1319,7 +1319,6 @@ body.is-home .hero__inner {
   display: inline-flex;
   flex-shrink: 0;
 }
-
 /* ============================================================
    Directory: full-width layout (sidebar removed), 3-up grid,
    sort control. Added when categories moved to a top strip.
