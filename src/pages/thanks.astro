@@ -53,6 +53,21 @@ const PROMOTE = '/promote/';
         <a class="btn btn--ghost" href="/">Back to the directory</a>
       </div>
     </section>
+
+    <section class="thanks__badge">
+      <div class="thanks__badge-art" aria-hidden="true">
+        <img src="/badges/waf-badge-light.svg" alt="" width="220" height="54" />
+      </div>
+      <div class="thanks__badge-copy">
+        <span class="thanks__eyebrow">Once you're live</span>
+        <h2>You'll get a badge for your site</h2>
+        <p>
+          Every listed tool gets a "Listed on We Are Founders" badge, in light and
+          dark, with a one-line snippet to drop on your site. We'll send it with the
+          link to your listing once it's published.
+        </p>
+      </div>
+    </section>
   </div>
 
   <style>
@@ -162,6 +177,39 @@ const PROMOTE = '/promote/';
       line-height: 1.4;
     }
 
+
+    .thanks__badge {
+      margin-top: 2rem;
+      padding: 2rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      background: var(--bg-elevated);
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+    }
+    @media (max-width: 640px) {
+      .thanks__badge {
+        flex-direction: column;
+        text-align: center;
+        gap: 1.25rem;
+      }
+    }
+    .thanks__badge-art img {
+      display: block;
+      max-width: 100%;
+      height: auto;
+    }
+    .thanks__badge-copy h2 {
+      margin: 0.4rem 0 0.6rem;
+      font-size: 1.25rem;
+    }
+    .thanks__badge-copy p {
+      margin: 0;
+      font-size: 0.9375rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
     .thanks__cta-row {
       display: flex;
       gap: 0.75rem;
