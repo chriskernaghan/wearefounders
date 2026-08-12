@@ -30,6 +30,14 @@ const { hideCategoryFilter = false } = Astro.props;
       <span class="filter-bar__count" id="filter-count">Loading…</span>
     </div>
     <div class="filter-bar__right">
+      <label class="sort-control">
+        <span class="sort-control__label">Sort</span>
+        <select class="sort-control__select" id="sort-select">
+          <option value="az">A–Z</option>
+          <option value="recent">Recently added</option>
+          <option value="featured">Featured first</option>
+        </select>
+      </label>
       <label class="toggle" data-filter-group="freetier">
         <span class="toggle__label">Free tier only</span>
         <input type="checkbox" class="toggle__input" id="freetier-toggle" />
@@ -48,6 +56,38 @@ const { hideCategoryFilter = false } = Astro.props;
     category: 'all',
     freetier: 'all',
   };
+  // Sort mode is separate from the filter groups. Default A-Z.
+  let sortMode: 'az' | 'recent' | 'featured' = 'az';
+
+  // Reorder the cards in the DOM. Featured tools are ALWAYS pinned to the top,
+  // regardless of sort mode; the chosen sort then applies within the featured
+  // block and within the rest. Sorting the whole node list (not just visible
+  // ones) keeps order stable as filters change. CSS grid reflows to match DOM
+  // order, so moving the nodes is all that's needed.
+  function sortGrid() {
+    const grid = document.querySelector<HTMLElement>('.tools-grid');
+    if (!grid) return;
+    const cards = Array.from(grid.querySelectorAll<HTMLElement>('[data-tool]'));
+    if (cards.length === 0) return;
+
+    const byName = (a: HTMLElement, b: HTMLElement) =>
+      (a.dataset.name ?? '').localeCompare(b.dataset.name ?? '');
+    const byDateDesc = (a: HTMLElement, b: HTMLElement) =>
+      (b.dataset.date ?? '').localeCompare(a.dataset.date ?? '');
+
+    const withinGroup =
+      sortMode === 'recent' ? byDateDesc : byName; // 'featured' + 'az' both A-Z within group
+
+    cards.sort((a, b) => {
+      const aFeat = a.dataset.featured === 'true';
+      const bFeat = b.dataset.featured === 'true';
+      if (aFeat !== bFeat) return aFeat ? -1 : 1; // featured pinned on top always
+      return withinGroup(a, b);
+    });
+
+    // Re-append in the new order. Appending an existing node moves it.
+    cards.forEach((card) => grid.appendChild(card));
+  }
 
   function apply() {
     const tools = document.querySelectorAll<HTMLElement>('[data-tool]');
@@ -115,5 +155,18 @@ const { hideCategoryFilter = false } = Astro.props;
     });
   }
 
+  // Sort dropdown. Reorders the grid, then re-applies filters so the visible
+  // count and empty state stay correct. Featured stays pinned in every mode.
+  const sortSelect = document.getElementById('sort-select') as HTMLSelectElement | null;
+  if (sortSelect) {
+    sortSelect.addEventListener('change', () => {
+      sortMode = (sortSelect.value as typeof sortMode) || 'az';
+      sortGrid();
+      apply();
+    });
+  }
+
+  // Initial order: A-Z with featured pinned (matches the default option).
+  sortGrid();
   apply();
 </script>
