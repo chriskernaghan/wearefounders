@@ -51,6 +51,13 @@ const monogram = tool.data.name.trim().charAt(0).toUpperCase();
 // Build data-attributes used by the client-side filter.
 const categoriesAttr = tool.data.categories.join(',');
 const stagesAttr = tool.data.stages.join(',');
+// Sort keys. data-name for A-Z, data-date (ISO) for "recently added".
+// last_updated is a required schema field, so it is always present.
+const nameKey = tool.data.name.trim().toLowerCase();
+const dateKey = (tool.data.last_updated instanceof Date
+  ? tool.data.last_updated
+  : new Date(tool.data.last_updated)
+).toISOString();
 ---
 <a
   class:list={["tool-card", { "tool-card--featured": tool.data.featured }]}
@@ -60,6 +67,8 @@ const stagesAttr = tool.data.stages.join(',');
   data-categories={categoriesAttr}
   data-stages={stagesAttr}
   data-free-tier={tool.data.free_tier ? 'true' : 'false'}
+  data-name={nameKey}
+  data-date={dateKey}
 >
   {tool.data.featured && <span class="tool-card__featured-badge">Featured</span>}
   <div class="tool-card__head">
