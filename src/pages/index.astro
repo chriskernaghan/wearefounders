@@ -8,7 +8,7 @@ import NewsletterSignup from '../components/NewsletterSignup.astro';
 import PromoMarquee from '../components/PromoMarquee.astro';
 import { DECLINE_RATIO } from '../data/review-stats';
 
-const tools = await getCollection('tools');
+const tools = await getCollection('tools', ({ data }) => data.published);
 const sorted = tools.sort((a, b) => {
   if (a.data.featured && !b.data.featured) return -1;
   if (!a.data.featured && b.data.featured) return 1;

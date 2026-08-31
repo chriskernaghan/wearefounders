@@ -13,7 +13,7 @@ export async function getStaticPaths() {
 }
 
 const { stage } = Astro.props;
-const allTools = await getCollection('tools');
+const allTools = await getCollection('tools', ({ data }) => data.published);
 const tools = allTools
   .filter((t) => t.data.stages.includes(stage.slug))
   .sort((a, b) => a.data.name.localeCompare(b.data.name));

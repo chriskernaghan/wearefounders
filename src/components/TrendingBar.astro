@@ -11,6 +11,11 @@
 // stored in the JSON — this means a stale or mistyped slug in trending.json
 // fails the build loudly instead of silently shipping a broken link or a
 // name that's drifted from the actual listing.
+//
+// The collection is fetched unfiltered here on purpose. A delisted tool
+// (published: false) still needs to resolve, so that it can be dropped
+// quietly below rather than throwing the stale-slug error, which is meant
+// for typos only.
 import { getCollection } from 'astro:content';
 import trendingData from '../data/trending.json';
 const allTools = await getCollection('tools');
@@ -22,8 +27,8 @@ const trending = trendingData.slugs.map((slug) => {
       `Check for a typo, or remove it if the tool was unlisted.`
     );
   }
-  return { name: tool.data.name, slug };
-});
+  return tool.data.published ? { name: tool.data.name, slug } : null;
+}).filter((tool) => tool !== null);
 const base = import.meta.env.BASE_URL;
 ---
 <div class="trending-bar">
