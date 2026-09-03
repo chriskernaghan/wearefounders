@@ -40,6 +40,10 @@ const screenshotSrc = tool.data.screenshot ?? `${base}screenshots/${slug}.png`;
 
 const screenshotFile = `screenshots/${slug}.png`;
 const hasCommittedShot = existsSync(`public/${screenshotFile}`);
+// Show a branded monogram panel when no screenshot exists yet, rather than
+// hiding the block entirely. Decided at build time so there is no flash.
+const hasShot = Boolean(tool.data.screenshot) || hasCommittedShot;
+const shotMonogram = tool.data.name.trim().charAt(0).toUpperCase();
 const ogImage = tool.data.screenshot
   ? new URL(tool.data.screenshot, Astro.site).toString()
   : hasCommittedShot
@@ -103,12 +107,20 @@ const schema = {
         </div>
 
         <figure class="tool-detail__shot">
-          <img
-            src={screenshotSrc}
-            alt={`Screenshot of the ${tool.data.name} website`}
-            loading="lazy"
-            onerror="this.closest('.tool-detail__shot').style.display='none'"
-          />
+          {hasShot ? (
+            <img
+              src={screenshotSrc}
+              alt={`Screenshot of the ${tool.data.name} website`}
+              loading="lazy"
+              onerror="this.closest('.tool-detail__shot').style.display='none'"
+            />
+          ) : (
+            <div class="shot-placeholder" role="img" aria-label={`${tool.data.name} screenshot coming soon`}>
+              <span class="shot-placeholder__mark" aria-hidden="true">{shotMonogram}</span>
+              <span class="shot-placeholder__name">{tool.data.name}</span>
+              <span class="shot-placeholder__note">Screenshot coming soon</span>
+            </div>
+          )}
         </figure>
 
         <section class="tool-detail__body">
@@ -235,6 +247,50 @@ const schema = {
     background: var(--bg-subtle);
   }
   .tool-detail__shot img { display: block; width: 100%; height: auto; }
+
+  /* Placeholder shown until a real screenshot is added. Uses the tool's
+     initial so every listing looks intentional rather than broken, and
+     matches the monogram treatment on the directory cards. */
+  .shot-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    aspect-ratio: 16 / 9;
+    background:
+      radial-gradient(circle at 30% 25%, var(--waf-accent-soft), transparent 60%),
+      var(--bg-subtle);
+    text-align: center;
+    padding: 2rem;
+  }
+  .shot-placeholder__mark {
+    display: grid;
+    place-items: center;
+    width: 4rem;
+    height: 4rem;
+    border-radius: var(--radius);
+    background: var(--waf-accent);
+    color: #fff;
+    font-family: var(--font-display);
+    font-size: 2rem;
+    font-weight: 600;
+    line-height: 1;
+  }
+  .shot-placeholder__name {
+    font-family: var(--font-display);
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-top: 0.375rem;
+  }
+  .shot-placeholder__note {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+  }
 
   .tool-detail__sidebar {
     display: flex;
