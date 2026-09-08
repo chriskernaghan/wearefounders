@@ -8,15 +8,15 @@
 // UPDATE THIS FILE as you work through the review queue.
 
 /** Submissions reviewed and published. */
-export const PUBLISHED = 62;
+export const PUBLISHED = 64;
 
 /** Submissions reviewed and declined, with the submitter notified. */
-export const DECLINED = 50;
+export const DECLINED = 60;
 
 /** Tools currently waiting in the free queue, not yet reviewed. This is the
  *  "N tools waiting ahead of you" figure on the submit page. Update it as the
  *  backlog grows or clears. */
-export const QUEUE_COUNT = 90;
+export const QUEUE_COUNT = 70;
 
 /** Newsletter subscribers. Keep in step with the promote page and Ghost. */
 export const SUBSCRIBERS = '2,000+';
