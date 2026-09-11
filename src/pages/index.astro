@@ -5,8 +5,8 @@ import ToolCard from '../components/ToolCard.astro';
 import FilterBar from '../components/FilterBar.astro';
 import { STAGES, CATEGORIES } from '../data/taxonomy';
 import NewsletterSignup from '../components/NewsletterSignup.astro';
-import PromoMarquee from '../components/PromoMarquee.astro';
-import { DECLINE_RATIO } from '../data/review-stats';
+import LaunchDemo from '../components/LaunchDemo.astro';
+import { DECLINE_RATE, QUEUE_COUNT } from '../data/review-stats';
 
 const tools = await getCollection('tools', ({ data }) => data.published);
 const sorted = tools.sort((a, b) => {
@@ -23,6 +23,15 @@ sorted.forEach((tool) => {
   });
 });
 
+// Recently listed. Only listings with a listed_on date qualify, so the back
+// catalogue (which predates the field) stays out rather than all claiming the
+// same day. Fewer than four means the row is hidden entirely — better than
+// padding it with tools that were listed months ago.
+const recent = tools
+  .filter((tool) => tool.data.listed_on instanceof Date)
+  .sort((a, b) => b.data.listed_on.getTime() - a.data.listed_on.getTime())
+  .slice(0, 4);
+
 const base = import.meta.env.BASE_URL;
 ---
 <BaseLayout
@@ -31,29 +40,47 @@ const base = import.meta.env.BASE_URL;
   bodyClass="is-home"
 >
   <section class="hero" aria-labelledby="hero-heading">
-    <div class="hero__bg-word" aria-hidden="true">TOOLS</div>
     <div class="container hero__inner">
-      <div class="hero__eyebrow">The Directory</div>
-      <h1 class="hero__heading" id="hero-heading">
-        Tools founders <em>actually use</em>
-      </h1>
-      <div class="hero__signup">
-        <NewsletterSignup />
+      <div class="hero__copy">
+        <h1 class="hero__heading" id="hero-heading">
+          Tools founders actually use, and the place to launch yours
+        </h1>
+        <p class="hero__lead">
+          Every submission is reviewed by hand, and {DECLINE_RATE}% don't make the cut.
+          The tools that do get a permanent listing, a shot at the trending bar, and
+          a way into The Friday Brief.
+        </p>
+        <div class="hero__actions">
+          <a class="btn btn--light" href={`${base}submit/`}>Launch your tool</a>
+          <a class="btn btn--outline" href="#directory">Browse {tools.length} tools</a>
+        </div>
+        <p class="hero__queue">
+          <span class="hero__queue-count">{QUEUE_COUNT} in queue</span>
+          <span>
+            Free listings are reviewed in order.
+            <a href={`${base}promote/`}>Spotlight</a> gets you reviewed within 48 hours.
+          </span>
+        </p>
       </div>
-    </div>
-    <div class="hero__strip">
-      <div class="container hero__strip-inner">
-        <span>{tools.length} tools</span>
-        <a href={`${base}standards/`} class="hero__strip-link">Operator-reviewed</a>
-        <a href={`${base}standards/`} class="hero__strip-link">1 in {DECLINE_RATIO} declined</a>
-        <span>Updated weekly</span>
-      </div>
+      <LaunchDemo />
     </div>
   </section>
 
-<PromoMarquee />
+  {recent.length === 4 && (
+    <section class="section recent-section" aria-labelledby="recent-heading">
+      <div class="container">
+        <div class="section__head">
+          <h2 class="section__title" id="recent-heading">Recently listed</h2>
+          <a class="section__link" href="#directory">See all tools</a>
+        </div>
+        <div class="tools-grid tools-grid--four">
+          {recent.map((tool) => <ToolCard tool={tool} />)}
+        </div>
+      </div>
+    </section>
+  )}
 
-  <div class="container">
+  <div class="container" id="directory">
     <main class="directory-main directory-main--full">
       <div class="category-strip" id="category-strip-primary">
         <div class="category-strip__scroll-wrap">
@@ -116,24 +143,26 @@ const base = import.meta.env.BASE_URL;
       ))}
     </div>
   </div>
+
+  <section class="brief-band" aria-labelledby="brief-heading">
+    <div class="container brief-band__inner">
+      <div class="brief-band__copy">
+        <h2 class="section__title" id="brief-heading">The Friday Brief</h2>
+        <p>
+          One email a week with the tools worth your time, a product teardown, and
+          what other founders are building.
+        </p>
+      </div>
+      <div class="brief-band__form">
+        <NewsletterSignup />
+      </div>
+    </div>
+  </section>
 </BaseLayout>
 
 <style>
-  /* Strip items that link through to the editorial standards page. Styled to
-     sit flush with the plain spans beside them, with the underline only on
-     hover so the strip stays quiet until someone looks for the proof. */
-  .hero__strip-link {
-    color: inherit;
-    text-decoration: none;
-    border-bottom: 1px dotted currentColor;
-    padding-bottom: 1px;
-    transition: opacity 0.15s ease, border-color 0.15s ease;
-  }
-  .hero__strip-link:hover,
-  .hero__strip-link:focus-visible {
-    opacity: 0.75;
-    border-bottom-style: solid;
-  }
+  /* Hero layout is in global.css so the demo component can share the tokens.
+     Nothing page-specific left here. */
 </style>
 
 <script>
