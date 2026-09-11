@@ -18,6 +18,11 @@ export const DECLINED = 60;
  *  backlog grows or clears. */
 export const QUEUE_COUNT = 32;
 
+/** How long the free queue is currently taking, as it should read in copy.
+ *  Every page that quotes a wait time imports this, so promote/submit/standards
+ *  can never disagree again. Phrase it as a range, no leading "about". */
+export const FREE_WAIT = '4 to 6 weeks';
+
 /** Newsletter subscribers. Keep in step with the promote page and Ghost. */
 export const SUBSCRIBERS = '2,000+';
 
