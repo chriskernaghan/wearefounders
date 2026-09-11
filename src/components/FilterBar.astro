@@ -4,32 +4,28 @@ import { CATEGORIES } from '../data/taxonomy';
 interface Props {
   hideCategoryFilter?: boolean;
   hideStageFilter?: boolean;
+  // Tool count per category slug, for the labels in the modal. Optional so
+  // pages that don't compute it (stage and category pages) still work.
+  categoryCounts?: Record<string, number>;
 }
 
-const { hideCategoryFilter = false } = Astro.props;
+const { hideCategoryFilter = false, categoryCounts } = Astro.props;
 ---
-{!hideCategoryFilter && (
-  <div class="category-strip" id="category-strip">
-    <div class="category-strip__scroll-wrap">
-      <div class="category-strip__pills" data-filter-group="category" id="category-pills">
-        <button type="button" class="pill" data-filter-value="all" aria-pressed="true">All</button>
-        {CATEGORIES.map((c) => (
-          <button type="button" class="pill" data-filter-value={c.slug} aria-pressed="false">
-            {c.label}
-          </button>
-        ))}
-      </div>
-      <div class="category-strip__fade" aria-hidden="true"></div>
-    </div>
-  </div>
-)}
-
 <div class="filter-bar" id="filter-bar">
   <div class="container filter-bar__inner">
     <div class="filter-bar__left">
       <span class="filter-bar__count" id="filter-count">Loading…</span>
     </div>
     <div class="filter-bar__right">
+      {!hideCategoryFilter && (
+        <button type="button" class="category-button" id="category-button" aria-haspopup="dialog">
+          <svg viewBox="0 0 24 24" aria-hidden="true" class="category-button__icon">
+            <path d="M4 6h16M4 12h16M4 18h10" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" fill="none"/>
+          </svg>
+          <span>Categories</span>
+          <span class="category-button__current" id="category-button-current" hidden></span>
+        </button>
+      )}
       <label class="sort-control">
         <span class="sort-control__label">Sort</span>
         <select class="sort-control__select" id="sort-select">
@@ -48,6 +44,32 @@ const { hideCategoryFilter = false } = Astro.props;
     </div>
   </div>
 </div>
+
+{!hideCategoryFilter && (
+  <!-- Category picker. A native <dialog> so Escape, the backdrop and focus
+       trapping come free rather than being rebuilt in script. The buttons keep
+       the same data-filter-group and data-filter-value contract the strip used,
+       so the existing filter wiring picks them up untouched. -->
+  <dialog class="category-modal" id="category-modal" aria-labelledby="category-modal-title">
+    <div class="category-modal__head">
+      <h2 class="category-modal__title" id="category-modal-title">Browse by category</h2>
+      <button type="button" class="category-modal__close" id="category-modal-close" aria-label="Close">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" fill="none"/></svg>
+      </button>
+    </div>
+    <div class="category-modal__grid" data-filter-group="category" id="category-pills">
+      <button type="button" class="category-option" data-filter-value="all" aria-pressed="true">
+        <span class="category-option__label">All categories</span>
+      </button>
+      {CATEGORIES.map((c) => (
+        <button type="button" class="category-option" data-filter-value={c.slug} aria-pressed="false">
+          <span class="category-option__label">{c.label}</span>
+          {categoryCounts && <span class="category-option__count">{categoryCounts[c.slug] || 0}</span>}
+        </button>
+      ))}
+    </div>
+  </dialog>
+)}
 
 <script>
   type GroupName = 'stage' | 'category' | 'freetier';
@@ -140,9 +162,33 @@ const { hideCategoryFilter = false } = Astro.props;
         btn.setAttribute('aria-pressed', 'true');
         state.category = btn.dataset.filterValue ?? 'all';
         apply();
+        // Close the picker and show the choice on the button, so the active
+        // filter is still visible once the modal is gone.
+        const label = btn.querySelector('.category-option__label')?.textContent?.trim() ?? '';
+        const current = document.getElementById('category-button-current');
+        if (current) {
+          const chosen = state.category !== 'all';
+          current.textContent = chosen ? label : '';
+          current.hidden = !chosen;
+        }
+        document.getElementById('category-button')?.classList.toggle('is-active', state.category !== 'all');
+        (document.getElementById('category-modal') as HTMLDialogElement | null)?.close();
       });
     });
   });
+
+  // Category picker open/close
+  const categoryModal = document.getElementById('category-modal') as HTMLDialogElement | null;
+  const categoryButton = document.getElementById('category-button');
+  if (categoryModal && categoryButton) {
+    categoryButton.addEventListener('click', () => categoryModal.showModal());
+    document.getElementById('category-modal-close')?.addEventListener('click', () => categoryModal.close());
+    // Clicking the backdrop closes it. The dialog element itself is the click
+    // target when the backdrop is hit, so compare against the event target.
+    categoryModal.addEventListener('click', (event) => {
+      if (event.target === categoryModal) categoryModal.close();
+    });
+  }
 
   // Stage pills (used on stage pages)
   document.querySelectorAll<HTMLElement>('[data-filter-group="stage"]').forEach((group) => {
