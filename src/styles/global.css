@@ -148,6 +148,119 @@ a:hover { text-decoration-color: var(--waf-accent); }
 }
 
 /* Submit your tool — solid CTA matching WAF's Subscribe button */
+/* ---- Category picker (button + modal) ---- */
+/* Replaces the horizontal scrolling strip. One control in the filter row, and
+   the full list in a native <dialog>, which gives Escape, backdrop dismissal
+   and focus trapping without extra script. */
+.category-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font: inherit;
+  font-size: 0.8125rem;
+  padding: 0.5rem 0.9rem;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  color: var(--text);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.category-button:hover { border-color: var(--text); }
+.category-button.is-active { border-color: var(--waf-accent); color: var(--waf-accent); }
+.category-button__icon { width: 15px; height: 15px; flex-shrink: 0; }
+.category-button__current {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  background: var(--waf-accent-soft);
+  color: var(--waf-accent);
+  border-radius: 999px;
+  padding: 0.15rem 0.5rem;
+}
+
+.category-modal {
+  /* The global reset zeroes margins, which breaks the browser's own centring
+     for a modal dialog, so it is restored here. */
+  margin: auto;
+  width: min(560px, calc(100vw - 2rem));
+  max-height: calc(100vh - 4rem);
+  overflow: auto;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg-elevated);
+  color: var(--text);
+}
+.category-modal::backdrop { background: rgba(14, 14, 12, 0.55); }
+.category-modal__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.1rem 1.25rem;
+  border-bottom: 1px solid var(--border);
+}
+.category-modal__title {
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+.category-modal__close {
+  display: inline-grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text-muted);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.category-modal__close svg { width: 16px; height: 16px; }
+.category-modal__close:hover { color: var(--text); border-color: var(--text); }
+
+.category-modal__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+  padding: 1.25rem;
+}
+.category-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  font: inherit;
+  font-size: 0.9375rem;
+  text-align: left;
+  padding: 0.7rem 0.9rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.category-option:hover { border-color: var(--text); }
+.category-option[aria-pressed="true"] {
+  border-color: var(--waf-accent);
+  background: var(--waf-accent-soft);
+  color: var(--waf-accent);
+  font-weight: 600;
+}
+.category-option__count { font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-faint); }
+.category-option[aria-pressed="true"] .category-option__count { color: var(--waf-accent); }
+.category-option[data-filter-value="all"] { grid-column: 1 / -1; }
+
+@media (max-width: 520px) {
+  .category-modal__grid { grid-template-columns: minmax(0, 1fr); }
+  .category-button__current { display: none; }
+}
+
 .site-header__link {
   color: var(--text-muted);
   text-decoration: none;
@@ -450,43 +563,6 @@ html:not([data-prefers-color-scheme="dark"]) .theme-toggle__icon--moon { display
 }
 
 /* ============================================================
-   Category strip — full-width scroll, but pills aligned to container
-   ============================================================ */
-.category-strip {
-  position: relative;
-  width: 100%;
-  margin-bottom: 0.5rem;
-}
-.category-strip__scroll-wrap {
-  position: relative;
-  width: 100%;
-}
-.category-strip__pills {
-  display: flex;
-  gap: 0.625rem;
-  flex-wrap: nowrap;
-  overflow-x: auto;
-  scroll-snap-type: x proximity;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  padding: 1rem var(--gutter);
-  max-width: var(--container);
-  margin: 0 auto;
-}
-.category-strip__pills::-webkit-scrollbar { display: none; }
-.category-strip__pills .pill { scroll-snap-align: start; }
-
-.category-strip__fade {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  width: clamp(3rem, 6vw, 4.5rem);
-  background: linear-gradient(to right, transparent, var(--bg) 60%);
-  pointer-events: none;
-}
-
-/* ============================================================
    Filter bar
    ============================================================ */
 .filter-bar {
@@ -639,13 +715,6 @@ html:not([data-prefers-color-scheme="dark"]) .theme-toggle__icon--moon { display
     font-size: 0.75rem;
   }
 
-  .category-strip__fade {
-    width: 3rem;
-  }
-
-  .category-strip{
-      padding:0 0 0 1.5rem;
-  }
 }
 
 /* Below 480px (most phones), pull the submit button in even tighter so the
@@ -657,9 +726,6 @@ html:not([data-prefers-color-scheme="dark"]) .theme-toggle__icon--moon { display
   }
   .site-header__nav { gap: 0.375rem; }
 
-  .category-strip{
-      padding:0 0 0 1.5rem;
-  }
 }
 
 .hero {
@@ -915,8 +981,8 @@ body.is-home .site-header:not(.site-header--past-hero) .theme-toggle:hover {
 
 /* ============================================================
    Directory layout — left filter sidebar + main grid (desktop).
-   Sidebar is hidden on mobile in favour of the existing
-   horizontal category-strip below the hero.
+   Sidebar is hidden on mobile; the category picker in the filter
+   bar covers category browsing at every width.
    ============================================================ */
 .directory-layout {
   display: grid;
@@ -1423,18 +1489,6 @@ body.is-home .hero__inner {
   padding-top: clamp(1.25rem, 3vw, 2rem);
 }
 
-/* The primary category strip sits above the filter bar on all viewports. */
-#category-strip-primary {
-  margin-bottom: 0.5rem;
-}
-
-/* Small per-category count inside each pill. */
-.pill__count {
-  font-family: var(--font-mono);
-  font-size: 0.6875rem;
-  opacity: 0.55;
-  margin-left: 0.4rem;
-}
 
 /* Three across on desktop, two on mid widths, one on mobile. The base
    .tools-grid auto-fill rule still applies elsewhere (stage tiles etc);
@@ -1508,52 +1562,6 @@ select.sort-control__select {
   gap: 0;
 }
 
-/* ============================================================
-   Category strip scroll arrows
-   ============================================================ */
-.strip-arrow {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 2;
-  display: grid;
-  place-items: center;
-  width: 1.75rem;
-  height: 1.75rem;
-  padding: 0;
-  border-radius: 50%;
-  border: 1px solid var(--border);
-  background: var(--bg-elevated);
-  color: var(--text-muted);
-  cursor: pointer;
-  box-shadow: 0 1px 4px rgb(0 0 0 / 0.06);
-  transition: color 120ms ease, border-color 120ms ease;
-}
-.strip-arrow:hover {
-  color: var(--waf-accent);
-  border-color: var(--waf-accent);
-}
-.strip-arrow[hidden] { display: none; }
-.strip-arrow svg {
-  width: 0.85rem;
-  height: 0.85rem;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 2.2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-.strip-arrow--prev { left: 0; }
-.strip-arrow--next { right: 0; }
-
-/* Keep the right-hand fade clear of the next arrow so the arrow stays
-   legible rather than sitting under the gradient. */
-.category-strip__fade { z-index: 1; }
-
-@media (max-width: 640px) {
-  /* Touch devices swipe the strip; arrows would just crowd it. */
-  .strip-arrow { display: none; }
-}
 
 /* ============================================================
    Filter bar: narrow-screen layout
@@ -1594,18 +1602,5 @@ select.sort-control__select {
   /* Stop the toggle label breaking onto two lines. */
   .toggle__label {
     white-space: nowrap;
-  }
-}
-
-/* ============================================================
-   Mobile: hide the category strip entirely.
-   At small widths the pills cannot fit without horizontal
-   scrolling, and the scroll arrows are hidden on touch, so the
-   strip ends up cramped and half-usable. Category browsing is
-   still available via the /category/ pages.
-   ============================================================ */
-@media (max-width: 640px) {
-  #category-strip-primary {
-    display: none;
   }
 }
