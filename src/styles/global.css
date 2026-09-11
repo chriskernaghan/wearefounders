@@ -1287,48 +1287,75 @@ body.is-home .hero__inner {
    read as lighter-weight than .promo-marquee.
    Append to the BOTTOM of src/styles/global.css.
    ============================================================ */
+/* Screen-reader-only text. Used for the trending movement indicators, where
+   the visible label is a bare arrow and a number. */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---- Trending bar ---- */
+/* Dark band above the site header in both themes. The contrast is the point:
+   it separates the leaderboard from the page furniture, and it reads the same
+   over the violet home hero as it does over the cream inner pages. */
 .trending-bar {
   width: 100%;
-  border-bottom: 1px solid var(--border);
-  background: var(--bg-subtle);
-  font-size: 0.8125rem;
+  background: #0e0e0c;
+  color: #f5f4ee;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.09);
 }
+html[data-prefers-color-scheme="dark"] .trending-bar {
+  background: #000000;
+  border-bottom-color: rgba(255, 255, 255, 0.12);
+}
+/* Horizontal padding is left to .container so this row lines up with the
+   header and the page grid below it. Only the vertical padding is set here. */
 .trending-bar__inner {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
   gap: 0.5rem 1rem;
-  padding: 0.5rem 0;
+  padding-block: 0.6rem;
 }
 .trending-bar__label {
   flex: 0 0 auto;
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
+  gap: 0.5rem;
   font-family: var(--font-mono);
   font-size: 0.6875rem;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.09em;
   text-transform: uppercase;
-  color: var(--text-muted);
+  color: rgba(255, 255, 255, 0.62);
+  white-space: nowrap;
 }
-.trending-bar__icon {
-  color: var(--waf-accent);
-  font-size: 0.6rem;
-  display: inline-block;
-  animation: trending-bar-pulse 1.8s ease-in-out infinite;
+.trending-bar__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #6c67ff;
+  animation: trending-bar-pulse 2.2s ease-out infinite;
 }
 @keyframes trending-bar-pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.45; transform: scale(0.85); }
+  0% { box-shadow: 0 0 0 0 rgba(108, 103, 255, 0.65); }
+  70% { box-shadow: 0 0 0 7px rgba(108, 103, 255, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(108, 103, 255, 0); }
 }
 @media (prefers-reduced-motion: reduce) {
-  .trending-bar__icon { animation: none; }
+  .trending-bar__dot { animation: none; }
 }
 .trending-bar__list {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 1.25rem;
+  gap: 0.5rem;
   list-style: none;
   margin: 0;
   padding: 0;
@@ -1337,39 +1364,64 @@ body.is-home .hero__inner {
 .trending-bar__list a {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
-  color: var(--text);
+  gap: 0.5rem;
+  padding: 0.3rem 0.7rem 0.3rem 0.4rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  color: #ffffff;
   text-decoration: none;
+  font-size: 0.8125rem;
   font-weight: 500;
+  transition: background 0.15s ease;
 }
-.trending-bar__list a:hover { color: var(--waf-accent); }
+.trending-bar__list a:hover,
+.trending-bar__list a:focus-visible {
+  background: rgba(255, 255, 255, 0.14);
+}
 .trending-bar__rank {
+  display: inline-grid;
+  place-items: center;
+  width: 19px;
+  height: 19px;
+  border-radius: 50%;
+  background: #6c67ff;
+  color: #ffffff;
   font-family: var(--font-mono);
-  color: var(--text-faint);
-  font-weight: 400;
+  font-size: 0.625rem;
+  font-weight: 600;
+  flex-shrink: 0;
 }
+/* Week-on-week movement. Rendered only when trending.json carries a previous
+   week to compare against, so the first board after launch shows none. */
+.trending-bar__move {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+}
+.trending-bar__move--up { background: rgba(93, 202, 154, 0.17); color: #5dca9a; }
+.trending-bar__move--down { background: rgba(255, 138, 138, 0.17); color: #ff9d9d; }
+.trending-bar__move--new { background: rgba(255, 214, 102, 0.17); color: #ffd666; }
+.trending-bar__move--same { background: rgba(255, 255, 255, 0.08); color: rgba(255, 255, 255, 0.5); }
 .trending-bar__cta {
   flex: 0 0 auto;
   font-family: var(--font-mono);
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: var(--waf-accent);
+  font-size: 0.6875rem;
+  color: rgba(255, 255, 255, 0.62);
   text-decoration: none;
   white-space: nowrap;
 }
+.trending-bar__cta:hover { color: #ffffff; }
+.trending-bar :focus-visible { outline-color: #ffffff; }
+
+/* Pills are wider than plain text, so below 600px the right-hand link goes and
+   the label takes its own line, letting the three pills wrap underneath. */
 @media (max-width: 600px) {
   .trending-bar__cta { display: none; }
-  .trending-bar__inner {
-    gap: 0.4rem 0.75rem;
-    padding: 0.6rem 1rem;
-  }
-  .trending-bar__label {
-    flex-basis: 100%;
-  }
-  .trending-bar__list {
-    gap: 0.85rem;
-    font-size: 0.75rem;
-  }
+  .trending-bar__inner { gap: 0.45rem 0.6rem; }
+  .trending-bar__label { flex-basis: 100%; }
+  .trending-bar__list { gap: 0.4rem; }
+  .trending-bar__list a { font-size: 0.75rem; }
 }
 
 /* ============================================================
