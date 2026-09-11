@@ -64,8 +64,20 @@ const { hideCategoryFilter = false } = Astro.props;
   // block and within the rest. Sorting the whole node list (not just visible
   // ones) keeps order stable as filters change. CSS grid reflows to match DOM
   // order, so moving the nodes is all that's needed.
+  // The main directory grid only. The home page also renders ToolCards in its
+  // "Recently listed" row, and those carry the same data-tool attribute, so
+  // both the sort and the filter scope themselves to this grid. Without that,
+  // filtering would hide recently listed cards and the count would overstate
+  // the number of tools by four.
+  // Note: a comma selector would match whichever grid comes first in the
+  // document, which on the home page is the "Recently listed" row. Look for
+  // the directory grid explicitly, and only fall back on pages without one.
+  const mainGrid =
+    document.querySelector<HTMLElement>('.tools-grid--three') ??
+    document.querySelector<HTMLElement>('.tools-grid');
+
   function sortGrid() {
-    const grid = document.querySelector<HTMLElement>('.tools-grid');
+    const grid = mainGrid;
     if (!grid) return;
     const cards = Array.from(grid.querySelectorAll<HTMLElement>('[data-tool]'));
     if (cards.length === 0) return;
@@ -90,7 +102,7 @@ const { hideCategoryFilter = false } = Astro.props;
   }
 
   function apply() {
-    const tools = document.querySelectorAll<HTMLElement>('[data-tool]');
+    const tools = mainGrid ? mainGrid.querySelectorAll<HTMLElement>('[data-tool]') : document.querySelectorAll<HTMLElement>('[data-tool]');
     let visible = 0;
 
     tools.forEach((el) => {
