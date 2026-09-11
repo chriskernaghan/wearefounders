@@ -1,6 +1,6 @@
 ---
-// Trending leaderboard strip for the directory index.
-// Place at the very top of src/layouts/BaseLayout.astro, above SiteHeader.
+// Trending leaderboard strip. Rendered at the very top of BaseLayout, above
+// the site header.
 //
 // Ranking data lives in src/data/trending.json, rewritten every Monday by
 // .github/workflows/trending.yml from share-link visits logged in D1 (see
@@ -18,8 +18,27 @@
 // for typos only.
 import { getCollection } from 'astro:content';
 import trendingData from '../data/trending.json';
+
 const allTools = await getCollection('tools');
-const trending = trendingData.slugs.map((slug) => {
+
+// Last week's order, written by the same script. Absent on the first run and
+// on any week the previous board was empty, in which case no movement is
+// shown at all rather than labelling every tool NEW off a missing baseline.
+const previous: string[] = Array.isArray((trendingData as { previous?: string[] }).previous)
+  ? (trendingData as { previous: string[] }).previous
+  : [];
+
+function movement(slug: string, index: number) {
+  if (previous.length === 0) return null;
+  const was = previous.indexOf(slug);
+  if (was === -1) return { kind: 'new', label: 'New', title: 'New on the board this week' };
+  const delta = was - index;
+  if (delta > 0) return { kind: 'up', label: `\u2191${delta}`, title: `Up ${delta} from last week` };
+  if (delta < 0) return { kind: 'down', label: `\u2193${-delta}`, title: `Down ${-delta} from last week` };
+  return { kind: 'same', label: '\u2013', title: 'Same position as last week' };
+}
+
+const trending = trendingData.slugs.map((slug, index) => {
   const tool = allTools.find((t) => t.id.replace(/\.md$/, '') === slug);
   if (!tool) {
     throw new Error(
@@ -27,15 +46,18 @@ const trending = trendingData.slugs.map((slug) => {
       `Check for a typo, or remove it if the tool was unlisted.`
     );
   }
-  return tool.data.published ? { name: tool.data.name, slug } : null;
+  return tool.data.published
+    ? { name: tool.data.name, slug, move: movement(slug, index) }
+    : null;
 }).filter((tool) => tool !== null);
+
 const base = import.meta.env.BASE_URL;
 ---
 {trending.length > 0 && (
 <div class="trending-bar">
   <div class="container trending-bar__inner">
     <span class="trending-bar__label">
-      <span class="trending-bar__icon" aria-hidden="true">&#9650;</span>
+      <span class="trending-bar__dot" aria-hidden="true"></span>
       Trending this week
     </span>
     <ol class="trending-bar__list">
@@ -43,12 +65,21 @@ const base = import.meta.env.BASE_URL;
         <li>
           <a href={`${base}${tool.slug}/`}>
             <span class="trending-bar__rank">{i + 1}</span>
-            {tool.name}
+            <span class="trending-bar__name">{tool.name}</span>
+            {tool.move && (
+              <span
+                class={`trending-bar__move trending-bar__move--${tool.move.kind}`}
+                title={tool.move.title}
+              >
+                <span class="visually-hidden">{tool.move.title}</span>
+                <span aria-hidden="true">{tool.move.label}</span>
+              </span>
+            )}
           </a>
         </li>
       ))}
     </ol>
-    <a class="trending-bar__cta" href={`${base}trending/`}>How this works &rarr;</a>
+    <a class="trending-bar__cta" href={`${base}trending/`}>Earned, never sold &rarr;</a>
   </div>
 </div>
 )}
