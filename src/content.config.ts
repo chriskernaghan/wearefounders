@@ -63,6 +63,11 @@ const tools = defineCollection({
     founded: z.number().optional(),
     hq: z.string().optional(),
     last_updated: z.date(),
+    // Date the listing first went live. Optional on purpose: the listings that
+    // predate this field simply don't appear in "Recently listed" on the home
+    // page, rather than all claiming the day the field was added. Set it on
+    // every new listing from now on. Unquoted YAML date, e.g. listed_on: 2026-09-15
+    listed_on: z.date().optional(),
     // Set to false to delist an entry without deleting the file. Defaults to
     // true so existing listings validate unchanged. Delisted entries must also
     // be filtered out of every getCollection call, including getStaticPaths on
