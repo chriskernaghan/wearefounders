@@ -1414,14 +1414,34 @@ html[data-prefers-color-scheme="dark"] .trending-bar {
 .trending-bar__cta:hover { color: #ffffff; }
 .trending-bar :focus-visible { outline-color: #ffffff; }
 
-/* Pills are wider than plain text, so below 600px the right-hand link goes and
-   the label takes its own line, letting the three pills wrap underneath. */
+/* Mobile: one row, not three. Wrapping three pills plus a label ate the top
+   of every screen, so the pills scroll sideways instead and the label shortens
+   to "Trending". The mask fades the right edge, which is what signals there is
+   more to swipe to — no arrows, since they're useless on touch. */
 @media (max-width: 600px) {
   .trending-bar__cta { display: none; }
-  .trending-bar__inner { gap: 0.45rem 0.6rem; }
-  .trending-bar__label { flex-basis: 100%; }
-  .trending-bar__list { gap: 0.4rem; }
-  .trending-bar__list a { font-size: 0.75rem; }
+  .trending-bar__label-rest { display: none; }
+  .trending-bar__inner {
+    flex-wrap: nowrap;
+    gap: 0.6rem;
+    padding-block: 0.5rem;
+  }
+  .trending-bar__label { font-size: 0.625rem; letter-spacing: 0.08em; }
+  .trending-bar__list {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    gap: 0.4rem;
+    /* Room for the fade so the last pill isn't permanently dimmed. */
+    padding-right: 1.5rem;
+    -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 2rem), transparent 100%);
+    mask-image: linear-gradient(to right, #000 calc(100% - 2rem), transparent 100%);
+  }
+  .trending-bar__list::-webkit-scrollbar { display: none; }
+  .trending-bar__list li { scroll-snap-align: start; }
+  .trending-bar__list a { font-size: 0.75rem; white-space: nowrap; }
 }
 
 /* ============================================================
