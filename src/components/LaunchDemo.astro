@@ -1,0 +1,138 @@
+---
+// Stepped "what happens when you launch" panel for the home page hero.
+// Five states: submit, review, go live, feature, trend. It cycles on its own,
+// pauses on hover or keyboard focus, and every step is clickable.
+//
+// Every number shown comes from src/data/review-stats.ts, so the demo can't
+// drift from the queue length or decline count quoted elsewhere on the site.
+//
+// Deliberately HTML and CSS rather than a video: it loads instantly, stays
+// crisp at any width, and is edited here rather than re-recorded.
+import { QUEUE_NEXT_POSITION, QUEUE_COUNT, DECLINED, REVIEWED, SUBSCRIBERS } from '../data/review-stats';
+const steps = ['Submit', 'Review', 'Go live', 'Feature', 'Trend'];
+---
+<div class="demo" id="launch-demo" aria-label="What happens after you submit a tool">
+  <ol class="demo__steps">
+    {steps.map((label, i) => (
+      <li class:list={['demo__step', { 'is-active': i === 0 }]}>
+        <button type="button" data-step={i} aria-current={i === 0 ? 'step' : 'false'}>
+          <span class="demo__step-num">{String(i + 1).padStart(2, '0')}</span>
+          <span class="demo__step-label">{label}</span>
+        </button>
+      </li>
+    ))}
+  </ol>
+
+  <div class="demo__stage">
+    <div class="scene is-active" data-scene="0">
+      <div class="field"><span>Tool</span><span>Your tool</span></div>
+      <div class="field"><span>Website</span><span class="demo__mono">yourtool.com</span></div>
+      <div class="queue-pos"><b>#{QUEUE_NEXT_POSITION}</b><span>in the free review queue, behind {QUEUE_COUNT} tools</span></div>
+      <p class="scene__caption">Or take a Spotlight slot and <strong>skip the queue</strong>. Four open each month.</p>
+    </div>
+
+    <div class="scene" data-scene="1">
+      <ul class="checks">
+        <li><span class="tick"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 6.5l2.5 2.5L10 3.5"/></svg></span>Live site checked</li>
+        <li><span class="tick"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 6.5l2.5 2.5L10 3.5"/></svg></span>Pricing matched to your site</li>
+        <li><span class="tick"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 6.5l2.5 2.5L10 3.5"/></svg></span>A real fit for founders</li>
+      </ul>
+      <p class="scene__caption">Reviewed by a person. <strong>{DECLINED} of the last {REVIEWED}</strong> submissions were declined.</p>
+    </div>
+
+    <div class="scene" data-scene="2">
+      <div class="demo-card">
+        <div class="demo-card__head">
+          <span class="demo-card__id"><span class="demo-logo">Y</span><span class="demo-card__name">Your tool</span></span>
+          <span class="demo-card__price">Free tier</span>
+        </div>
+        <p class="demo-card__tagline">Your one-line pitch, written and checked against your live site.</p>
+        <div class="demo-card__meta"><span class="pill">AI agents</span><span class="pill">MVP</span></div>
+      </div>
+      <p class="scene__caption">A permanent listing with its own review page, filed by category and stage.</p>
+    </div>
+
+    <div class="scene" data-scene="3">
+      <div class="email">
+        <div class="email__head"><span><b>The Friday Brief</b></span><span>To {SUBSCRIBERS} founders</span></div>
+        <div class="email__body">
+          <span class="email__line" style="width: 88%"></span>
+          <span class="email__line" style="width: 72%"></span>
+          <div class="email__slot">
+            <span class="demo-logo">Y</span>
+            <span><small>Sponsored</small><strong>Your tool</strong></span>
+          </div>
+          <span class="email__line" style="width: 80%"></span>
+          <span class="email__line" style="width: 56%"></span>
+        </div>
+      </div>
+      <p class="scene__caption">Spotlight includes the sponsored slot in that week's issue. The full package adds the product teardown.</p>
+    </div>
+
+    <div class="scene" data-scene="4">
+      <div class="mini-bar">
+        <span class="mini-bar__label">Trending this week</span>
+        <ol>
+          <li class="is-you"><span class="mini-bar__rank">1</span>Your tool</li>
+          <li><span class="mini-bar__rank">2</span>Another tool</li>
+          <li><span class="mini-bar__rank">3</span>One more</li>
+        </ol>
+      </div>
+      <p class="scene__caption">Share your listing. The three tools whose share links bring in the most visitors <strong>take the bar every Monday</strong>, and nobody can buy a spot.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  const demo = document.getElementById('launch-demo');
+  if (demo) {
+    const steps = Array.from(demo.querySelectorAll<HTMLLIElement>('.demo__step'));
+    const scenes = Array.from(demo.querySelectorAll<HTMLElement>('.scene'));
+    const checks = Array.from(demo.querySelectorAll<HTMLLIElement>('.checks li'));
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let current = 0;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    let tickTimers: ReturnType<typeof setTimeout>[] = [];
+    let paused = false;
+
+    function show(index: number) {
+      current = index;
+      steps.forEach((step, i) => {
+        step.classList.toggle('is-active', i === index);
+        step.classList.toggle('is-done', i < index);
+        step.querySelector('button')?.setAttribute('aria-current', i === index ? 'step' : 'false');
+      });
+      scenes.forEach((scene, i) => scene.classList.toggle('is-active', i === index));
+
+      tickTimers.forEach(clearTimeout);
+      tickTimers = [];
+      checks.forEach((check) => check.classList.remove('is-ticked'));
+      if (index === 1) {
+        checks.forEach((check, i) => {
+          if (reduced) { check.classList.add('is-ticked'); return; }
+          tickTimers.push(setTimeout(() => check.classList.add('is-ticked'), 350 + i * 550));
+        });
+      }
+    }
+
+    // Reduced motion stops the carousel entirely; the steps still work as tabs.
+    function schedule() {
+      clearTimeout(timer);
+      if (reduced || paused) return;
+      timer = setTimeout(() => { show((current + 1) % scenes.length); schedule(); }, current === 1 ? 3400 : 3000);
+    }
+
+    steps.forEach((step, i) => {
+      step.querySelector('button')?.addEventListener('click', () => { show(i); schedule(); });
+    });
+    const pause = () => { paused = true; clearTimeout(timer); };
+    const resume = () => { paused = false; schedule(); };
+    demo.addEventListener('mouseenter', pause);
+    demo.addEventListener('mouseleave', resume);
+    demo.addEventListener('focusin', pause);
+    demo.addEventListener('focusout', resume);
+
+    show(0);
+    schedule();
+  }
+</script>
