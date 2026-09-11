@@ -1,5 +1,6 @@
 ---
 import { CATEGORY_MAP, STAGE_MAP } from '../data/taxonomy';
+import { existsSync } from 'node:fs';
 interface Props {
   tool: {
     id: string;
@@ -12,6 +13,7 @@ interface Props {
       pricing_currency: string;
       free_tier: boolean;
       featured?: boolean;
+      screenshot?: string;
       website?: string;
       logo?: string;
     };
@@ -48,6 +50,14 @@ if (!logoUrl && tool.data.website) {
   }
 }
 const monogram = tool.data.name.trim().charAt(0).toUpperCase();
+
+// Card screenshot. Same resolution order as the detail page: an explicit
+// screenshot field wins, otherwise the committed file at its slug. Checked at
+// build time so a missing file falls back to the monogram panel with no
+// broken-image flash and no request. Listings without one still look
+// deliberate, which matters while the back catalogue is filled in.
+const shotSrc = tool.data.screenshot ?? `${base}screenshots/${slug}.png`;
+const hasShot = Boolean(tool.data.screenshot) || existsSync(`public/screenshots/${slug}.png`);
 // Build data-attributes used by the client-side filter.
 const categoriesAttr = tool.data.categories.join(',');
 const stagesAttr = tool.data.stages.join(',');
@@ -71,6 +81,18 @@ const dateKey = (tool.data.last_updated instanceof Date
   data-date={dateKey}
 >
   {tool.data.featured && <span class="tool-card__featured-badge">Featured</span>}
+  {hasShot ? (
+    <img
+      class="tool-card__shot"
+      src={shotSrc}
+      alt={`${tool.data.name} homepage`}
+      loading="lazy"
+      decoding="async"
+    />
+  ) : (
+    <span class="tool-card__shot tool-card__shot--none" aria-hidden="true">{monogram}</span>
+  )}
+  <div class="tool-card__body">
   <div class="tool-card__head">
     <div class="tool-card__head-left">
       <span class="tool-card__logo-wrap">
@@ -108,5 +130,6 @@ const dateKey = (tool.data.last_updated instanceof Date
     {tool.data.stages.map((slug) => (
       <span class="pill">{STAGE_MAP[slug]?.label ?? slug}</span>
     ))}
+  </div>
   </div>
 </a>
