@@ -11,6 +11,12 @@ const base = import.meta.env.BASE_URL;
       <a href={base} class="site-header__tools">Tools</a>
     </div>
     <nav class="site-header__nav" aria-label="Primary">
+      <!-- Section links. Hidden below 900px rather than collapsed into a
+           burger menu: three links don't justify one, and the submit button
+           is the only action that has to survive at every width. -->
+      <a href={`${base}category/ai-agents/`} class="site-header__link">Categories</a>
+      <a href={`${base}standards/`} class="site-header__link">Standards</a>
+      <a href={`${base}promote/`} class="site-header__link">Spotlight</a>
       <a href={`${base}submit/`} class="site-header__submit">
         <span class="site-header__submit-desktop">FREE: Submit your Tool</span>
         <span class="site-header__submit-mobile">Submit</span>
