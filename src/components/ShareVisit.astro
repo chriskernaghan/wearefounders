@@ -1,0 +1,29 @@
+---
+// Fires one beacon when a listing page is opened through its own founder
+// share link (utm_campaign=founder_share, utm_content=<this slug>), which is
+// the link ShareCard.astro hands out. Recorded by functions/api/sv.js and
+// counted into the trending bar each Monday by scripts/update-trending.mjs.
+//
+// Running in the browser means link-preview bots from X, LinkedIn and Slack,
+// which fetch the URL but don't run JavaScript, are never counted.
+//
+// To stop your own visits counting, run this once in the browser console on
+// each of your devices: localStorage.setItem('waf_me', '1')
+interface Props {
+  slug: string;
+}
+const { slug } = Astro.props;
+---
+<script is:inline define:vars={{ slug }}>
+  (function () {
+    try {
+      var params = new URLSearchParams(window.location.search);
+      if (params.get('utm_campaign') !== 'founder_share') return;
+      if (params.get('utm_content') !== slug) return;
+      if (localStorage.getItem('waf_me')) return;
+      if (navigator.sendBeacon) {
+        navigator.sendBeacon('/api/sv', JSON.stringify({ slug: slug }));
+      }
+    } catch (e) {}
+  })();
+</script>
