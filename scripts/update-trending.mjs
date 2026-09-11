@@ -66,13 +66,25 @@ const live = new Set(await liveRes.json());
 const slugs = rows.map((r) => r.slug).filter((slug) => live.has(slug)).slice(0, SPOTS);
 
 const current = JSON.parse(await readFile(FILE, 'utf8'));
+
+// Last week's board becomes this week's baseline, which is what TrendingBar
+// compares against to show the up/down/new markers. Guarded against a re-run
+// in the same week: if week_of hasn't moved on, the existing previous is kept
+// rather than being overwritten with a copy of the current board, which would
+// wipe the movement out.
+const previous = current.week_of === from
+  ? (Array.isArray(current.previous) ? current.previous : [])
+  : (Array.isArray(current.slugs) ? current.slugs : []);
+
 const next = {
   _readme:
     'Written automatically every Monday by .github/workflows/trending.yml from share-link visits logged in D1 ' +
     '(see functions/api/sv.js). Fewer than three slugs means fewer than three listings got share visits that week; ' +
-    'an empty list hides the bar. Editing by hand still works, but the next Monday run will overwrite it.',
+    'an empty list hides the bar. "previous" is last week\'s order, used only for the up/down/new markers. ' +
+    'Editing by hand still works, but the next Monday run will overwrite it.',
   week_of: from,
   slugs,
+  previous,
 };
 
 await writeFile(FILE, JSON.stringify(next, null, 2) + '\n');
