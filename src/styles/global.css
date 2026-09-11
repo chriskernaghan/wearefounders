@@ -1559,8 +1559,12 @@ select.sort-control__select {
 .directory-main .filter-bar__right {
   display: flex;
   align-items: center;
-  gap: 0;
+  /* Spacing used to come from .sort-control's own right margin, which left the
+     new Categories button sitting flush against the SORT label. A real gap
+     spaces all three controls evenly instead. */
+  gap: 1.25rem;
 }
+.directory-main .filter-bar__right .sort-control { margin-right: 0; }
 
 
 /* ============================================================
