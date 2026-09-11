@@ -334,6 +334,43 @@ html:not([data-prefers-color-scheme="dark"]) .theme-toggle__icon--moon { display
   padding: 0.4rem 0.75rem;
 }
 
+/* Card screenshot. Committed shots are full-page captures at roughly 2.1:1,
+   so the card crops vertically only — cropping horizontally would slice the
+   left edge off a hero headline. The mask fades the bottom into the card so a
+   half-visible paragraph reads as a deliberate crop rather than a mistake,
+   and it fades to the card colour in both themes. Browsers without mask
+   support just show a hard edge, which is the acceptable fallback. */
+.tool-card:has(.tool-card__shot) { padding: 0; overflow: hidden; }
+.tool-card__body { padding: 0.25rem 1.5rem 1.5rem; }
+.tool-card__shot {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 6.6;
+  object-fit: cover;
+  object-position: top center;
+  background: var(--bg-subtle);
+  -webkit-mask-image: linear-gradient(to bottom, #000 48%, transparent 97%);
+  mask-image: linear-gradient(to bottom, #000 48%, transparent 97%);
+}
+.tool-card__shot--none {
+  display: grid;
+  place-items: center;
+  font-family: var(--font-display);
+  font-size: 2.25rem;
+  font-weight: 600;
+  color: var(--text-faint);
+  mask-image: none;
+  -webkit-mask-image: none;
+}
+/* The badge normally hangs above the card edge. Screenshot cards clip their
+   overflow, so it moves inside and sits over the image instead. */
+.tool-card:has(.tool-card__shot) .tool-card__featured-badge { top: 0.75rem; left: 0.75rem; z-index: 2; }
+@media (prefers-reduced-motion: no-preference) {
+  .tool-card__shot { transition: transform 0.3s ease; }
+  .tool-card:hover .tool-card__shot { transform: scale(1.02); }
+}
+
 .tools-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -612,160 +649,199 @@ html:not([data-prefers-color-scheme="dark"]) .theme-toggle__icon--moon { display
   background: var(--waf-accent);
   color: #ffffff;
   overflow: hidden;
-  margin-bottom: clamp(2rem, 4vw, 3rem);
 }
 
-.is-home .hero{
-  margin-bottom:0 !important;
-}
+.is-home .hero { margin-bottom: 0; }
 
+/* Copy left, launch demo right. The demo drops below the copy on narrow
+   screens rather than shrinking, since its five steps need the width. */
 .hero__inner {
   position: relative;
   z-index: 2;
-  padding-block: clamp(3rem, 8vw, 6.5rem) clamp(2.5rem, 6vw, 4.5rem);
-}
-
-.hero__eyebrow {
-  font-family: var(--font-mono);
-  font-size: 0.8125rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.7);
-  margin-bottom: 1.75rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  gap: clamp(2rem, 5vw, 4.5rem);
+  align-items: center;
+  padding-block: clamp(3rem, 7vw, 5.5rem);
 }
 
 .hero__heading {
   font-family: var(--font-display);
-  font-size: clamp(2.5rem, 10.5vw, 8rem);
+  font-size: clamp(2.4rem, 4.6vw, 4.2rem);
   font-weight: 600;
-  line-height: 0.95;
-  letter-spacing: -0.04em;
+  line-height: 0.98;
+  letter-spacing: -0.035em;
   color: #ffffff;
-  margin: 0 0 clamp(2rem, 4vw, 3rem);
-  max-width: 16ch;
+  max-width: 14ch;
+  margin: 0;
 }
 
-.hero__heading em {
-  font-style: italic;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.78);
+.hero__lead {
+  margin-top: 1.75rem;
+  font-size: 1.125rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.84);
+  max-width: 46ch;
 }
 
-.hero__signup {
-  max-width: 540px;
-  position: relative;
-  z-index: 3;
-}
-
-/* Newsletter signup — dark-background overrides scoped to the hero.
-   Submit button colour set here; input styling is set later in the file. */
-.hero .hero__signup .friday-brief__submit {
-  background: #0e0e0c;
-  border-color: #0e0e0c;
-  color: #ffffff;
-  padding: 0.95rem 1.4rem;
-  font-size: 0.9rem;
-  border-radius: 10px;
-}
-.hero .hero__signup .friday-brief__submit:hover:not(:disabled) {
-  opacity: 1;
-  background: #ffffff;
-  color: #0e0e0c;
-  border-color: #ffffff;
-}
-.hero .hero__signup .friday-brief__form > p {
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 0.875rem;
-}
-.hero .hero__signup .friday-brief__status {
-  color: rgba(255, 255, 255, 0.85);
-}
-.hero .hero__signup .friday-brief__status[data-state="success"] {
-  color: #ffffff;
-}
-.hero .hero__signup .friday-brief__status[data-state="error"] {
-  color: #ffd7d7;
-}
-
-/* Giant background word — barely there, like the Rig letters */
-.hero__bg-word {
-  position: absolute;
-  right: -3vw;
-  bottom: -9vw;
-  font-family: var(--font-display);
-  font-size: 32vw;
-  font-weight: 700;
-  letter-spacing: -0.06em;
-  color: rgba(255, 255, 255, 0.055);
-  line-height: 1;
-  pointer-events: none;
-  user-select: none;
-  z-index: 1;
-  white-space: nowrap;
-}
-
-/* Bottom marquee strip inside the hero */
-.hero__strip {
-  position: relative;
-  z-index: 2;
-  border-top: 1px solid rgba(255, 255, 255, 0.18);
-  background: var(--waf-accent);
-}
-.hero__strip-inner {
+.hero__actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem 2.25rem;
-  padding-block: 1.1rem;
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.72);
+  gap: 0.75rem;
+  margin-top: 2rem;
 }
-.hero__strip-inner span {
+
+.btn--light { background: #ffffff; color: var(--waf-accent); font-weight: 600; }
+.btn--light:hover { background: var(--waf-accent-soft); }
+.btn--outline { color: #ffffff; border-color: rgba(255, 255, 255, 0.45); font-weight: 600; }
+.btn--outline:hover { border-color: #ffffff; }
+
+.hero__queue {
+  margin-top: 1.75rem;
+  display: flex;
+  gap: 0.75rem;
+  align-items: baseline;
+  font-size: 0.9375rem;
+  color: rgba(255, 255, 255, 0.84);
+  max-width: 48ch;
+}
+.hero__queue-count {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 6px;
+  padding: 0.2rem 0.5rem;
+  color: #ffffff;
+  white-space: nowrap;
+}
+.hero__queue a { color: #ffffff; font-weight: 600; text-underline-offset: 3px; }
+.hero :focus-visible { outline-color: #ffffff; }
+
+@media (max-width: 900px) {
+  .hero__inner { grid-template-columns: minmax(0, 1fr); }
+  .hero__heading { max-width: 16ch; }
+}
+
+/* ---- Launch demo (hero) ---- */
+.demo { background: var(--bg-elevated); color: var(--text); border-radius: var(--radius-lg); overflow: hidden; }
+.demo__steps { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); border-bottom: 1px solid var(--border); list-style: none; margin: 0; padding: 0; }
+.demo__step button {
+  width: 100%;
+  font: inherit;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  padding: 0.85rem 0.4rem 0.75rem;
+  color: var(--text-faint);
+  display: grid;
+  gap: 0.2rem;
+  justify-items: center;
+  font-size: 0.8125rem;
+  white-space: nowrap;
   position: relative;
 }
-.hero__strip-inner span + span::before {
-  content: "·";
+.demo__step-num { font-family: var(--font-mono); font-size: 0.6875rem; }
+.demo__step button::after { content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: transparent; }
+.demo__step.is-done button { color: var(--text-muted); }
+.demo__step.is-active button { color: var(--text); font-weight: 600; }
+.demo__step.is-active button::after { background: var(--waf-accent); }
+
+.demo__stage { position: relative; min-height: 340px; padding: 1.5rem; background: var(--bg); }
+.scene {
   position: absolute;
-  left: -1.25rem;
-  color: rgba(255, 255, 255, 0.4);
+  inset: 1.5rem;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.9rem;
+}
+.scene.is-active { opacity: 1; transform: none; pointer-events: auto; }
+.scene__caption { font-size: 0.875rem; color: var(--text-muted); }
+.scene__caption strong { color: var(--text); font-weight: 600; }
+.demo__mono { font-family: var(--font-mono); font-size: 0.875rem; }
+
+.field { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: var(--radius); padding: 0.65rem 0.85rem; font-size: 0.9375rem; display: flex; justify-content: space-between; gap: 1rem; }
+.field span:first-child { color: var(--text-faint); font-size: 0.8125rem; }
+.queue-pos { display: flex; align-items: center; gap: 0.75rem; background: var(--waf-accent-soft); border-radius: var(--radius); padding: 0.75rem 0.9rem; font-size: 0.9375rem; }
+.queue-pos b { font-family: var(--font-display); font-size: 1.5rem; color: var(--waf-accent); letter-spacing: -0.02em; }
+
+.checks { list-style: none; display: grid; gap: 0.55rem; margin: 0; padding: 0; }
+.checks li { display: flex; align-items: center; gap: 0.7rem; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: var(--radius); padding: 0.7rem 0.85rem; font-size: 0.9375rem; opacity: 0.35; transition: opacity 0.3s ease; }
+.checks li.is-ticked { opacity: 1; }
+.tick { width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid var(--border-strong); display: grid; place-items: center; flex-shrink: 0; }
+.is-ticked .tick { background: #1d7a52; border-color: #1d7a52; }
+.tick svg { width: 11px; height: 11px; stroke: #ffffff; stroke-width: 3; fill: none; opacity: 0; }
+.is-ticked .tick svg { opacity: 1; }
+
+.demo-card { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.35rem; }
+.demo-card__head { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 0.75rem; }
+.demo-card__id { display: flex; align-items: center; gap: 0.7rem; min-width: 0; }
+.demo-logo { width: 32px; height: 32px; border-radius: 6px; background: var(--waf-accent); color: #ffffff; display: inline-grid; place-items: center; font-family: var(--font-display); font-weight: 600; flex-shrink: 0; }
+.demo-card__name { font-family: var(--font-display); font-size: 1.35rem; font-weight: 600; letter-spacing: -0.02em; }
+.demo-card__price { font-family: var(--font-mono); font-size: 0.8125rem; color: var(--text-muted); white-space: nowrap; padding-top: 0.35rem; }
+.demo-card__tagline { color: var(--text-muted); font-size: 0.9375rem; line-height: 1.5; margin-bottom: 1rem; }
+.demo-card__meta { display: flex; flex-wrap: wrap; gap: 0.375rem; padding-top: 0.9rem; border-top: 1px solid var(--border); }
+.demo-card__meta .pill { cursor: default; pointer-events: none; font-family: var(--font-mono); font-size: 0.6875rem; letter-spacing: 0.06em; text-transform: uppercase; padding: 0.35rem 0.7rem; }
+
+.email { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+.email__head { padding: 0.8rem 1rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; gap: 1rem; font-size: 0.8125rem; color: var(--text-muted); }
+.email__head b { color: var(--text); font-weight: 600; }
+.email__body { padding: 1rem; display: grid; gap: 0.6rem; }
+.email__line { display: block; height: 8px; border-radius: 4px; background: var(--bg-subtle); }
+.email__slot { border: 1px solid var(--waf-accent); border-radius: var(--radius); padding: 0.8rem 0.9rem; display: flex; gap: 0.75rem; align-items: center; }
+.email__slot small { display: block; font-family: var(--font-mono); font-size: 0.6875rem; color: var(--waf-accent); }
+.email__slot strong { font-family: var(--font-display); font-weight: 600; font-size: 1.05rem; }
+
+.mini-bar { background: var(--bg-subtle); border: 1px solid var(--border); border-radius: var(--radius); padding: 0.8rem 1rem; display: grid; gap: 0.6rem; }
+.mini-bar__label { font-family: var(--font-mono); font-size: 0.6875rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); }
+.mini-bar ol { list-style: none; display: grid; gap: 0.45rem; margin: 0; padding: 0; }
+.mini-bar li { display: flex; gap: 0.6rem; align-items: center; font-size: 0.9375rem; font-weight: 500; }
+.mini-bar li.is-you { color: var(--waf-accent); }
+.mini-bar__rank { font-family: var(--font-mono); color: var(--text-faint); font-weight: 400; width: 1rem; }
+
+@media (max-width: 560px) {
+  .demo__step-num { display: none; }
+  .demo__stage { min-height: 370px; padding: 1rem; }
+  .scene { inset: 1rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .scene, .checks li, .tool-card__shot { transition: none; }
 }
 
-@media (max-width: 640px) {
-  .hero__strip-inner {
-    gap: 0.5rem 1.5rem;
-    font-size: 0.6875rem;
-  }
-  .hero__strip-inner span + span::before {
-    left: -0.85rem;
-  }
-}
+/* ---- Home page sections ---- */
+.section { padding-block: clamp(2.5rem, 5vw, 3.5rem); }
+.section__head { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; margin-bottom: 1.25rem; }
+.section__title { font-family: var(--font-display); font-size: clamp(1.4rem, 2.4vw, 1.75rem); font-weight: 600; letter-spacing: -0.02em; }
+.section__link { font-size: 0.875rem; color: var(--waf-accent); font-weight: 600; text-decoration: none; }
+.tools-grid--four { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+@media (max-width: 1000px) { .tools-grid--four { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .tools-grid--four { grid-template-columns: minmax(0, 1fr); } }
 
-/* ============================================================
-   Friday Brief — pill input + pill button, fully readable
-   Updates to the hero signup styles for accessibility and shape.
-   ============================================================ */
-.hero .hero__signup .friday-brief__field input {
-  background: #ffffff;
-  border: 1px solid #ffffff;
-  color: #1a1a1a;
-  border-radius: 999px;
-  padding: 0.9rem 1.25rem;
+/* Four-up cards are narrower than the main grid's, so the head stacks rather
+   than letting a long name collide with the price, the tagline is clamped, and
+   only the category pills show. Keeps the row a consistent height. */
+.tools-grid--four .tool-card__head { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+.tools-grid--four .tool-card__name { font-size: 1.2rem; }
+.tools-grid--four .tool-card__price { text-align: left; padding-top: 0; }
+.tools-grid--four .tool-card__tagline {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-bottom: 0;
 }
-.hero .hero__signup .friday-brief__field input::placeholder {
-  color: #6a6a65;
-}
-.hero .hero__signup .friday-brief__field input:focus {
-  outline: 2px solid rgba(255, 255, 255, 0.65);
-  outline-offset: 2px;
-  background: #ffffff;
-  border-color: #ffffff;
-}
-.hero .hero__signup .friday-brief__submit {
-  border-radius: 999px;
-  padding: 0.9rem 1.5rem;
-}
+.tools-grid--four .tool-card__meta { display: none; }
+.tools-grid--four .tool-card__body { padding-bottom: 1.25rem; }
+
+.brief-band { background: var(--bg-subtle); border-top: 1px solid var(--border); margin-top: clamp(2.5rem, 5vw, 4rem); }
+.brief-band__inner { display: flex; justify-content: space-between; align-items: center; gap: 2rem; flex-wrap: wrap; padding-block: 2.5rem; }
+.brief-band__copy { max-width: 52ch; }
+.brief-band__copy p { color: var(--text-muted); margin-top: 0.5rem; }
+.brief-band__form { flex: 1 1 360px; max-width: 480px; }
 
 /* ============================================================
    Sticky header — homepage variant
