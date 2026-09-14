@@ -11,12 +11,12 @@
 export const PUBLISHED = 69;
 
 /** Submissions reviewed and declined, with the submitter notified. */
-export const DECLINED = 63;
+export const DECLINED = 68;
 
 /** Tools currently waiting in the free queue, not yet reviewed. This is the
  *  "N tools waiting ahead of you" figure on the submit page. Update it as the
  *  backlog grows or clears. */
-export const QUEUE_COUNT = 28;
+export const QUEUE_COUNT = 24;
 
 /** How long the free queue is currently taking, as it should read in copy.
  *  Every page that quotes a wait time imports this, so promote/submit/standards
@@ -27,7 +27,7 @@ export const FREE_WAIT = '4 to 6 weeks';
 export const SUBSCRIBERS = '2,000+';
 
 /** Date the numbers above were last checked. Shown publicly. */
-export const STATS_UPDATED = 'September 8, 2026';
+export const STATS_UPDATED = 'September 14, 2026';
 
 // --- Derived. Do not edit by hand. ---
 
