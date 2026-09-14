@@ -8,15 +8,15 @@
 // UPDATE THIS FILE as you work through the review queue.
 
 /** Submissions reviewed and published. */
-export const PUBLISHED = 68;
+export const PUBLISHED = 69;
 
 /** Submissions reviewed and declined, with the submitter notified. */
-export const DECLINED = 60;
+export const DECLINED = 61;
 
 /** Tools currently waiting in the free queue, not yet reviewed. This is the
  *  "N tools waiting ahead of you" figure on the submit page. Update it as the
  *  backlog grows or clears. */
-export const QUEUE_COUNT = 32;
+export const QUEUE_COUNT = 30;
 
 /** How long the free queue is currently taking, as it should read in copy.
  *  Every page that quotes a wait time imports this, so promote/submit/standards
