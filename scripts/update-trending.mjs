@@ -11,13 +11,39 @@
 
 import { readFile, writeFile } from 'node:fs/promises';
 
-const { CF_ACCOUNT_ID, CF_API_TOKEN, D1_DATABASE_ID } = process.env;
+// Trimmed because a stray space or newline pasted into a GitHub secret ends up
+// inside the request URL, and Cloudflare answers with a routing error (7003)
+// that says nothing about which value is wrong.
+const CF_ACCOUNT_ID = (process.env.CF_ACCOUNT_ID ?? '').trim();
+const CF_API_TOKEN = (process.env.CF_API_TOKEN ?? '').trim();
+const D1_DATABASE_ID = (process.env.D1_DATABASE_ID ?? '').trim();
 const SITE = process.env.SITE_URL || 'https://directory.wearefounders.uk';
 const FILE = new URL('../src/data/trending.json', import.meta.url);
 const SPOTS = 3;
 
 if (!CF_ACCOUNT_ID || !CF_API_TOKEN || !D1_DATABASE_ID) {
   throw new Error('Missing CF_ACCOUNT_ID, CF_API_TOKEN or D1_DATABASE_ID.');
+}
+
+// Shape checks, so a swapped or mistyped pair fails with a useful message
+// instead of a Cloudflare routing error. Never print the values: this log is
+// public. An account ID is 32 hex characters; a database ID is a UUID.
+const ACCOUNT_SHAPE = /^[0-9a-f]{32}$/i;
+const DATABASE_SHAPE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+if (!ACCOUNT_SHAPE.test(CF_ACCOUNT_ID)) {
+  throw new Error(
+    DATABASE_SHAPE.test(CF_ACCOUNT_ID)
+      ? 'CF_ACCOUNT_ID holds a database ID. The two secrets look swapped.'
+      : `CF_ACCOUNT_ID is not a 32-character account ID (got ${CF_ACCOUNT_ID.length} characters). Copy it from the Workers & Pages page in the Cloudflare dashboard.`
+  );
+}
+if (!DATABASE_SHAPE.test(D1_DATABASE_ID)) {
+  throw new Error(
+    ACCOUNT_SHAPE.test(D1_DATABASE_ID)
+      ? 'D1_DATABASE_ID holds an account ID. The two secrets look swapped.'
+      : `D1_DATABASE_ID is not a database UUID (got ${D1_DATABASE_ID.length} characters). Copy it from the waf-directory database's Overview tab.`
+  );
 }
 
 // Last complete Monday-to-Sunday week before today, in UTC.
@@ -40,9 +66,25 @@ async function queryD1(sql, params) {
       body: JSON.stringify({ sql, params }),
     }
   );
-  const json = await res.json();
+  // Not always JSON: a malformed URL can come back as an HTML error page.
+  const body = await res.text();
+  let json;
+  try {
+    json = JSON.parse(body);
+  } catch {
+    throw new Error(`D1 returned a non-JSON response (HTTP ${res.status}): ${body.slice(0, 200)}`);
+  }
   if (!res.ok || !json.success) {
-    throw new Error(`D1 query failed: ${JSON.stringify(json.errors ?? json)}`);
+    // 7003 means Cloudflare couldn't route the URL: the account or database ID
+    // is wrong. 10000 means the token was rejected or lacks D1 Read.
+    const code = json?.errors?.[0]?.code;
+    const hint =
+      code === 7003
+        ? ' Check CF_ACCOUNT_ID and D1_DATABASE_ID: one of them points at something that does not exist, or they belong to different accounts.'
+        : code === 10000
+          ? ' Check CF_D1_READ_TOKEN: it was rejected, or it lacks the Account > D1 > Read permission.'
+          : '';
+    throw new Error(`D1 query failed (HTTP ${res.status}): ${JSON.stringify(json.errors ?? json)}.${hint}`);
   }
   return json.result[0].results;
 }
