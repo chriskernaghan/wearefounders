@@ -8,7 +8,7 @@
 // UPDATE THIS FILE as you work through the review queue.
 
 /** Submissions reviewed and published. */
-export const PUBLISHED = 79;
+export const PUBLISHED = 80;
 
 /** Submissions reviewed and declined, with the submitter notified. */
 export const DECLINED = 85;
@@ -27,7 +27,7 @@ export const FREE_WAIT = '4 to 6 weeks';
 export const SUBSCRIBERS = '2,000+';
 
 /** Date the numbers above were last checked. Shown publicly. */
-export const STATS_UPDATED = 'October 22, 2026';
+export const STATS_UPDATED = 'October 26, 2026';
 
 // --- Derived. Do not edit by hand. ---
 
