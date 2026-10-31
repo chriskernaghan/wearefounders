@@ -1,16 +1,16 @@
 ---
 name: Foxit PDF Editor
 tagline: Edit, convert, sign, and manage PDFs without paying Adobe Acrobat prices.
-website: https://www.foxit.com/pdf-editor/
+website: https://partnerstack.foxit.com/jmwqyvoee9na
 categories:
   - productivity
 stages:
   - mvp
   - scaling
   - established
-pricing_model: paid
+pricing_model: subscription
 pricing_from: 10.99
-our_take: A capable Adobe Acrobat alternative for founders who regularly edit contracts, forms, or client documents, with a lower entry price and useful team features, though mobile editing and some extras cost more.
+our_take: An Adobe Acrobat alternative for founders who need to edit contracts, forms, and client files. It covers essential PDF tasks, though mobile editing and some extras cost more.
 pros:
   - Edit PDFs, convert Office files, run OCR, and handle forms in one tool
   - Includes document management and collaboration features for teams
