@@ -6,6 +6,7 @@ import { CATEGORY_MAP, STAGE_MAP } from '../data/taxonomy';
 import BoostCard from '../components/BoostCard.astro';
 import ShareCard from '../components/ShareCard.astro';
 import ShareVisit from '../components/ShareVisit.astro';
+import ToolCard from '../components/ToolCard.astro';
 
 export async function getStaticPaths() {
   const tools = await getCollection('tools', ({ data }) => data.published);
@@ -17,6 +18,30 @@ export async function getStaticPaths() {
 
 const { tool } = Astro.props;
 const { Content } = await render(tool);
+
+// Related tools: the most overlap in categories first, then stages, then
+// featured, then A-Z. Three is enough to keep people browsing without
+// turning the page into a second directory. Nothing shares a category with
+// the tool means no section at all.
+const allTools = await getCollection('tools', ({ data }) => data.published);
+const thisId = tool.id;
+const related = allTools
+  .filter((t) => t.id !== thisId)
+  .map((t) => ({
+    tool: t,
+    cats: t.data.categories.filter((c) => tool.data.categories.includes(c)).length,
+    stages: t.data.stages.filter((st) => tool.data.stages.includes(st)).length,
+  }))
+  .filter((r) => r.cats > 0)
+  .sort(
+    (a, b) =>
+      b.cats - a.cats ||
+      b.stages - a.stages ||
+      Number(b.tool.data.featured) - Number(a.tool.data.featured) ||
+      a.tool.data.name.localeCompare(b.tool.data.name)
+  )
+  .slice(0, 3)
+  .map((r) => r.tool);
 const base = import.meta.env.BASE_URL;
 
 const symbol = tool.data.pricing_currency === 'GBP' ? '£' : tool.data.pricing_currency === 'EUR' ? '€' : tool.data.pricing_currency === 'CHF' ? 'CHF ' : '$';
@@ -88,7 +113,7 @@ const schema = {
     <ShareVisit slug={slug} />
 
   <article class="tool-detail container">
-    <a href={base} class="back-link">← All tools</a>
+    <a href={base} class="back-link" data-home={base}>← All tools</a>
 
     <div class="tool-detail__layout">
       <div class="tool-detail__main">
@@ -184,6 +209,15 @@ const schema = {
       </div>
     </div>
 
+    {related.length > 0 && (
+      <section class="tool-detail__related" aria-labelledby="related-heading">
+        <h2 id="related-heading">More tools like {tool.data.name}</h2>
+        <div class="tools-grid tools-grid--three">
+          {related.map((t) => <ToolCard tool={t} />)}
+        </div>
+      </section>
+    )}
+
     <section class="tool-detail__final-cta">
       <h2>Try {tool.data.name}</h2>
       <p>{priceLabel}{tool.data.free_tier && ' · Free tier available'}{tool.data.free_trial_days && ` · ${tool.data.free_trial_days}-day trial`}.</p>
@@ -194,8 +228,35 @@ const schema = {
   </article>
 </BaseLayout>
 
+<script>
+  // "All tools" goes back in history when you arrived from a directory page,
+  // so the filters, search and scroll position you had are still there.
+  // Anyone who landed here from elsewhere gets the plain link.
+  const back = document.querySelector<HTMLAnchorElement>('.back-link');
+  back?.addEventListener('click', (event) => {
+    if (!document.referrer || window.history.length < 2) return;
+    try {
+      const ref = new URL(document.referrer);
+      const home = back.dataset.home ?? '/';
+      const fromDirectory =
+        ref.origin === window.location.origin &&
+        (ref.pathname === home ||
+          ref.pathname.startsWith(`${home}category/`) ||
+          ref.pathname.startsWith(`${home}stage/`));
+      if (fromDirectory) {
+        event.preventDefault();
+        window.history.back();
+      }
+    } catch {
+      /* fall through to the normal link */
+    }
+  });
+</script>
+
 <style>
   .tool-detail { padding-block: 2rem 4rem; }
+  .tool-detail__related { margin-top: 4rem; }
+  .tool-detail__related h2 { margin: 0 0 1.5rem; }
   .back-link {
     display: inline-block;
     margin-bottom: 2rem;
