@@ -99,18 +99,19 @@ const base = import.meta.env.BASE_URL;
      pages; inside .directory-main (home page) the gutter is neutralised, the
      same way the bar's own inner row is. */
   .dir-search-wrap { margin-bottom: 1rem; }
+  .dir-search-wrap[hidden] { display: none; }
   :global(.directory-main) .dir-search-wrap {
     max-width: none;
     margin: 0 0 1rem;
     padding: 0;
   }
-  .dir-search { position: relative; max-width: 30rem; }
+  .dir-search { position: relative; width: 100%; max-width: 22rem; }
   .dir-search__icon {
     position: absolute;
-    left: 0.95rem;
+    left: 0.8rem;
     top: 50%;
-    width: 16px;
-    height: 16px;
+    width: 15px;
+    height: 15px;
     transform: translateY(-50%);
     color: var(--text-faint);
     pointer-events: none;
@@ -120,36 +121,36 @@ const base = import.meta.env.BASE_URL;
     width: 100%;
     margin: 0;
     font: inherit;
-    font-size: 0.9375rem;
+    font-size: 0.8125rem;
     line-height: 1.2;
     color: var(--text);
     background-color: var(--bg-elevated);
-    border: 1px solid var(--border);
+    border: 1px solid var(--border-strong);
     border-radius: 999px;
-    padding: 0.65rem 2.75rem 0.65rem 2.6rem;
+    padding: 0.5rem 2.2rem 0.5rem 2.3rem;
     outline: none;
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
   }
   .dir-search__input::placeholder { color: var(--text-faint); }
-  .dir-search__input:hover { border-color: var(--border-strong); }
+  .dir-search__input:hover { border-color: var(--text); }
   .dir-search__input:focus-visible {
     border-color: var(--waf-accent);
     box-shadow: 0 0 0 3px var(--waf-accent-soft);
   }
   .dir-search__hint {
     position: absolute;
-    right: 0.95rem;
+    right: 0.8rem;
     top: 50%;
     transform: translateY(-50%);
     font-family: var(--font-mono);
-    font-size: 0.6875rem;
+    font-size: 0.625rem;
     line-height: 1;
     color: var(--text-faint);
     border: 1px solid var(--border);
     border-radius: 4px;
-    padding: 0.2rem 0.45rem;
+    padding: 0.15rem 0.4rem;
     pointer-events: none;
   }
   .dir-search:focus-within .dir-search__hint,
@@ -157,8 +158,16 @@ const base = import.meta.env.BASE_URL;
   @media (hover: none) {
     .dir-search__hint { display: none; }
   }
+
+  /* Inline mode: JS moves the box into the controls row on wide screens. It
+     sits first, with the same pill shape and size as the Categories button. */
+  .dir-search--inline { width: 15rem; margin-right: 1.25rem; }
+  :global(.directory-main) .dir-search--inline { margin-right: 0; }
+
   @media (max-width: 640px) {
     .dir-search { max-width: none; }
+    /* 16px stops iOS zooming the page when the field is focused. */
+    .dir-search__input { font-size: 1rem; padding-block: 0.6rem; }
   }
 
   /* On phones the Categories button, sort and free-tier toggle can't share one
@@ -241,6 +250,28 @@ const base = import.meta.env.BASE_URL;
     searchIndex.set(card, parts.join(' ').toLowerCase());
   });
   const totalTools = cardsForIndex.length;
+
+  // Wide screens: the search box lives in the controls row, first in line.
+  // Narrower ones: it drops back to its own row above the bar. One element,
+  // moved, so there's only ever one input and one set of listeners.
+  const searchWrap = searchBox?.parentElement as HTMLElement | null;
+  const controlsRow = document.querySelector<HTMLElement>('.filter-bar__right');
+  if (searchBox && searchWrap && controlsRow) {
+    const wide = window.matchMedia('(min-width: 1100px)');
+    const place = () => {
+      if (wide.matches) {
+        controlsRow.insertBefore(searchBox, controlsRow.firstChild);
+        searchBox.classList.add('dir-search--inline');
+        searchWrap.hidden = true;
+      } else {
+        searchWrap.appendChild(searchBox);
+        searchBox.classList.remove('dir-search--inline');
+        searchWrap.hidden = false;
+      }
+    };
+    place();
+    wide.addEventListener('change', place);
+  }
 
   if (searchInput && totalTools > 0) {
     searchInput.placeholder = `Search ${totalTools} tools`;
