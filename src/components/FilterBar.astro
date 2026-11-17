@@ -10,11 +10,33 @@ interface Props {
 }
 
 const { hideCategoryFilter = false, categoryCounts } = Astro.props;
+const base = import.meta.env.BASE_URL;
 ---
-<div class="filter-bar" id="filter-bar">
+<div class="container dir-search-wrap">
+  <div class="dir-search" id="dir-search" role="search">
+    <svg class="dir-search__icon" viewBox="0 0 24 24" aria-hidden="true">
+      <circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.75" fill="none"/>
+      <path d="M16 16l4.5 4.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" fill="none"/>
+    </svg>
+    <input
+      type="search"
+      class="dir-search__input"
+      id="dir-search-input"
+      placeholder="Search tools"
+      aria-label="Search tools"
+      autocomplete="off"
+      spellcheck="false"
+      enterkeyhint="search"
+    />
+    <kbd class="dir-search__hint" aria-hidden="true">/</kbd>
+  </div>
+</div>
+
+<div class="filter-bar" id="filter-bar" data-submit-href={`${base}submit/`}>
   <div class="container filter-bar__inner">
     <div class="filter-bar__left">
       <span class="filter-bar__count" id="filter-count">Loading…</span>
+      <button type="button" class="filter-clear" id="filter-clear" hidden>Clear filters</button>
     </div>
     <div class="filter-bar__right">
       {!hideCategoryFilter && (
@@ -28,7 +50,7 @@ const { hideCategoryFilter = false, categoryCounts } = Astro.props;
       )}
       <label class="sort-control">
         <span class="sort-control__label">Sort</span>
-        <select class="sort-control__select" id="sort-select">
+        <select class="sort-control__select" id="sort-select" autocomplete="off">
           <option value="az">A–Z</option>
           <option value="recent">Recently added</option>
           <option value="featured">Featured first</option>
@@ -36,7 +58,7 @@ const { hideCategoryFilter = false, categoryCounts } = Astro.props;
       </label>
       <label class="toggle" data-filter-group="freetier">
         <span class="toggle__label">Free tier only</span>
-        <input type="checkbox" class="toggle__input" id="freetier-toggle" />
+        <input type="checkbox" class="toggle__input" id="freetier-toggle" autocomplete="off" />
         <span class="toggle__track" aria-hidden="true">
           <span class="toggle__thumb"></span>
         </span>
@@ -71,21 +93,119 @@ const { hideCategoryFilter = false, categoryCounts } = Astro.props;
   </dialog>
 )}
 
+<style>
+  /* Search sits above the filter bar so the existing bar layout is untouched.
+     The wrapper is a .container so it lines up with the bar on category
+     pages; inside .directory-main (home page) the gutter is neutralised, the
+     same way the bar's own inner row is. */
+  .dir-search-wrap { margin-bottom: 1rem; }
+  :global(.directory-main) .dir-search-wrap {
+    max-width: none;
+    margin: 0 0 1rem;
+    padding: 0;
+  }
+  .dir-search { position: relative; max-width: 30rem; }
+  .dir-search__icon {
+    position: absolute;
+    left: 0.95rem;
+    top: 50%;
+    width: 16px;
+    height: 16px;
+    transform: translateY(-50%);
+    color: var(--text-faint);
+    pointer-events: none;
+  }
+  .dir-search__input {
+    box-sizing: border-box;
+    width: 100%;
+    margin: 0;
+    font: inherit;
+    font-size: 0.9375rem;
+    line-height: 1.2;
+    color: var(--text);
+    background-color: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 0.65rem 2.75rem 0.65rem 2.6rem;
+    outline: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+  }
+  .dir-search__input::placeholder { color: var(--text-faint); }
+  .dir-search__input:hover { border-color: var(--border-strong); }
+  .dir-search__input:focus-visible {
+    border-color: var(--waf-accent);
+    box-shadow: 0 0 0 3px var(--waf-accent-soft);
+  }
+  .dir-search__hint {
+    position: absolute;
+    right: 0.95rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    line-height: 1;
+    color: var(--text-faint);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 0.2rem 0.45rem;
+    pointer-events: none;
+  }
+  .dir-search:focus-within .dir-search__hint,
+  .dir-search.has-value .dir-search__hint { display: none; }
+  @media (hover: none) {
+    .dir-search__hint { display: none; }
+  }
+  @media (max-width: 640px) {
+    .dir-search { max-width: none; }
+  }
+
+  /* On phones the Categories button, sort and free-tier toggle can't share one
+     row without crushing the sort dropdown, so let them wrap. */
+  @media (max-width: 640px) {
+    :global(.filter-bar__right) {
+      flex-wrap: wrap;
+      row-gap: 0.75rem;
+    }
+  }
+
+  .filter-clear {
+    margin: 0 0 0 0.75rem;
+    padding: 0;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    color: var(--waf-accent);
+    background: none;
+    border: 0;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .filter-clear[hidden] { display: none; }
+  .filter-clear:hover { text-decoration-thickness: 2px; }
+  .filter-clear:focus-visible {
+    outline: 2px solid var(--waf-accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+</style>
+
 <script>
   type GroupName = 'stage' | 'category' | 'freetier';
+  type SortMode = 'az' | 'recent' | 'featured';
   const state: Record<GroupName, string> = {
     stage: 'all',
     category: 'all',
     freetier: 'all',
   };
+  // Free-text search. Lower-cased, matched word by word.
+  let query = '';
   // Sort mode is separate from the filter groups. Default A-Z.
-  let sortMode: 'az' | 'recent' | 'featured' = 'az';
+  let sortMode: SortMode = 'az';
 
-  // Reorder the cards in the DOM. Featured tools are ALWAYS pinned to the top,
-  // regardless of sort mode; the chosen sort then applies within the featured
-  // block and within the rest. Sorting the whole node list (not just visible
-  // ones) keeps order stable as filters change. CSS grid reflows to match DOM
-  // order, so moving the nodes is all that's needed.
   // The main directory grid only. The home page also renders ToolCards in its
   // "Recently listed" row, and those carry the same data-tool attribute, so
   // both the sort and the filter scope themselves to this grid. Without that,
@@ -98,6 +218,39 @@ const { hideCategoryFilter = false, categoryCounts } = Astro.props;
     document.querySelector<HTMLElement>('.tools-grid--three') ??
     document.querySelector<HTMLElement>('.tools-grid');
 
+  const searchInput = document.getElementById('dir-search-input') as HTMLInputElement | null;
+  const searchBox = document.getElementById('dir-search');
+  const clearButton = document.getElementById('filter-clear') as HTMLButtonElement | null;
+  const sortSelect = document.getElementById('sort-select') as HTMLSelectElement | null;
+  const freeTierToggle = document.getElementById('freetier-toggle') as HTMLInputElement | null;
+  const categoryModal = document.getElementById('category-modal') as HTMLDialogElement | null;
+  const categoryButton = document.getElementById('category-button');
+
+  // Search text per card: name, tagline and the category and stage pills.
+  // Built once so typing never has to touch the DOM beyond toggling cards.
+  const searchIndex = new WeakMap<HTMLElement, string>();
+  const cardsForIndex = mainGrid
+    ? Array.from(mainGrid.querySelectorAll<HTMLElement>('[data-tool]'))
+    : [];
+  cardsForIndex.forEach((card) => {
+    const parts = [
+      card.querySelector('.tool-card__name')?.textContent,
+      card.querySelector('.tool-card__tagline')?.textContent,
+      ...Array.from(card.querySelectorAll('.pill')).map((el) => el.textContent),
+    ];
+    searchIndex.set(card, parts.join(' ').toLowerCase());
+  });
+  const totalTools = cardsForIndex.length;
+
+  if (searchInput && totalTools > 0) {
+    searchInput.placeholder = `Search ${totalTools} tools`;
+  }
+
+  // Reorder the cards in the DOM. Featured tools are ALWAYS pinned to the top,
+  // regardless of sort mode; the chosen sort then applies within the featured
+  // block and within the rest. Sorting the whole node list (not just visible
+  // ones) keeps order stable as filters change. CSS grid reflows to match DOM
+  // order, so moving the nodes is all that's needed.
   function sortGrid() {
     const grid = mainGrid;
     if (!grid) return;
@@ -123,8 +276,67 @@ const { hideCategoryFilter = false, categoryCounts } = Astro.props;
     cards.forEach((card) => grid.appendChild(card));
   }
 
+  function hasActiveFilters() {
+    return (
+      query.trim() !== '' ||
+      state.category !== 'all' ||
+      state.stage !== 'all' ||
+      state.freetier !== 'all'
+    );
+  }
+
+  // Keep the address bar in step with the controls, so a refresh, the back
+  // button or a copied link all land on the same filtered view. replaceState
+  // rather than pushState so typing doesn't bury the previous page in history.
+  function syncUrl() {
+    const url = new URL(window.location.href);
+    const params = url.searchParams;
+    const put = (key: string, value: string) => {
+      if (value) params.set(key, value);
+      else params.delete(key);
+    };
+    put('q', query.trim());
+    put('category', categoryButton && state.category !== 'all' ? state.category : '');
+    put('free', state.freetier === 'true' ? '1' : '');
+    put('sort', sortMode !== 'az' ? sortMode : '');
+    const qs = params.toString();
+    window.history.replaceState(
+      window.history.state,
+      '',
+      url.pathname + (qs ? `?${qs}` : '') + url.hash
+    );
+  }
+
+  // Empty state: add a reset button and a nudge to submit, once. Built here
+  // so every page that uses the filter bar gets it without touching its markup.
+  function ensureEmptyStateActions(emptyState: HTMLElement) {
+    if (emptyState.querySelector('[data-empty-actions]')) return;
+    const submitHref =
+      document.getElementById('filter-bar')?.dataset.submitHref ?? '/submit/';
+    const actions = document.createElement('p');
+    actions.dataset.emptyActions = 'true';
+    actions.style.marginTop = '1.25rem';
+
+    const reset = document.createElement('button');
+    reset.type = 'button';
+    reset.className = 'btn btn--ghost';
+    reset.textContent = 'Clear filters';
+    reset.addEventListener('click', resetFilters);
+    actions.appendChild(reset);
+
+    const submit = document.createElement('a');
+    submit.href = submitHref;
+    submit.className = 'btn btn--ghost';
+    submit.style.marginLeft = '0.5rem';
+    submit.textContent = 'Submit a tool';
+    actions.appendChild(submit);
+
+    emptyState.appendChild(actions);
+  }
+
   function apply() {
     const tools = mainGrid ? mainGrid.querySelectorAll<HTMLElement>('[data-tool]') : document.querySelectorAll<HTMLElement>('[data-tool]');
+    const words = query.toLowerCase().split(/\s+/).filter(Boolean);
     let visible = 0;
 
     tools.forEach((el) => {
@@ -135,51 +347,102 @@ const { hideCategoryFilter = false, categoryCounts } = Astro.props;
       const matchesStage = state.stage === 'all' || stages.includes(state.stage);
       const matchesCategory = state.category === 'all' || cats.includes(state.category);
       const matchesFree = state.freetier === 'all' || freeTier === state.freetier;
+      const haystack = searchIndex.get(el) ?? '';
+      const matchesSearch = words.every((w) => haystack.includes(w));
 
-      const show = matchesStage && matchesCategory && matchesFree;
+      const show = matchesStage && matchesCategory && matchesFree && matchesSearch;
       el.dataset.hidden = show ? 'false' : 'true';
       if (show) visible++;
     });
 
+    const active = hasActiveFilters();
+
     const count = document.getElementById('filter-count');
     if (count) {
-      count.textContent = `${visible} ${visible === 1 ? 'tool' : 'tools'}`;
+      const noun = visible === 1 ? 'tool' : 'tools';
+      count.textContent =
+        active && totalTools > 0 ? `${visible} of ${totalTools} ${noun}` : `${visible} ${noun}`;
     }
+
+    if (clearButton) clearButton.hidden = !active;
+    searchBox?.classList.toggle('has-value', query !== '');
 
     const emptyState = document.getElementById('empty-state');
     if (emptyState) {
       emptyState.style.display = visible === 0 ? 'block' : 'none';
+      if (visible === 0 && active) ensureEmptyStateActions(emptyState);
     }
+
+    syncUrl();
+  }
+
+  // Category choice, shared by the picker buttons and the URL on load.
+  function setCategory(value: string) {
+    const group = document.querySelector<HTMLElement>('[data-filter-group="category"]');
+    let label = '';
+    let matched = false;
+    group?.querySelectorAll<HTMLButtonElement>('button[data-filter-value]').forEach((btn) => {
+      const isMatch = btn.dataset.filterValue === value;
+      btn.setAttribute('aria-pressed', isMatch ? 'true' : 'false');
+      if (isMatch) {
+        matched = true;
+        label = btn.querySelector('.category-option__label')?.textContent?.trim() ?? '';
+      }
+    });
+    state.category = matched ? value : 'all';
+    // Show the choice on the button, so the active filter is still visible
+    // once the picker is closed.
+    const current = document.getElementById('category-button-current');
+    if (current) {
+      const chosen = state.category !== 'all';
+      current.textContent = chosen ? label : '';
+      current.hidden = !chosen;
+    }
+    categoryButton?.classList.toggle('is-active', state.category !== 'all');
+  }
+
+  function setSort(value: string) {
+    const valid = ['az', 'recent', 'featured'];
+    sortMode = (valid.includes(value) ? value : 'az') as SortMode;
+    if (sortSelect) sortSelect.value = sortMode;
+  }
+
+  function resetFilters() {
+    query = '';
+    if (searchInput) searchInput.value = '';
+    state.stage = 'all';
+    state.freetier = 'all';
+    if (freeTierToggle) freeTierToggle.checked = false;
+    setCategory('all');
+    apply();
+  }
+
+  // Read the controls' state from the URL. Runs on load and again on pageshow,
+  // because browsers can restore old form values when the back button is used.
+  function readFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    query = (params.get('q') ?? '').slice(0, 80);
+    if (searchInput) searchInput.value = query;
+    setCategory(categoryButton ? params.get('category') ?? 'all' : 'all');
+    state.freetier = params.get('free') === '1' ? 'true' : 'all';
+    if (freeTierToggle) freeTierToggle.checked = state.freetier === 'true';
+    setSort(params.get('sort') ?? 'az');
+    sortGrid();
+    apply();
   }
 
   // Category pills (single-select)
   document.querySelectorAll<HTMLElement>('[data-filter-group="category"]').forEach((group) => {
     group.querySelectorAll<HTMLButtonElement>('button[data-filter-value]').forEach((btn) => {
       btn.addEventListener('click', () => {
-        group.querySelectorAll<HTMLButtonElement>('button').forEach((b) => {
-          b.setAttribute('aria-pressed', 'false');
-        });
-        btn.setAttribute('aria-pressed', 'true');
-        state.category = btn.dataset.filterValue ?? 'all';
+        setCategory(btn.dataset.filterValue ?? 'all');
         apply();
-        // Close the picker and show the choice on the button, so the active
-        // filter is still visible once the modal is gone.
-        const label = btn.querySelector('.category-option__label')?.textContent?.trim() ?? '';
-        const current = document.getElementById('category-button-current');
-        if (current) {
-          const chosen = state.category !== 'all';
-          current.textContent = chosen ? label : '';
-          current.hidden = !chosen;
-        }
-        document.getElementById('category-button')?.classList.toggle('is-active', state.category !== 'all');
-        (document.getElementById('category-modal') as HTMLDialogElement | null)?.close();
+        categoryModal?.close();
       });
     });
   });
 
   // Category picker open/close
-  const categoryModal = document.getElementById('category-modal') as HTMLDialogElement | null;
-  const categoryButton = document.getElementById('category-button');
   if (categoryModal && categoryButton) {
     categoryButton.addEventListener('click', () => categoryModal.showModal());
     document.getElementById('category-modal-close')?.addEventListener('click', () => categoryModal.close());
@@ -205,7 +468,6 @@ const { hideCategoryFilter = false, categoryCounts } = Astro.props;
   });
 
   // Free tier toggle
-  const freeTierToggle = document.getElementById('freetier-toggle') as HTMLInputElement | null;
   if (freeTierToggle) {
     freeTierToggle.addEventListener('change', () => {
       state.freetier = freeTierToggle.checked ? 'true' : 'all';
@@ -215,16 +477,59 @@ const { hideCategoryFilter = false, categoryCounts } = Astro.props;
 
   // Sort dropdown. Reorders the grid, then re-applies filters so the visible
   // count and empty state stay correct. Featured stays pinned in every mode.
-  const sortSelect = document.getElementById('sort-select') as HTMLSelectElement | null;
   if (sortSelect) {
     sortSelect.addEventListener('change', () => {
-      sortMode = (sortSelect.value as typeof sortMode) || 'az';
+      setSort(sortSelect.value);
       sortGrid();
       apply();
     });
   }
 
-  // Initial order: A-Z with featured pinned (matches the default option).
-  sortGrid();
-  apply();
+  // Search box. Filters as you type. Escape clears it, and a slash from
+  // anywhere on the page jumps to it (unless you're already typing somewhere).
+  let searchTimer: number | undefined;
+  if (searchInput) {
+    searchInput.addEventListener('input', () => {
+      query = searchInput.value;
+      apply();
+      // Tell GA4 what people look for once they stop typing. Short or
+      // half-typed queries are skipped so the report stays readable.
+      window.clearTimeout(searchTimer);
+      const term = query.trim();
+      if (term.length >= 3) {
+        searchTimer = window.setTimeout(() => {
+          const gtag = (window as unknown as { gtag?: (...args: unknown[]) => void }).gtag;
+          if (typeof gtag === 'function') gtag('event', 'search', { search_term: term });
+        }, 1200);
+      }
+    });
+    searchInput.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && searchInput.value !== '') {
+        event.preventDefault();
+        searchInput.value = '';
+        query = '';
+        apply();
+      }
+    });
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== '/' || event.metaKey || event.ctrlKey || event.altKey) return;
+      const target = event.target as HTMLElement | null;
+      const typing =
+        target &&
+        (target.isContentEditable ||
+          ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName));
+      if (typing) return;
+      event.preventDefault();
+      searchInput.focus();
+      searchInput.select();
+    });
+  }
+
+  clearButton?.addEventListener('click', resetFilters);
+
+  // Initial state comes from the URL, so shared and refreshed views match.
+  readFromUrl();
+  window.addEventListener('pageshow', (event) => {
+    if (event.persisted) readFromUrl();
+  });
 </script>
