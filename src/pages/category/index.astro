@@ -1,0 +1,48 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { CATEGORIES } from '../../data/taxonomy';
+
+const tools = await getCollection('tools', ({ data }) => data.published);
+const counts: Record<string, number> = {};
+tools.forEach((tool) => {
+  (tool.data.categories || []).forEach((slug: string) => {
+    counts[slug] = (counts[slug] || 0) + 1;
+  });
+});
+
+const base = import.meta.env.BASE_URL;
+---
+<BaseLayout
+  title="Browse tools by category"
+  description={`Every category in the We Are Founders Tools Directory, from AI agents to legal and compliance. ${tools.length} hand-reviewed tools.`}
+>
+  <section class="page-hero container">
+    <div class="page-hero__eyebrow">Categories</div>
+    <h1>Browse by category</h1>
+    <p class="page-hero__lede">
+      {CATEGORIES.length} categories, {tools.length} hand-reviewed tools. Pick one to see
+      everything in it.
+    </p>
+  </section>
+
+  <div class="container category-index">
+    <div class="tools-grid">
+      {CATEGORIES.map((c) => (
+        <a href={`${base}category/${c.slug}/`} class="tool-card">
+          <div class="tool-card__head">
+            <div class="tool-card__name">{c.label}</div>
+            <div class="tool-card__price">
+              <strong>{counts[c.slug] || 0} {(counts[c.slug] || 0) === 1 ? 'tool' : 'tools'}</strong>
+            </div>
+          </div>
+          <p class="tool-card__tagline">{c.desc}</p>
+        </a>
+      ))}
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .category-index { padding-bottom: 4rem; }
+</style>
