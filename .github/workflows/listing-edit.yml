@@ -1,0 +1,74 @@
+name: Apply listing edit
+
+# Triggered by functions/api/edit.js, which sends a repository_dispatch after
+# verifying a Tally "Update your listing" submission. The job edits the listing
+# file, checks the site still builds, and opens (or refreshes) one pull request
+# per listing for review. Nothing goes live until that pull request is merged.
+#
+# Needs the repository setting: Settings > Actions > General > Workflow
+# permissions > "Allow GitHub Actions to create and approve pull requests".
+
+on:
+  repository_dispatch:
+    types: [listing-edit]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+# One edit at a time, so two submissions never race over the same branch.
+concurrency:
+  group: listing-edit
+  cancel-in-progress: false
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      # The payload is read from the event file inside the script and is never
+      # interpolated into a shell command.
+      - name: Apply the edit
+        id: apply
+        run: node scripts/apply-listing-edit.mjs
+
+      # The content schema rejects anything invalid, so a bad edit fails here
+      # instead of breaking the production build after a merge.
+      - name: Check the site still builds
+        if: steps.apply.outputs.changed == 'true'
+        run: |
+          npm ci --no-audit --no-fund
+          npx astro build
+
+      - name: Open or update the pull request
+        if: steps.apply.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BRANCH: ${{ steps.apply.outputs.branch }}
+          TITLE: ${{ steps.apply.outputs.title }}
+          BODY_FILE: ${{ steps.apply.outputs.body_file }}
+          FLAGGED: ${{ steps.apply.outputs.flagged }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+
+          # Always rebuilt from main, so the newest submission for a listing
+          # replaces any earlier one that is still waiting for review.
+          git checkout -B "$BRANCH"
+          git add src/content/tools
+          git commit -m "$TITLE"
+          git push --force origin "$BRANCH"
+
+          gh label create listing-edit --color 443fde --description "Founder-submitted listing change" 2>/dev/null || true
+          gh label create link-changed --color d93f0b --description "Website or link changed, check closely" 2>/dev/null || true
+
+          labels="listing-edit"
+          if [ "$FLAGGED" = "true" ]; then labels="$labels,link-changed"; fi
+
+          existing=$(gh pr list --head "$BRANCH" --state open --json number --jq '.[0].number // empty')
+          if [ -n "$existing" ]; then
+            gh pr edit "$existing" --title "$TITLE" --body-file "$BODY_FILE" --add-label "$labels"
+          else
+            gh pr create --base main --head "$BRANCH" --title "$TITLE" --body-file "$BODY_FILE" --label "$labels"
+          fi
