@@ -4,6 +4,7 @@ import { existsSync } from 'node:fs';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { CATEGORY_MAP, STAGE_MAP } from '../data/taxonomy';
 import BoostCard from '../components/BoostCard.astro';
+import EditListing from '../components/EditListing.astro';
 import ShareCard from '../components/ShareCard.astro';
 import ShareVisit from '../components/ShareVisit.astro';
 import ToolCard from '../components/ToolCard.astro';
@@ -203,6 +204,8 @@ const schema = {
             <dd>{updated}</dd>
           </dl>
         </aside>
+
+        <EditListing slug={slug} tool={tool.data} />
 
         <BoostCard />
         <ShareCard slug={slug} toolName={tool.data.name} twitterHandle={tool.data.twitter_handle} linkedinUrl={tool.data.linkedin_url} />
