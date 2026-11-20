@@ -1,17 +1,17 @@
 ---
-// "Update this listing" sidebar card for tool detail pages.
-// Place inside the detail page sidebar, within .tool-detail.
+// "Update this listing" link, shown at the bottom of the facts card on tool
+// detail pages. Place it inside .tool-detail__facts, after the <dl>.
 //
-// The button opens a Tally form with the listing's current values already
+// The link opens a Tally form with the listing's current values already
 // filled in, so a founder only changes what they want to change. Prefilling
 // works through Tally hidden fields, which must exist on the form with exactly
 // these names: slug, tagline, website, twitter, linkedin, hq, founded, price,
 // currency, model, freetier, trial. See docs/listing-edits.md.
 //
 // CONFIGURE: paste the public URL of the Tally "Update your listing" form
-// below. While it still says REPLACE_ME the card renders nothing, so this can
-// be merged before the form exists without showing a broken button.
-const TALLY_EDIT_FORM_URL = 'https://tally.so/r/REPLACE_ME';
+// below. While it still says REPLACE_ME nothing renders, so this can be
+// merged before the form exists without showing a broken link.
+const TALLY_EDIT_FORM_URL = 'https://tally.so/r/aO2Qvq';
 
 const { slug, tool } = Astro.props;
 
@@ -37,47 +37,28 @@ const href = `${TALLY_EDIT_FORM_URL}?${params.map(([k, v]) => `${k}=${enc(v)}`).
 const configured = !TALLY_EDIT_FORM_URL.includes('REPLACE_ME');
 ---
 {configured && (
-  <aside class="edit-card">
-    <span class="edit-card__label">Run {tool.name}?</span>
-    <h3 class="edit-card__title">Keep your listing current</h3>
-    <p class="edit-card__desc">
-      Change your tagline, links, pricing or trial details in a minute. No account needed, and we check every change before it goes live.
-    </p>
-    <a class="edit-card__cta" href={href} target="_blank" rel="noopener">Update this listing &rarr;</a>
-  </aside>
+  <p class="edit-link">
+    Is this your tool?
+    <a href={href} target="_blank" rel="noopener">Update this listing &rarr;</a>
+  </p>
 )}
 
 <style>
-  .edit-card {
-    background: var(--bg-elevated);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 1.5rem;
-  }
-  .edit-card__label {
-    display: block;
-    font-family: var(--font-mono);
-    font-size: 0.6875rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--text-faint);
-    margin-bottom: 0.5rem;
-  }
-  .edit-card__title {
-    margin: 0 0 0.5rem;
-    font-size: 1.0625rem;
-  }
-  .edit-card__desc {
-    margin: 0 0 1rem;
-    font-size: 0.9375rem;
+  .edit-link {
+    margin: 1.25rem 0 0;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.875rem;
     line-height: 1.5;
     color: var(--text-muted);
   }
-  .edit-card__cta {
+  .edit-link a {
+    display: block;
+    margin-top: 0.25rem;
     font-family: var(--font-mono);
     font-size: 0.8125rem;
     color: var(--waf-accent);
     text-decoration: none;
   }
-  .edit-card__cta:hover { text-decoration: underline; }
+  .edit-link a:hover { text-decoration: underline; }
 </style>
