@@ -1,6 +1,6 @@
 ---
 name: earlystagehires
-tagline: Curated jobs at early-stage startups, founding roles and first-10 hires.
+tagline: "This is a test tagline so it is"
 website: https://earlystagehires.com
 categories:
   - hiring-hr
@@ -20,6 +20,7 @@ cons:
   - Role volume is deliberately small, quality over quantity
 featured: true
 date_added: 2026-07-16
+hq: "Belfast, UK"
 last_updated: 2026-07-16
 ---
 
